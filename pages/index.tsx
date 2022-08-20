@@ -1,11 +1,11 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
-import styles from '../styles/Home.module.css';
+// import styles from '../styles/Home.module.css';
 
 const Home: NextPage = () => {
   return (
-    <div className={styles.container}>
+    <div>
       <Head>
         <title>GetTogether.social</title>
         <meta
@@ -21,40 +21,9 @@ const Home: NextPage = () => {
         />
       </Head>
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://gettogether.social">GetTogether.social</a>
-        </h1>
-
-        {/* <p className={styles.description}>
-          {
-            'Create a sharable landing page for you next party or private event with GetTogether.social'
-          }
-        </p> */}
-
-        <p className={styles.constructionWorker}>{'👷🏻‍♂️'}</p>
-        <p className={styles.underConstruction}>{"⚠️ We're currently under construction! ⚠️"}</p>
-
-        <div className={styles.grid}>
-          <a href="https://github.com/RyanTippsTX/get-together-social" className={styles.card}>
-            <h2>Source Code &rarr;</h2>
-            <p>Check out our progress on GitHub.</p>
-          </a>
-        </div>
+      <main>
+        <h1 className="text-3xl font-bold underline">Hello TailwindCSS!</h1>
       </main>
-
-      {/* <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer> */}
     </div>
   );
 };
