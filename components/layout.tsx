@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import Link from 'next/link';
+import SiteMap from './SiteMap';
 
 const siteTitle = 'GetTogether.social';
 const siteAuthor = 'Ryan Tipps';
@@ -48,13 +49,14 @@ export default function Layout({
       <main className="bg-slate-100">{children}</main>
       <footer className="bg-stone-700">
         <h2>Universal footer</h2>
-        {!home && (
+        {/* {!home && (
           <div>
             <Link href="/">
               <a>← Back to home</a>
             </Link>
           </div>
-        )}
+        )} */}
+        <SiteMap />
       </footer>
     </>
   );
