@@ -13,7 +13,7 @@ const pagePaths = new Map<string, string>([
 const navElements: React.ReactElement[] = [];
 pagePaths.forEach((title, path) => {
   navElements.push(
-    <div>
+    <div key={path}>
       <Link href={path}>
         <a>{title}</a>
       </Link>
