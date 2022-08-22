@@ -30,7 +30,7 @@ export default function Layout({
           href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🥳</text></svg>"
         />
       </Head>
-      <header className="bg-stone-700">
+      <header className="bg-rose-400">
         <h2>Universal Header</h2>
         {home ? (
           <>
@@ -47,7 +47,7 @@ export default function Layout({
         )}
       </header>
       <main className="bg-slate-100">{children}</main>
-      <footer className="bg-stone-700">
+      <footer className="bg-rose-400">
         <h2>Universal footer</h2>
         {/* {!home && (
           <div>
