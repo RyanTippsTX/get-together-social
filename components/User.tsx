@@ -1,4 +1,3 @@
-import { sign } from 'crypto';
 import { FormEvent, useEffect, useState } from 'react';
 import supabase from '../lib/supabase';
 
@@ -13,28 +12,58 @@ export default function User() {
     fetchData();
   }, []);
 
-  // if no user,
-  // show sign in button
-  // show sign up button
+  // async function signUp(event: FormEvent) {   // Not used for now
+  //   event.preventDefault();
 
-  // if user,
-  // show profile pic / name
-  // show sign out button
+  //   const email = (event.target as HTMLFormElement).email.value;
+  //   const displayName = (event.target as HTMLFormElement).displayName.value;
 
-  async function signIn(event: FormEvent) {
+  //   // const { data, error } = await supabase.auth.signUp({
+  //   //   email,
+  //   //   password: '',
+  //   //   options: {
+  //   //     data: {
+  //   //       first_name: 'John',
+  //   //       age: 27,
+  //   //     },
+  //   //   },
+  //   // });
+
+  //   // const email = (event.target as HTMLFormElement).email.value;
+  //   // const { data, error } = await supabase.auth.signInWithOtp({
+  //   //   email,
+  //   //   options: { emailRedirectTo: '/dashboard', shouldCreateUser: false },
+  //   // });
+  //   // if (error) {
+  //   //   console.error(error);
+  //   // }
+  //   // console.log(data);
+  // }
+
+  async function signInWithEmail(event: FormEvent) {
     event.preventDefault();
 
     const email = (event.target as HTMLFormElement).email.value;
-    const { data, error } = await supabase.auth.signInWithOtp({ email });
+    const { data, error } = await supabase.auth.signInWithOtp({
+      email,
+      options: { emailRedirectTo: '/dashboard', shouldCreateUser: true },
+    });
     if (error) {
-      console.error(error);
+      console.error('signin result error:', error);
     }
+    // console.log('signin result data:', data); // returns null user object since not user is not yet signed-in
+  }
+
+  async function signInWithGoogle() {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+    });
     console.log(data);
   }
 
   async function signOut() {
     const { error } = await supabase.auth.signOut();
-    if (error) console.log(error);
+    if (error) console.error(error);
     setUser(undefined);
   }
 
@@ -52,8 +81,23 @@ export default function User() {
         </>
       ) : (
         <>
-          <h1>Log In</h1>
-          <form onSubmit={signIn}>
+          {/* <h1 className="font-bold">Sign Up</h1>
+          <form onSubmit={signUp}>
+            <label htmlFor="email">Email:</label>
+            <input type="email" id="email" name="email" />
+            <br />
+            <label htmlFor="displayName">Display Name:</label>
+            <input type="text" id="displayName" name="displayName" />
+            <button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              type="submit"
+            >
+              Sign Up
+            </button>
+          </form>
+          <br /> */}
+          <h1 className="font-bold">Sign Up / Sign In Using a Link Sent to Your Email Inbox:</h1>
+          <form onSubmit={signInWithEmail}>
             <label htmlFor="email">Email:</label>
             <input type="email" id="email" name="email" />
             <button
@@ -61,6 +105,18 @@ export default function User() {
               type="submit"
             >
               Send Magic Link
+            </button>
+          </form>
+
+          <h1 className="font-bold">- OR -</h1>
+
+          <h1 className="font-bold">Sign In Using Google:</h1>
+          <form onSubmit={signInWithGoogle}>
+            <button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              type="submit"
+            >
+              Sign In With Google
             </button>
           </form>
         </>
