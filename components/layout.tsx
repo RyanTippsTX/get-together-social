@@ -1,3 +1,4 @@
+import User from './User';
 import Head from 'next/head';
 import Link from 'next/link';
 import SiteMap from './SiteMap';
@@ -31,6 +32,7 @@ export default function Layout({
         />
       </Head>
       <header className="bg-rose-400">
+        <User />
         <h2>Universal Header</h2>
         {home ? (
           <>
