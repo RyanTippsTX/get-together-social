@@ -33,31 +33,14 @@ export default function Layout({
       </Head>
       <header className="bg-rose-400">
         <User />
-        <h2>Universal Header</h2>
-        {home ? (
-          <>
-            <h1>Welcome to {siteTitle}</h1>
-          </>
-        ) : (
-          <>
-            <h2>
-              <Link href="/">
-                <a>{siteTitle}</a>
-              </Link>
-            </h2>
-          </>
-        )}
+        <h2>
+          <Link href="/">
+            <a className="font-extrabold">{siteTitle}</a>
+          </Link>
+        </h2>
       </header>
       <main className="bg-slate-100">{children}</main>
       <footer className="bg-rose-400">
-        <h2>Universal footer</h2>
-        {/* {!home && (
-          <div>
-            <Link href="/">
-              <a>← Back to home</a>
-            </Link>
-          </div>
-        )} */}
         <SiteMap />
       </footer>
     </>

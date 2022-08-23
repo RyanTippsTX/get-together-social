@@ -5,7 +5,7 @@ import Link from 'next/link';
 const pagePaths = new Map<string, string>([
   ['/', 'Home'],
   ['/about', 'About'],
-  ['/dashboard', 'Host Dashboard'], // consider renaming?
+  ['/dashboard', 'Dashboard'],
   ['/new', 'Create New Event Landing Page'], // omit in productin
   ['/1234567', 'Sample Event Landing Page'], // omit in production
 ]);
@@ -15,7 +15,7 @@ pagePaths.forEach((title, path) => {
   navElements.push(
     <div key={path}>
       <Link href={path}>
-        <a>{title}</a>
+        <a className="underline">{title}</a>
       </Link>
     </div>
   );
@@ -24,7 +24,7 @@ pagePaths.forEach((title, path) => {
 export default function SiteMap() {
   return (
     <nav>
-      Site Map:
+      <p className="font-bold">Site Map:</p>
       {navElements}
     </nav>
   );
