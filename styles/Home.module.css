@@ -68,7 +68,15 @@
   padding: 0;
   padding-bottom: 2rem;
   line-height: 1.5;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+}
+.underConstructionText {
   font-size: 2rem;
+  text-align: center;
+  display: flex;
+  justify-content: center;
 }
 
 .code {
@@ -127,6 +135,32 @@
   .grid {
     width: 100%;
     flex-direction: column;
+  }
+  .title {
+    font-size: 3rem;
+  }
+  .constructionWorker {
+    font-size: 8rem;
+  }
+
+  .underConstructionText {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .grid {
+    width: 100%;
+    flex-direction: column;
+  }
+  .title {
+    font-size: 2.2rem;
+  }
+  .constructionWorker {
+    font-size: 8rem;
+  }
+  .underConstructionText {
+    font-size: 1rem;
   }
 }
 

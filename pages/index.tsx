@@ -33,12 +33,16 @@ const Home: NextPage = () => {
         </p> */}
 
         <p className={styles.constructionWorker}>{'👷🏻‍♂️'}</p>
-        <p className={styles.underConstruction}>{"⚠️ We're currently under construction! ⚠️"}</p>
+        <div className={styles.underConstruction}>
+          <div className={styles.underConstructionText}>
+            {"⚠️ We're currently under construction! ⚠️"}
+          </div>
+        </div>
 
         <div className={styles.grid}>
           <a href="https://github.com/RyanTippsTX/get-together-social" className={styles.card}>
-            <h2>Source Code &rarr;</h2>
-            <p>Check out our progress on GitHub.</p>
+            <h2>Source Code &rarr;</h2>
+            <p>Check out the progress on GitHub.</p>
           </a>
         </div>
       </main>
