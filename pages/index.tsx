@@ -45,6 +45,14 @@ const Home: NextPage = () => {
             <p>Check out the progress on GitHub.</p>
           </a>
         </div>
+        {/* The following <br/> elements fill space on the page to allow the mobile browsers to hide their menu  */}
+        <div>
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+        </div>
       </main>
 
       {/* <footer className={styles.footer}>
