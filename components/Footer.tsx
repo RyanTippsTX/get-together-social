@@ -5,6 +5,7 @@ import Link from 'next/link';
 const pagePaths = new Map<string, string>([
   ['/', 'Home'],
   ['/about', 'About'],
+  ['/login', 'Host Login'],
   ['/dashboard', 'Dashboard'],
   ['/new', 'Create New Event Landing Page'], // omit in productin
   ['/1234567', 'Sample Event Landing Page'], // omit in production
@@ -15,7 +16,7 @@ pagePaths.forEach((title, path) => {
   navElements.push(
     <div key={path}>
       <Link href={path}>
-        <a className="underline">{title}</a>
+        <a className="link link-hover">{title}</a>
       </Link>
     </div>
   );
@@ -23,9 +24,17 @@ pagePaths.forEach((title, path) => {
 
 export default function SiteMap() {
   return (
-    <nav>
-      <p className="font-bold">Site Map:</p>
-      {navElements}
-    </nav>
+    <footer className="footer bg-neutral text-neutral-content p-10">
+      <div className="container mx-auto">
+        <span className="footer-title">Site Map</span>
+        {navElements}
+      </div>
+      {/* <div>
+        <span className="footer-title">Legal</span>
+        <a className="link link-hover">Terms of use</a>
+        <a className="link link-hover">Privacy policy</a>
+        <a className="link link-hover">Cookie policy</a>
+      </div> */}
+    </footer>
   );
 }

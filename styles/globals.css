@@ -4,7 +4,7 @@
 
 @layer base {
   html {
-    @apply bg-lemonade;
+    @apply bg-gray;
   }
   body {
     /* @apply bg-lemonade; */

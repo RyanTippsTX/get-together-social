@@ -1,29 +1,73 @@
 /** @type {import('tailwindcss').Config} */
+
+const defaultTheme = require('tailwindcss/defaultTheme');
+
+const brandColors = {
+  // https://coolors.co/1c1c1c-ededed-fdfdfd-ffdf3d-388201-fff7a3-ffe0eb
+  black: '#1C1C1C',
+  gray: '#EDEDED',
+  white: '#FDFDFD', // true white
+  lemon: '#FFDF3D',
+  'lemon-leaf': '#388201',
+  lemonade: '#FFF7A3',
+  'pink-lemonade': '#FFE0EB',
+};
+
 module.exports = {
   content: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
   theme: {
-    // screens: {
-    // sm: '640px',
-    // md: '768px',
-    // lg: '1024px',
-    // xl: '1280px',
-    // '2xl': '1536px',
-    // },
+    screens: {
+      // xs: '400px',
+      sm: '640px',
+      md: '768px',
+      // lg: '1024px',
+      // xl: '1280px',
+      // '2xl': '1536px',
+    },
     extend: {
       fontFamily: {
-        // sans: ['Proxima Nova', ...defaultTheme.fontFamily.sans],
+        sans: ['Inter var', ...defaultTheme.fontFamily.sans], // uniform look on all platforms
       },
-      colors: {
-        // https://coolors.co/1c1c1c-ededed-fdfdfd-ffdf3d-388201-fff7a3-ffe0eb
-        black: '#1C1C1C',
-        gray: '#EDEDED',
-        white: '#FDFDFD', // true white
-        lemon: '#FFDF3D',
-        'lemon-leaf': '#388201',
-        lemonade: '#FFF7A3',
-        'pink-lemonade': '#FFE0EB',
-      },
+      colors: brandColors,
     },
   },
-  plugins: [],
+  plugins: [require('daisyui')],
+  daisyui: {
+    // daisyUI config (optional)
+    // https://daisyui.com/docs/config/
+    // styled: true,
+    // themes: true,
+    // themes: ['cupcake', 'dark', 'cmyk'],
+    themes: [
+      'light',
+      'lemonade',
+      'cupcake',
+      {
+        mytheme: {
+          primary: brandColors.lemon,
+          secondary: brandColors.lemonade,
+          accent: brandColors['lemon-leaf'],
+          neutral: brandColors.lemonade,
+          'base-100': '#F5F6F9',
+          info: '#537DDF',
+          success: '#1C6E51',
+          warning: '#F4B267',
+          error: '#E9736D',
+
+          '--rounded-box': '1rem', // border radius rounded-box utility class, used in card and other large boxes
+          '--rounded-btn': '0.5rem', // border radius rounded-btn utility class, used in buttons and similar element
+          '--rounded-badge': '1.9rem', // border radius rounded-badge utility class, used in badges and similar
+          '--animation-btn': '0.25s', // duration of animation when you click on button
+          '--animation-input': '0.2s', // duration of animation for inputs like checkbox, toggle, radio, etc
+          '--btn-text-case': 'uppercase', // set default text transform for buttons
+          '--btn-focus-scale': '0.95', // scale transform of button when you focus on it
+          '--border-btn': '1px', // border width of buttons
+          '--tab-border': '1px', // border width of tabs
+          '--tab-radius': '0.5rem', // border radius of tabs
+        },
+      },
+    ],
+    // utils: true, // only need if using daisy util classes
+    // logs: true,
+  },
 };

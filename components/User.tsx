@@ -68,7 +68,7 @@ export default function User() {
   }
 
   return (
-    <div className="bg-lime-200">
+    <div>
       {user ? (
         <>
           <h1>User: {user.email}</h1>
@@ -96,29 +96,51 @@ export default function User() {
             </button>
           </form>
           <br /> */}
-          <h1 className="font-bold">Sign Up / Sign In Using a Link Sent to Your Email Inbox:</h1>
-          <form onSubmit={signInWithEmail}>
-            <label htmlFor="email">Email:</label>
-            <input type="email" id="email" name="email" />
-            <button
-              className="rounded bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700"
-              type="submit"
-            >
-              Send Magic Link
-            </button>
-          </form>
 
-          <h1 className="font-bold">- OR -</h1>
+          <div className="flex w-full flex-col items-center border-opacity-50">
+            <div className="card bg-base-100 m-4 max-w-lg shadow-xl">
+              <form className="card-body" onSubmit={signInWithEmail}>
+                <h2 className="card-title">{'Sign In with Magic Link'}</h2>
+                <p>{'No SignUp Required.'}</p>
 
-          <h1 className="font-bold">Sign In Using Google:</h1>
-          <form onSubmit={signInWithGoogle}>
-            <button
-              className="rounded bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700"
-              type="submit"
-            >
-              Sign In With Google
-            </button>
-          </form>
+                <div className="form-control w-full">
+                  <label className="label" htmlFor="email">
+                    <span className="label-text">Your Email</span>
+                  </label>
+                  <label className="input-group">
+                    <span>Email</span>
+                    <input
+                      className="input input-bordered w-full"
+                      type="email"
+                      id="email"
+                      placeholder="elon@tesla.com"
+                      name="email"
+                    />
+                  </label>
+                </div>
+
+                <div className="card-actions justify-center">
+                  <button className="btn btn-primary" type="submit">
+                    Send Magic Link
+                  </button>
+                </div>
+              </form>
+
+              <div className="divider my-0 mx-8 text-zinc-400">OR</div>
+
+              <form className="card-body" onSubmit={signInWithEmail}>
+                <h2 className="card-title">{'Sign In with Google'}</h2>
+                <p>{'Requires a Google account.'}</p>
+                <div className="card-actions justify-center">
+                  <form onSubmit={signInWithGoogle}>
+                    <button className="btn btn-primary" type="submit">
+                      Sign In With Google
+                    </button>
+                  </form>
+                </div>
+              </form>
+            </div>
+          </div>
         </>
       )}
     </div>
