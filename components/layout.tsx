@@ -31,7 +31,7 @@ export default function Layout({
           href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🥳</text></svg>"
         />
       </Head>
-      <header className="bg-rose-400">
+      <header className="bg-pink-lemonade">
         <User />
         <h2>
           <Link href="/">
@@ -40,7 +40,7 @@ export default function Layout({
         </h2>
       </header>
       <main className="bg-slate-100">{children}</main>
-      <footer className="bg-rose-400">
+      <footer className="bg-pink-lemonade">
         <SiteMap />
       </footer>
     </>
