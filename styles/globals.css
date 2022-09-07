@@ -5,6 +5,7 @@
 @layer base {
   html {
     @apply bg-gray;
+    @apply text-[10pt];
   }
   body {
     /* @apply bg-lemonade; */

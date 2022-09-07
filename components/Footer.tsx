@@ -24,7 +24,7 @@ pagePaths.forEach((title, path) => {
 
 export default function SiteMap() {
   return (
-    <footer className="footer bg-neutral text-neutral-content p-10">
+    <div className="footer text-pink-lemonade bg-zinc-800 p-10">
       <div className="container mx-auto">
         <span className="footer-title">Site Map</span>
         {navElements}
@@ -35,6 +35,6 @@ export default function SiteMap() {
         <a className="link link-hover">Privacy policy</a>
         <a className="link link-hover">Cookie policy</a>
       </div> */}
-    </footer>
+    </div>
   );
 }
