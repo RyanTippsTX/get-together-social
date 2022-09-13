@@ -7,6 +7,7 @@ const pagePaths = new Map<string, string>([
   ['/about', 'About'],
   ['/login', 'Host Login'],
   ['/dashboard', 'Dashboard'],
+  ['/stats', 'Site Statistics'],
   ['/new', 'Create New Event Landing Page'], // omit in productin
   ['/1234567', 'Sample Event Landing Page'], // omit in production
 ]);
