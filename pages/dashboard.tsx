@@ -27,3 +27,12 @@ export default function Dashboard() {
     </Layout>
   );
 }
+
+// const getNotes = async () => {
+//   const { data, error } = await supabase.from('notes').select('*');
+//   return; // need to configure this properly
+// };
+// const postNote = async () => {
+//   const { data, error } = await supabase.from('notes').insert([{ id: 41, content: 'hello' }]);
+//   return; // need to configure this properly
+// };
