@@ -1,14 +1,11 @@
-import Link from 'next/link';
-import { siteTitle } from './layout';
+import Brand from './Brand';
 
 export function Navbar() {
   return (
     <div className="navbar bg-white">
       <div className="container mx-auto">
         <div className="flex-1">
-          <Link href="/">
-            <a className="text-xl font-bold tracking-tight">{siteTitle}</a>
-          </Link>
+          <Brand />
         </div>
         <div className="flex-none">
           <div className="dropdown dropdown-end">
