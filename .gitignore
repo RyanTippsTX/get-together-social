@@ -8,6 +8,9 @@
 # testing
 /coverage
 
+# supabase CLI
+/supabase
+
 # next.js
 /.next/
 /out/
