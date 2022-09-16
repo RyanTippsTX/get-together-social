@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import Layout from '../components/layout';
 import supabase from '../lib/supabase';
 
-export default function About() {
+export default function Dashboard() {
   // const { data: hosts, error } = await supabase.from('hosts').select('*');
   // const { data: events } = await supabase.from('events').select('*');
   // const { data: guests } = await supabase.from('guests').select('*');
