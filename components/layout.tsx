@@ -33,7 +33,7 @@ export default function Layout({
       <header>
         <Navbar />
       </header>
-      <main className="bg-gray min-h-[35rem] sm:min-h-[45rem]">
+      <main className="bg-gray xs:min-h-[45rem] min-h-[35rem]">
         <div className="container mx-auto">{children}</div>
       </main>
       <footer>
