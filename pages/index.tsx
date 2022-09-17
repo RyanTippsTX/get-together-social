@@ -1,6 +1,5 @@
 import Layout from '../components/layout';
 import { siteTitle } from '../components/layout';
-import TextTransition, { presets } from 'react-text-transition';
 import { useState, useEffect } from 'react';
 
 export default function Home() {
