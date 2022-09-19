@@ -1,6 +1,7 @@
 import Layout from '../components/layout';
 import { siteTitle } from '../components/layout';
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 
 export default function Home() {
   return (
@@ -11,6 +12,7 @@ export default function Home() {
 }
 
 function Hero() {
+  const router = useRouter();
   return (
     <div className="hero xs:h-[40rem] h-[30rem] shrink">
       <div className="hero-content text-center">
@@ -36,7 +38,24 @@ function Hero() {
             />
           </h2>
           {/* <p className="py-6"></p> */}
-          <button className="btn btn-primary">Get Started</button>
+          <div className="space-x-4">
+            <button
+              className="btn btn-primary"
+              onClick={() => {
+                router.push('/login');
+              }}
+            >
+              Get Started
+            </button>
+            <button
+              className="btn btn-outline text-dark"
+              onClick={() => {
+                router.push('/d230d1f7-f0e3-4ca6-8161-ecd4acdea251/Halloween-Party');
+              }}
+            >
+              See Demo
+            </button>
+          </div>
         </div>
       </div>
     </div>
