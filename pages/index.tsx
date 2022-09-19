@@ -45,15 +45,17 @@ function Hero() {
 function TextShuffle({ phrases }: { phrases: string[] }) {
   const [index, setIndex] = useState(0);
   useEffect(() => {
-    const intervalId = setInterval(() => setIndex((index) => index + 1), 2000);
+    const intervalId = setInterval(() => setIndex((index) => index + 1), 1500);
     return () => clearTimeout(intervalId);
   }, []);
 
   return (
-    <span className="relative ">
+    <span key={index} className="relative">
       <span className="relative"> ________________</span>
       <span
-        className="absolute -inset-1 block -skew-x-2 -skew-y-2 font-bold text-pink-500"
+        className="animate-drop absolute -inset-1 block font-bold text-fuchsia-600"
+        // className="absolute -inset-1 block font-bold text-fuchsia-600"
+        // className="absolute -inset-1 block -skew-x-2 -skew-y-2 font-bold text-fuchsia-600"
         aria-hidden="true"
       >
         {phrases[index % phrases.length]}

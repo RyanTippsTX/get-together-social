@@ -5,7 +5,9 @@ const defaultTheme = require('tailwindcss/defaultTheme');
 const brandColors = {
   // https://coolors.co/1c1c1c-ededed-fdfdfd-ffdf3d-388201-fff7a3-ffe0eb
   black: '#1C1C1C',
+  dark: '#27272A', // bg-zinc-800
   gray: '#EDEDED',
+  light: '#EDEDED', // a very light gray, just enough to contrast with white
   white: '#FDFDFD', // true white
   lemon: '#FFDF3D',
   'lemon-leaf': '#388201',
@@ -29,6 +31,23 @@ module.exports = {
         sans: ['Inter var', ...defaultTheme.fontFamily.sans], // uniform look on all platforms
       },
       colors: brandColors,
+      keyframes: {
+        drop: {
+          '0%': { transform: 'translateY(-25%) scale(1.1);' },
+          '25%, 100%': { transform: 'translateY(0%)' },
+          // '0%, 100%' {
+          //   transform: translateY(-25%);
+          //   animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+          // }
+          // 50% {
+          //   transform: translateY(0);
+          //   animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+          // }
+        },
+      },
+      animation: {
+        drop: 'drop 1s ',
+      },
     },
   },
   plugins: [require('daisyui')],
