@@ -26,6 +26,7 @@ function Hero() {
                 'get-together',
                 'Friendsgiving',
                 'office party',
+                'game night',
                 'family reunion',
                 'barbeque',
                 'open mic night',
