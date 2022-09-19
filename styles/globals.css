@@ -4,7 +4,7 @@
 
 @layer base {
   html {
-    @apply bg-gray;
+    @apply bg-white;
     @apply text-[10pt];
   }
   body {

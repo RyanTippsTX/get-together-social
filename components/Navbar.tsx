@@ -2,7 +2,7 @@ import Brand from './Brand';
 
 export function Navbar() {
   return (
-    <div className="navbar bg-white">
+    <div className="navbar border-b-[1px] border-zinc-200 bg-white">
       <div className="container mx-auto">
         <div className="flex-1">
           <Brand />

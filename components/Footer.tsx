@@ -25,7 +25,7 @@ pagePaths.forEach((title, path) => {
 
 export default function SiteMap() {
   return (
-    <div className="footer text-pink-lemonade bg-zinc-800 p-10">
+    <div className="footer bg-dark p-10 text-zinc-300">
       <div className="container mx-auto">
         <span className="footer-title">Site Map</span>
         {navElements}
