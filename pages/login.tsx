@@ -1,4 +1,4 @@
-import User from '../components/User';
+import Auth from '../components/Auth';
 import Layout from '../components/layout';
 
 export default function Login() {
@@ -6,7 +6,7 @@ export default function Login() {
     <Layout home>
       {/* <h1 className="text-3xl font-bold">Login or SignUp</h1> */}
 
-      <User />
+      <Auth />
     </Layout>
   );
 }
