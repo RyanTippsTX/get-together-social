@@ -2,7 +2,7 @@ import { FormEvent, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import supabase from '../lib/supabase';
 
-export default function User() {
+export default function AuthForm() {
   const [user, setUser] = useState<any>(undefined);
   const router = useRouter();
   useEffect(() => {
