@@ -5,6 +5,8 @@ if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_A
   throw Error('Missing Supabase environment variable(s)');
 }
 
+console.log('new Supabase client created');
+
 // Create a single supabase client for interacting with your database
 export default createClient<Database>(
   process.env.NEXT_PUBLIC_SUPABASE_URL,

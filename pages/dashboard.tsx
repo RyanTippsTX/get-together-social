@@ -3,39 +3,16 @@ import Layout from '../components/layout';
 import supabase from '../lib/supabase';
 import { Database } from '../lib/database.types';
 import Image from 'next/image';
+import { useAuth } from '../lib/auth';
 
 type Event = Database['public']['Tables']['events']['Row'];
 
 export default function Dashboard() {
-  // const { data: hosts, error } = await supabase.from('hosts').select('*');
-  // const { data: events } = await supabase.from('events').select('*');
-  // const { data: guests } = await supabase.from('guests').select('*');
-  // const { data: contributions } = await supabase.from('contributions').select('*');
-
-  const [data, setData] = useState<any>(null);
-  const [user, setUser] = useState<any>(null);
+  const { session, user, signOut, signInWithEmail, signInWithGoogle } = useAuth();
   const [profile, setProfile] = useState<any>(null);
   const [events, setEvents] = useState<any>(null);
-  // const [events, setEvents] = useState<any>(null);
 
-  useEffect(() => {
-    (async () => {
-      const { data, error } = await supabase.from('hosts').select('*');
-      setData(data);
-      return;
-    })();
-  }, []);
-
-  useEffect(() => {
-    (async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      setUser(user);
-      return;
-    })();
-  }, []);
-
+  // fetch profile data
   useEffect(() => {
     (async () => {
       if (user) {
@@ -45,20 +22,27 @@ export default function Dashboard() {
           .eq('host_id', user.id)
           .single();
         setProfile(data);
+      } else {
+        setProfile(null);
       }
       return;
     })();
   }, [user]);
 
+  // fetch events
   useEffect(() => {
     (async () => {
       if (user) {
         const { data, error } = await supabase.from('events').select('*').eq('host_id', user.id);
         setEvents(data);
+      } else {
+        setEvents(null);
       }
       return;
     })();
   }, [user]);
+
+  console.log('user is: ', user);
 
   return (
     <Layout>
@@ -81,6 +65,19 @@ export default function Dashboard() {
           <br />
         </>
       )}
+
+      {user && (
+        <>
+          <h1>User: {user.email}</h1>
+          <button
+            onClick={signOut}
+            className="rounded bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700"
+          >
+            Sign Out
+          </button>
+        </>
+      )}
+
       <h1 className="text-xl font-bold">Your Events: </h1>
       {/* <pre>{JSON.stringify(events, null, 2)}</pre> */}
       {events && (

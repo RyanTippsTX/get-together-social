@@ -1,4 +1,5 @@
 import Brand from './Brand';
+import { useAuth } from '../lib/auth';
 
 export function Navbar() {
   return (
