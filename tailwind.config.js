@@ -31,6 +31,9 @@ module.exports = {
         sans: ['Inter var', ...defaultTheme.fontFamily.sans], // uniform look on all platforms
       },
       colors: brandColors,
+      boxShadow: {
+        custom: '0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1)',
+      },
       keyframes: {
         drop: {
           '0%': { transform: 'translateY(-25%) scale(1.1);' },

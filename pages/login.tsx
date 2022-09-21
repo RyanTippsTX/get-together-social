@@ -22,7 +22,7 @@ export default function Login() {
 
   const card = (
     <div className="flex w-full flex-col items-center border-opacity-50 px-4 pb-6">
-      <div className="card bg-base-100 m-4 w-full max-w-sm shadow-xl">
+      <div className="card bg-base-100 m-4 w-full max-w-sm shadow">
         <form className="card-body" onSubmit={signInWithEmail}>
           <h2 className="card-title">{'Sign in with an Email Link'}</h2>
           <p>{'No password required.'}</p>
