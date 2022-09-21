@@ -58,16 +58,17 @@ module.exports = {
     // themes: true,
     // themes: ['cupcake', 'dark', 'cmyk'],
     themes: [
-      'light',
-      'lemonade',
-      'cupcake',
+      // 'light',
+      // 'lemonade',
+      // 'cupcake',
       {
         mytheme: {
           primary: brandColors.lemon,
           secondary: brandColors.lemonade,
           accent: brandColors['lemon-leaf'],
           neutral: brandColors['pink-lemonade'],
-          'base-100': '#F5F6F9',
+          // 'base-100': '#F5F6F9',
+          'base-100': brandColors.white,
           info: '#537DDF',
           success: '#1C6E51',
           warning: '#F4B267',
