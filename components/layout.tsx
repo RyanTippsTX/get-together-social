@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import Footer from './Footer';
+import { SiteMap } from './SiteMap';
 import { Navbar } from './Navbar';
 
 export const siteTitle = 'GetTogether.social';
@@ -37,7 +37,7 @@ export default function Layout({
         <div className="container mx-auto">{children}</div>
       </main>
       <footer>
-        <Footer />
+        <SiteMap />
       </footer>
     </>
   );

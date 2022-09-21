@@ -63,7 +63,6 @@ export default function Dashboard() {
           <br />
         </>
       )}
-
       {user && (
         <>
           <h1>User: {user.email}</h1>
@@ -75,7 +74,6 @@ export default function Dashboard() {
           </button>
         </>
       )}
-
       <h1 className="text-xl font-bold">Your Events: </h1>
       {/* <pre>{JSON.stringify(events, null, 2)}</pre> */}
       {events && (

@@ -2,7 +2,7 @@
 import { useRouter } from 'next/router';
 import { useAuth } from '../lib/auth';
 
-export default function AuthForm() {
+export function AuthForm() {
   const { session, user, signOut, signInWithEmail, signInWithGoogle } = useAuth();
 
   const router = useRouter();

@@ -23,7 +23,7 @@ pagePaths.forEach((title, path) => {
   );
 });
 
-export default function SiteMap() {
+export function SiteMap() {
   return (
     <div className="footer bg-dark p-10 text-zinc-300">
       <div className="container mx-auto">
