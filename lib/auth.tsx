@@ -1,41 +1,50 @@
 import { createContext, useContext, useEffect, useState, FormEvent } from 'react';
 import { useRouter } from 'next/router';
-import { Session } from 'inspector';
+import supabase from './supabase';
+import { Session, User } from '@supabase/supabase-js';
 
-export const AuthContext = createContext(null);
+interface AuthContextInterface {
+  session: Session | null;
+  user: User | null;
+  loading: boolean;
+  signOut: Function;
+  signInWithGoogle: Function;
+  signInWithEmail: Function;
+}
+export const AuthContext = createContext<AuthContextInterface | null>(null);
 
-export function AuthProvider({ supabase, ...props }: any) {
-  const [session, setSession] = useState(null);
-  const [user, setUser] = useState(null);
+export function AuthProvider({ ...props }) {
+  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    console.log('loading: ', loading);
-  }, [loading]);
+  // useEffect(() => {
+  //   console.log('loading: ', loading);
+  // }, [loading]);
+
   useEffect(() => {
     (async () => {
       // get initial session
-      const { data: activeSession, error } = await supabase.auth.getSession();
-      // console.log(activeSession);
-      setSession(activeSession);
-      setUser(activeSession?.user ?? null);
+      const { data, error } = await supabase.auth.getSession();
+      // console.log('initial session loaded: ', data.session);
+      setSession(data.session);
+      setUser(data.session?.user ?? null);
       setLoading(false);
 
       // supabase updates session on future auth state changes
-      const { data: authListener } = supabase.auth.onAuthStateChange(
-        (event: string, session: any) => {
-          setSession(session);
-          setUser(session?.user ?? null);
-          console.log('supabase updated Auth state');
-        }
-      );
+      supabase.auth.onAuthStateChange((event: string, session: any) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+        // console.log('supabase updated Auth state');
+      });
 
       // housekeeping
-      return () => {
-        authListener?.unsubscribe();
-      };
+      // return () => {
+      //   // no action needed, Supabase uses channels instead of subscriptions
+      //   // no longer need to unsubscribe from Auth Listener
+      // };
     })();
-  }, [supabase.auth]);
+  }, []);
 
   const router = useRouter();
 
@@ -91,6 +100,7 @@ export function AuthProvider({ supabase, ...props }: any) {
         // provides auth state & auth mutation functions
         session,
         user,
+        loading,
         signOut,
         signInWithGoogle,
         signInWithEmail,

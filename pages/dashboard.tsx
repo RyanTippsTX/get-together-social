@@ -42,8 +42,6 @@ export default function Dashboard() {
     })();
   }, [user]);
 
-  console.log('user is: ', user);
-
   return (
     <Layout>
       <h1 className="text-3xl font-bold">User Dashboard</h1>
