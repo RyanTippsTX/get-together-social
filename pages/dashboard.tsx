@@ -4,30 +4,22 @@ import supabase from '../lib/supabase';
 import { Database } from '../lib/database.types';
 import Image from 'next/image';
 import { useAuth } from '../lib/auth';
+import { useProfile } from '../lib/profile';
 
 type Event = Database['public']['Tables']['events']['Row'];
 
 export default function Dashboard() {
-  const { session, user, signOut, signInWithEmail, signInWithGoogle } = useAuth();
-  const [profile, setProfile] = useState<any>(null);
-  const [events, setEvents] = useState<any>(null);
+  const {
+    session,
+    user,
+    loading: sessionLoading,
+    signOut,
+    signInWithEmail,
+    signInWithGoogle,
+  } = useAuth();
+  const { profile, loading: profileLoading } = useProfile();
 
-  // fetch profile data
-  useEffect(() => {
-    (async () => {
-      if (user) {
-        const { data, error } = await supabase
-          .from('hosts')
-          .select('*')
-          .eq('host_id', user.id)
-          .single();
-        setProfile(data);
-      } else {
-        setProfile(null);
-      }
-      return;
-    })();
-  }, [user]);
+  const [events, setEvents] = useState<any>(null);
 
   // fetch events
   useEffect(() => {
