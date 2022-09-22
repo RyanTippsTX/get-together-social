@@ -92,6 +92,6 @@ module.exports = {
     ],
     base: false,
     // utils: true, // only need if using daisy util classes
-    // logs: true,
+    logs: false,
   },
 };
