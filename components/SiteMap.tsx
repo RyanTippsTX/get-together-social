@@ -9,7 +9,7 @@ const pagePaths = new Map<string, string>([
   ['/dashboard', 'Dashboard'],
   ['/stats', 'Site Statistics'],
   ['/new', 'Create New Event Landing Page'], // omit in productin
-  ['/1234567', 'Sample Event Landing Page'], // omit in production
+  ['/1234567/Dunder-Mifflin-Christmas-Party', 'Sample Event Landing Page'], // omit in production
 ]);
 
 const navElements: React.ReactElement[] = [];
