@@ -24,7 +24,13 @@ export function Navbar() {
   const navRight = (
     <div className="flex-none">
       <OptionsButton />
-      <Avatar avatarUrl={profile?.avatar_url} displayName={profile?.display_name} />
+      {user && (
+        <Avatar
+          profileLoading
+          displayName={profile?.display_name}
+          avatarUrl={profile?.avatar_url}
+        />
+      )}
     </div>
   );
 

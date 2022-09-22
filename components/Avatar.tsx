@@ -1,15 +1,24 @@
 import Image from 'next/image';
+import { shimmer, toBase64 } from '../lib/image';
 import { getInitials } from '../lib/initials';
 
 export function Avatar({
+  profileLoading,
   displayName,
   avatarUrl,
 }: {
+  profileLoading: boolean;
   displayName: string | undefined;
   avatarUrl: string | undefined;
 }) {
+  if (!displayName && !profileLoading) {
+    // this means the component was rendered before user data was available ...
+    console.error('Avatar is being rendered withoput a display name');
+  }
+
+  const blurDataURL = `data:image/svg+xml;base64,${toBase64(shimmer(150, 150))}`;
   // normal Avatar
-  if (avatarUrl) {
+  if (avatarUrl || profileLoading) {
     return (
       <div className="dropdown dropdown-end">
         <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
@@ -18,8 +27,10 @@ export function Avatar({
               layout="responsive"
               width="150"
               height="150"
-              src={avatarUrl} // avoid abusing GitHub's image hosting
+              src={avatarUrl || blurDataURL} // this works but does not blur
               alt={'picture of ' + displayName}
+              placeholder="blur"
+              blurDataURL={blurDataURL}
             />
           </div>
         </label>
