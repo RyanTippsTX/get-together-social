@@ -2,6 +2,7 @@ import supabase from '../lib/supabase';
 import { Database } from '../lib/database.types';
 import Layout from '../components/layout';
 import { useState, useEffect } from 'react';
+import { useAuth } from '../lib/auth';
 
 export async function getServerSideProps(context: { params: { slug: string[] } }) {
   const { slug } = context.params;
@@ -26,10 +27,6 @@ export default function EventPage({
 }: {
   event: Database['public']['Tables']['events']['Row'];
 }) {
-  const [contributions, setContributions] = useState<
-    Database['public']['Tables']['contributions']['Row'][] | undefined
-  >(undefined);
-
   // console.log(event);
   const {
     event_id,
@@ -47,6 +44,40 @@ export default function EventPage({
     url_code,
     url_string,
   } = event;
+
+  const [contributions, setContributions] = useState<
+    Database['public']['Tables']['contributions']['Row'][] | undefined
+  >(undefined);
+  const [analyticsSent, setAnalyticsSent] = useState<boolean>(false);
+
+  const { session, user, loading, signOut, signInWithEmail, signInWithGoogle } = useAuth();
+
+  // log page visit only once
+  useEffect(() => {
+    (async () => {
+      if (loading) return;
+      if (analyticsSent) return;
+      const { data, error } = await supabase
+        .from('page_visits')
+        .insert([{ event_id, user_is_host: user?.id == host_id }]);
+      setAnalyticsSent(true);
+      console.log('site visit logged for ', user?.email || user?.id || 'guest');
+    })();
+  }, [loading, user, event_id, host_id, analyticsSent]);
+
+  // fetch contributions if applicable
+  useEffect(() => {
+    (async () => {
+      if (event.contributions_enabled) {
+        const { data, error } = await supabase
+          .from('contributions')
+          .select('*, guests( display_name )')
+          .eq('event_id', event.event_id)
+          .order('created_at', { ascending: false });
+        setContributions(data);
+      }
+    })();
+  }, [event]);
 
   useEffect(() => {
     (async () => {
