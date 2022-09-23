@@ -1,6 +1,6 @@
 export function OptionsButton() {
   return (
-    <div className="dropdown dropdown-end">
+    <div className="dropdown dropdown-end flex">
       <div tabIndex={0} className="btn btn-square btn-ghost">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -19,7 +19,7 @@ export function OptionsButton() {
 
       <ul
         tabIndex={0}
-        className="menu menu-compact dropdown-content rounded-box mt-3 w-auto bg-white p-2 shadow"
+        className="menu menu-compact dropdown-content rounded-box absolute top-full right-0 mt-3 w-auto bg-white p-2 shadow"
       >
         <li>
           <a className="justify-between">

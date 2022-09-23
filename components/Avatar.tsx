@@ -21,7 +21,7 @@ export function Avatar({
   if (avatarUrl || profileLoading) {
     return (
       <div className="dropdown dropdown-end flex">
-        <label tabIndex={0} className="btn btn-ghost btn-circle avatar inline-flex">
+        <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
           <div className="w-10 rounded-full">
             <Image
               layout="responsive"
@@ -36,7 +36,7 @@ export function Avatar({
         </label>
         <ul
           tabIndex={0}
-          className="menu menu-compact dropdown-content bg-base-100 rounded-box mt-3 w-52 p-2 shadow"
+          className="menu menu-compact dropdown-content rounded-box absolute top-full right-0 mt-3 w-auto bg-white p-2 shadow"
         >
           <li>
             <a className="justify-between">
