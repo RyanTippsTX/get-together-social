@@ -3,6 +3,8 @@ import { Database } from '../lib/database.types';
 import Layout from '../components/layout';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../lib/auth';
+import Image from 'next/image';
+import { shimmer, toBase64 } from '../lib/image';
 
 export async function getServerSideProps(context: { params: { slug: string[] } }) {
   const { slug } = context.params;
@@ -97,7 +99,15 @@ export default function EventPage({
       <div className="mx-2 overflow-x-clip">
         {/* 400 x 225 is a good */}
         <figure className="flex flex-col  items-center">
-          <img src="https://placeimg.com/400/225/arch" alt="Shoes" />
+          <Image
+            // layout="responsive"
+            width="400"
+            height="225"
+            src={'https://placeimg.com/400/225/arch'}
+            alt={'event photo for ' + title}
+            placeholder="blur"
+            blurDataURL={`data:image/svg+xml;base64,${toBase64(shimmer(400, 225))}`}
+          />
         </figure>
         <h1 className="text-dark pt-4 text-3xl font-bold tracking-tight sm:text-4xl ">{title}</h1>
 
