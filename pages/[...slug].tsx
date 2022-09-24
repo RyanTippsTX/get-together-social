@@ -6,16 +6,26 @@ import { useAuth } from '../lib/auth';
 import Image from 'next/image';
 import { shimmer, toBase64 } from '../lib/image';
 
+const getEvent = async (url_code: string) => {
+  return await supabase
+    .from('events')
+    .select('*, hosts (*)')
+    .eq('url_code', url_code)
+    // .eq('url_string', url_string.toLowerCase())  // omit for now
+    .single();
+};
+
+type Hosts = Database['public']['Tables']['hosts']['Row'];
+type EventResponse = Awaited<ReturnType<typeof getEvent>>;
+type EventResponseSuccess = EventResponse['data'] & {
+  hosts: Hosts;
+};
+
 export async function getServerSideProps(context: { params: { slug: string[] } }) {
   const { slug } = context.params;
   const [url_code, url_string] = slug;
 
-  const { data: event, error } = await supabase
-    .from('events')
-    .select('*')
-    .eq('url_code', url_code)
-    // .eq('url_string', url_string.toLowerCase())  // omit for now
-    .single();
+  const { data: event, error } = await getEvent(url_code);
 
   if (!event) return { notFound: true }; // redirect 404
 
@@ -27,7 +37,8 @@ export async function getServerSideProps(context: { params: { slug: string[] } }
 export default function EventPage({
   event,
 }: {
-  event: Database['public']['Tables']['events']['Row'];
+  // event: Database['public']['Tables']['events']['Row'];
+  event: EventResponseSuccess;
 }) {
   // console.log(event);
   const {
@@ -45,7 +56,10 @@ export default function EventPage({
     contributions_custom_title,
     url_code,
     url_string,
+    hosts,
   } = event;
+
+  const { avatar_url, display_name } = hosts;
 
   const [contributions, setContributions] = useState<
     Database['public']['Tables']['contributions']['Row'][] | undefined
