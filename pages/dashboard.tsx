@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
 import Layout from '../components/layout';
 import supabase from '../lib/supabase';
-import { Database } from '../lib/database.types';
 import Image from 'next/image';
 import { useAuth } from '../lib/auth';
 import { useProfile } from '../lib/profile';
-
-type Event = Database['public']['Tables']['events']['Row'];
+import { getEvents } from '../models/models';
+import { Event, Events } from '../models/models.types';
 
 export default function Dashboard() {
   const {
@@ -19,16 +18,16 @@ export default function Dashboard() {
   } = useAuth();
   const { profile, loading: profileLoading } = useProfile();
 
-  const [events, setEvents] = useState<any>(null);
+  const [events, setEvents] = useState<Events | undefined>(undefined);
 
   // fetch events
   useEffect(() => {
     (async () => {
       if (user) {
-        const { data, error } = await supabase.from('events').select('*').eq('host_id', user.id);
-        setEvents(data);
+        const { data, error } = await getEvents(user.id);
+        setEvents(data as Events);
       } else {
-        setEvents(null);
+        setEvents(undefined);
       }
       return;
     })();
@@ -69,29 +68,51 @@ export default function Dashboard() {
       <h1 className="text-xl font-bold">Your Events: </h1>
       {/* <pre>{JSON.stringify(events, null, 2)}</pre> */}
       {events && (
-        <ul>
-          {events.map((e: Event) => (
-            <li key={e.event_id}>{e.title}</li>
+        <div className="flex flex-wrap gap-6">
+          {events.map((event: Event) => (
+            // <li key={e.event_id}>{e.title}</li>
+            <EventCard key={event.event_id} {...{ event }} />
           ))}
-        </ul>
+        </div>
       )}
-      <EventCard />
+
       <button className="btn btn-primary">create new event</button>
     </Layout>
   );
 }
 
-function EventCard() {
+function EventCard({ event }: { event: Event }) {
+  const {
+    event_id,
+    created_at,
+    host_id,
+    title,
+    date,
+    time,
+    location,
+    photo_url,
+    description,
+    contributions_enabled,
+    contributions_frozen,
+    contributions_custom_title,
+    url_code,
+    url_string,
+    hosts: { avatar_url, display_name },
+  } = event;
+
   return (
-    <div className="card bg-base-100 w-96 shadow-xl">
+    <div className="card bg-base-100 w-96 flex-none shadow-xl">
       <figure>
         <img src="https://placeimg.com/400/225/arch" alt="Shoes" />
       </figure>
       <div className="card-body">
-        <h2 className="card-title">Shoes!</h2>
-        <p>If a dog chews shoes whose shoes does he choose?</p>
+        <h2 className="card-title">{title}</h2>
+        <p>{date}</p>
         <div className="card-actions justify-end">
-          <button className="btn btn-primary">Buy Now</button>
+          <button className="btn btn-primary">Link</button>
+          <button className="btn btn-primary">Edit</button>
+          <button className="btn btn-primary">View</button>
+          <button className="btn btn-warning">Delete</button>
         </div>
       </div>
     </div>
