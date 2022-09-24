@@ -15,10 +15,11 @@ const getEvent = async (url_code: string) => {
     .single();
 };
 
-type Hosts = Database['public']['Tables']['hosts']['Row'];
+type Host = Database['public']['Tables']['hosts']['Row'];
+type Contributions = Database['public']['Tables']['contributions']['Row'][];
 type EventResponse = Awaited<ReturnType<typeof getEvent>>;
 type EventResponseSuccess = EventResponse['data'] & {
-  hosts: Hosts;
+  hosts: Host;
 };
 
 export async function getServerSideProps(context: { params: { slug: string[] } }) {
@@ -34,13 +35,7 @@ export async function getServerSideProps(context: { params: { slug: string[] } }
   };
 }
 
-export default function EventPage({
-  event,
-}: {
-  // event: Database['public']['Tables']['events']['Row'];
-  event: EventResponseSuccess;
-}) {
-  // console.log(event);
+export default function EventPage({ event }: { event: EventResponseSuccess }) {
   const {
     event_id,
     created_at,
@@ -58,14 +53,10 @@ export default function EventPage({
     url_string,
     hosts,
   } = event;
-
   const { avatar_url, display_name } = hosts;
 
-  const [contributions, setContributions] = useState<
-    Database['public']['Tables']['contributions']['Row'][] | undefined
-  >(undefined);
+  const [contributions, setContributions] = useState<Contributions | undefined>(undefined);
   const [analyticsSent, setAnalyticsSent] = useState<boolean>(false);
-
   const { session, user, loading, signOut, signInWithEmail, signInWithGoogle } = useAuth();
 
   // log page visit only once
