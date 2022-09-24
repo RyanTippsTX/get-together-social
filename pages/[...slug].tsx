@@ -123,10 +123,22 @@ export default function EventPage({
             blurDataURL={`data:image/svg+xml;base64,${toBase64(shimmer(400, 225))}`}
           />
         </figure>
-        <h1 className="text-dark pt-4 text-3xl font-bold tracking-tight sm:text-4xl ">{title}</h1>
+        <h1 className="text-dark pt-4 pb-2 text-3xl font-bold tracking-tight sm:text-4xl ">
+          {title}
+        </h1>
 
-        <pre>{JSON.stringify(event, null, 2)}</pre>
-        {contributions && <Contributions {...{ contributions }} />}
+        <div className="pb-2 italic">
+          <p className=" pb-4">{`Hosted by ${display_name}`}</p>
+          <p>{date}</p>
+          {time && <p>{time}</p>}
+          {location && <p>{location}</p>}
+        </div>
+
+        <p>{description}</p>
+
+        {/* <pre>{JSON.stringify(event, null, 2)}</pre> */}
+
+        {contributions_enabled && contributions && <Contributions {...{ contributions }} />}
       </div>
     </Layout>
   );
