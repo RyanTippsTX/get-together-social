@@ -1,7 +1,7 @@
 export function OptionsButton() {
   return (
     <div className="dropdown dropdown-end flex">
-      <div tabIndex={0} className="btn btn btn-square btn-ghost">
+      <div tabIndex={0} className="btn btn-square btn-ghost">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
