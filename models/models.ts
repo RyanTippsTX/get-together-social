@@ -1,5 +1,8 @@
 import supabase from '../lib/supabase';
 
+export async function getEvents(user_id: string) {
+  return await supabase.from('events').select('*, hosts (*)').eq('host_id', user_id);
+}
 export async function getEvent(url_code: string) {
   return await supabase
     .from('events')

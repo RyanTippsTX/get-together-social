@@ -6,6 +6,7 @@ export type Host = Database['public']['Tables']['hosts']['Row'];
 export type Event = Database['public']['Tables']['events']['Row'] & {
   hosts: Host;
 };
+export type Events = Event[];
 
 export type Guest = Database['public']['Tables']['guests']['Row'];
 export type Contribution = Database['public']['Tables']['contributions']['Row'] & {
