@@ -40,19 +40,20 @@ export default function Dashboard() {
       {/* <pre>{JSON.stringify(user, null, 2)}</pre> */}
       {/* <pre>{JSON.stringify(displayName, null, 2)}</pre> */}
       {profile && (
-        <>
+        <div>
           <p>user: {profile.display_name}</p>
-          <Image
-            layout="fixed"
-            width="150"
-            height="150"
-            // placeholder="blur"
-            // blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
-            src={profile.avatar_url} // avoid abusing GitHub's image hosting
-            alt={'picture of ' + profile.display_name}
-          />
-          <br />
-        </>
+          <figure className="relative h-44 w-44">
+            <Image
+              src={profile.avatar_url} // avoid abusing GitHub's image hosting
+              alt={'picture of ' + profile.display_name}
+              layout="fill"
+              objectFit="cover"
+              placeholder="blur"
+              blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
+            />
+            {/* <img src="https://placeimg.com/400/225/arch" alt="Shoes" /> */}
+          </figure>
+        </div>
       )}
       {user && (
         <>
@@ -101,9 +102,17 @@ function EventCard({ event }: { event: Event }) {
   } = event;
 
   return (
-    <div className="card bg-base-100 w-96 flex-none shadow-xl">
-      <figure>
-        <img src="https://placeimg.com/400/225/arch" alt="Shoes" />
+    <div className="card card-compact bg-base-100 w-96 flex-none shadow-xl">
+      <figure className="relative h-40 w-full">
+        <Image
+          src="https://placeimg.com/400/225/arch"
+          alt="Shoes"
+          layout="fill"
+          objectFit="cover"
+          placeholder="blur"
+          blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
+        />
+        {/* <img src="https://placeimg.com/400/225/arch" alt="Shoes" /> */}
       </figure>
       <div className="card-body">
         <h2 className="card-title">{title}</h2>
