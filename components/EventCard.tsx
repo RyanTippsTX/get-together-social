@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { Event } from '../models/models.types';
-import party from '../public/party.jpeg';
+import defaultEventImg from '../public/party.jpeg';
+import defaultNewEventImg from '../public/party.jpeg';
 import { useRouter } from 'next/router';
 
 export function EventCard({ event }: { event: Event }) {
@@ -27,7 +28,8 @@ export function EventCard({ event }: { event: Event }) {
     <div className="card card-compact bg-base-100 h-96 w-80 flex-none shadow-xl">
       <figure className="relative h-48 w-full">
         <Image
-          src="https://placeimg.com/400/225/arch"
+          // src={photo_url || defaultEventImg}
+          src={defaultEventImg}
           alt="Shoes"
           layout="fill"
           objectFit="cover"
@@ -78,7 +80,7 @@ export function EventCardCreate() {
     <div className="card card-compact image-full bg-base-100 h-96 w-80 flex-none shadow-xl">
       <figure className="relative h-full w-full">
         <Image
-          src={party}
+          src={defaultNewEventImg}
           alt="Shoes"
           layout="fill"
           objectFit="cover"
