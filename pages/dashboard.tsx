@@ -11,7 +11,6 @@ import { useRouter } from 'next/router';
 
 export default function Dashboard() {
   const router = useRouter();
-
   const {
     session,
     user,
@@ -38,6 +37,9 @@ export default function Dashboard() {
   }, [user]);
 
   // route to log-in page if not logged in
+  if (!sessionLoading && !user) {
+    router.push('/login');
+  }
 
   return (
     <Layout>
