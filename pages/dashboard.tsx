@@ -6,9 +6,12 @@ import { useAuth } from '../lib/auth';
 import { useProfile } from '../lib/profile';
 import { getEvents } from '../models/models';
 import { Event, Events } from '../models/models.types';
-import { EventCard } from '../components/EventCard';
+import { EventCard, EventCardCreate } from '../components/EventCard';
+import { useRouter } from 'next/router';
 
 export default function Dashboard() {
+  const router = useRouter();
+
   const {
     session,
     user,
@@ -34,52 +37,66 @@ export default function Dashboard() {
     })();
   }, [user]);
 
+  // route to log-in page if not logged in
+
   return (
     <Layout>
-      <div className="mx-2 overflow-x-clip pb-4">
-        <h1 className="text-3xl font-bold">User Dashboard</h1>
+      <div className="px-2 py-4 text-zinc-800">
+        <h1 className="pb-2 text-center text-3xl font-bold tracking-tight">Host Dashboard</h1>
         {/* {data ? <pre>{JSON.stringify(data, null, 2)}</pre> : <p>loading...</p>} */}
         {/* <pre>{JSON.stringify(user, null, 2)}</pre> */}
         {/* <pre>{JSON.stringify(displayName, null, 2)}</pre> */}
-        {profile && (
-          <div>
-            <p>user: {profile.display_name}</p>
-            <figure className="relative h-44 w-44">
-              <Image
-                src={profile.avatar_url} // avoid abusing GitHub's image hosting
-                alt={'picture of ' + profile.display_name}
-                layout="fill"
-                objectFit="cover"
-                placeholder="blur"
-                blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
-              />
-              {/* <img src="https://placeimg.com/400/225/arch" alt="Shoes" /> */}
-            </figure>
+        {user && profile && (
+          <div className="flex flex-1 flex-col items-center gap-2 pb-4">
+            <div className="avatar">
+              <div className="w-40 rounded-full">
+                <figure className="relative h-full w-full">
+                  <Image
+                    src={profile.avatar_url} // avoid abusing GitHub's image hosting
+                    alt={'picture of ' + profile.display_name}
+                    layout="fill"
+                    objectFit="cover"
+                    placeholder="blur"
+                    blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
+                  />
+                  {/* <img src="https://placeimg.com/400/225/arch" alt="Shoes" /> */}
+                </figure>
+              </div>
+            </div>
+
+            <div className="flex flex-1 flex-col items-center">
+              <h1 className="text-2xl font-bold">{profile.display_name}</h1>
+              <h2 className="text-zinc-500">{user.email}</h2>
+            </div>
+            <div className="card-actions mt-2">
+              <button
+                onClick={() => {
+                  router.push('/new');
+                }}
+                className="btn btn-primary"
+              >
+                Create New Event
+              </button>
+              {/* <button onClick={signOut} className="btn btn-primary">
+                Sign Out
+              </button> */}
+            </div>
           </div>
         )}
-        {user && (
-          <>
-            <h1>User: {user.email}</h1>
-            <button
-              onClick={signOut}
-              className="rounded bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700"
-            >
-              Sign Out
-            </button>
-          </>
-        )}
-        <h1 className="text-xl font-bold">Your Events: </h1>
         {/* <pre>{JSON.stringify(events, null, 2)}</pre> */}
         {events && (
-          <div className="flex flex-wrap gap-6">
-            {events.map((event: Event) => (
-              // <li key={e.event_id}>{e.title}</li>
-              <EventCard key={event.event_id} {...{ event }} />
-            ))}
+          <div className="mb-4 py-4 ">
+            {/* <div className="flex items-center justify-center">
+              <h1 className="pb-4 text-3xl font-bold tracking-tight">Your Events</h1>
+            </div> */}
+            <div className="flex flex-wrap place-content-center gap-6">
+              {events.map((event: Event) => (
+                <EventCard key={event.event_id} {...{ event }} />
+              ))}
+              <EventCardCreate />
+            </div>
           </div>
         )}
-
-        <button className="btn btn-primary">create new event</button>
       </div>
     </Layout>
   );
