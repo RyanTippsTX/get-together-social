@@ -163,7 +163,7 @@ const StatItem = ({
       <div className="stat-figure text-pink-500">{children}</div>
       <div className="stat-title">{title}</div>
       <div className="stat-value">{value}</div>
-      <div className="stat-desc">{description}</div>
+      {/* <div className="stat-desc">{description}</div> */}
     </div>
   );
 };
