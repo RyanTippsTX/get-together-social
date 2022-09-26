@@ -44,7 +44,7 @@ export default function Dashboard() {
   return (
     <Layout>
       <div className="px-2 py-4 text-zinc-800">
-        <h1 className="pb-2 text-center text-3xl font-bold tracking-tight">Host Dashboard</h1>
+        {/* <h1 className="pb-2 text-center text-3xl font-bold tracking-tight">Host Dashboard</h1> */}
         {/* {data ? <pre>{JSON.stringify(data, null, 2)}</pre> : <p>loading...</p>} */}
         {/* <pre>{JSON.stringify(user, null, 2)}</pre> */}
         {/* <pre>{JSON.stringify(displayName, null, 2)}</pre> */}
@@ -70,7 +70,7 @@ export default function Dashboard() {
               <h1 className="text-2xl font-bold">{profile.display_name}</h1>
               <h2 className="text-zinc-500">{user.email}</h2>
             </div>
-            <div className="card-actions mt-2">
+            {/* <div className="card-actions mt-2">
               <button
                 onClick={() => {
                   router.push('/new');
@@ -79,10 +79,10 @@ export default function Dashboard() {
               >
                 Create New Event
               </button>
-              {/* <button onClick={signOut} className="btn btn-primary">
+              <button onClick={signOut} className="btn btn-primary">
                 Sign Out
-              </button> */}
-            </div>
+              </button>
+            </div> */}
           </div>
         )}
         {/* <pre>{JSON.stringify(events, null, 2)}</pre> */}
