@@ -43,7 +43,18 @@ export function EventCard({ event }: { event: Event }) {
         </div>
         <p className="line-clamp-2 ">{description}</p>
         <div className="card-actions justify-end">
-          <button className="btn btn-primary">Link</button>
+          <button
+            onClick={() => {
+              // Get URL and copy to clipboard
+              const eventUrl = 'https://gettogether.social/' + url_code + '/' + url_string;
+              navigator.clipboard.writeText(eventUrl);
+              // Alert the copied text
+              alert('Copied the text: ' + eventUrl);
+            }}
+            className="btn btn-primary"
+          >
+            Link
+          </button>
           <button className="btn btn-primary">Edit</button>
           <button
             onClick={() => {
