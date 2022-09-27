@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { Event } from '../models/models.types';
+import { Event } from '../lib/queries.types';
 import defaultEventImg from '../public/party.jpeg';
 import defaultNewEventImg from '../public/party.jpeg';
 import { useRouter } from 'next/router';

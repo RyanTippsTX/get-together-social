@@ -5,8 +5,8 @@ import { useAuth } from '../lib/auth';
 import Image from 'next/image';
 import { shimmer, toBase64 } from '../lib/image';
 import { ContributionsComponent } from '../components/Contributions';
-import { getEvent, getContribution, getContributions } from '../models/models';
-import { Host, Event, Guest, Contribution, Contributions } from '../models/models.types';
+import { getEvent, getContribution, getContributions } from '../lib/queries';
+import { Host, Event, Guest, Contribution, Contributions } from '../lib/queries.types';
 
 export async function getServerSideProps(context: { params: { slug: string[] } }) {
   const { slug } = context.params;

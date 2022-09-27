@@ -1,4 +1,4 @@
-import { Host, Event, Guest, Contribution, Contributions } from '../models/models.types';
+import { Host, Event, Guest, Contribution, Contributions } from '../lib/queries.types';
 import { ContributionOptionsButton } from './ContributionOptionsButton';
 
 // assume that contributions_enabled when this component is called to render

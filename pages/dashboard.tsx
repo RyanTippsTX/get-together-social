@@ -4,8 +4,8 @@ import supabase from '../lib/supabase';
 import Image from 'next/image';
 import { useAuth } from '../lib/auth';
 import { useProfile } from '../lib/profile';
-import { getEvents } from '../models/models';
-import { Event, Events } from '../models/models.types';
+import { getEvents } from '../lib/queries';
+import { Event, Events } from '../lib/queries.types';
 import { EventCard, EventCardCreate } from '../components/EventCard';
 import { useRouter } from 'next/router';
 
