@@ -44,11 +44,48 @@ export default function Dashboard() {
   return (
     <Layout>
       <div className="px-2 py-4 text-zinc-800">
-        {/* <h1 className="pb-2 text-center text-3xl font-bold tracking-tight">Host Dashboard</h1> */}
-        {/* {data ? <pre>{JSON.stringify(data, null, 2)}</pre> : <p>loading...</p>} */}
-        {/* <pre>{JSON.stringify(user, null, 2)}</pre> */}
-        {/* <pre>{JSON.stringify(displayName, null, 2)}</pre> */}
+        <h1 className="pb-2 text-4xl font-bold tracking-tight">Host Dashboard</h1>
+
         {user && profile && (
+          <div className="flex flex-wrap place-content-between items-center gap-4 ">
+            <div className="flex-0 flex items-center gap-4">
+              <div className="avatar">
+                <div className="w-12 rounded-full">
+                  <figure className="relative h-full w-full">
+                    <Image
+                      src={profile.avatar_url} // avoid abusing GitHub's image hosting
+                      alt={'picture of ' + profile.display_name}
+                      layout="fill"
+                      objectFit="cover"
+                      placeholder="blur"
+                      blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
+                    />
+                  </figure>
+                </div>
+              </div>
+              <div>
+                <h1 className="text-lg font-semibold">{profile.display_name}</h1>
+                <h2 className="">{user.email}</h2>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={() => {
+                  router.push('/new');
+                }}
+                className="btn btn-primary"
+              >
+                Create New Event
+              </button>
+              <button onClick={signOut} className="btn btn-primary">
+                Sign Out
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* {user && profile && (
+          // <div className="flex flex-1 flex-col items-center gap-2 pb-4">
           <div className="flex flex-1 flex-col items-center gap-2 pb-4">
             <div className="avatar">
               <div className="w-40 rounded-full">
@@ -61,7 +98,6 @@ export default function Dashboard() {
                     placeholder="blur"
                     blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
                   />
-                  {/* <img src="https://placeimg.com/400/225/arch" alt="Shoes" /> */}
                 </figure>
               </div>
             </div>
@@ -70,7 +106,8 @@ export default function Dashboard() {
               <h1 className="text-2xl font-bold">{profile.display_name}</h1>
               <h2 className="text-zinc-500">{user.email}</h2>
             </div>
-            {/* <div className="card-actions mt-2">
+
+            <div className="card-actions mt-2">
               <button
                 onClick={() => {
                   router.push('/new');
@@ -82,12 +119,13 @@ export default function Dashboard() {
               <button onClick={signOut} className="btn btn-primary">
                 Sign Out
               </button>
-            </div> */}
+            </div>
           </div>
-        )}
-        {/* <pre>{JSON.stringify(events, null, 2)}</pre> */}
+        )} */}
+
         {events && (
           <div className="mb-4 py-4 ">
+            <h1 className="pb-4 text-3xl font-bold tracking-tight">Your Events:</h1>
             {/* <div className="flex items-center justify-center">
               <h1 className="pb-4 text-3xl font-bold tracking-tight">Your Events</h1>
             </div> */}
