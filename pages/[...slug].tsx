@@ -91,7 +91,7 @@ export default function EventPage({ event }: { event: Event }) {
         {title}
       </h1>
       <div className="pb-4  font-light text-zinc-500">
-        <p className="flex items-center gap-1">
+        <div className="flex items-center gap-1">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -106,8 +106,8 @@ export default function EventPage({ event }: { event: Event }) {
             />
           </svg>
           {`Hosted by ${display_name}`}
-        </p>
-        <p className="flex items-center gap-1">
+        </div>
+        <div className="flex items-center gap-1">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -122,9 +122,9 @@ export default function EventPage({ event }: { event: Event }) {
             />
           </svg>
           {date}
-        </p>
+        </div>
         {time && (
-          <p className="flex items-center gap-1">
+          <div className="flex items-center gap-1">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -139,10 +139,10 @@ export default function EventPage({ event }: { event: Event }) {
               />
             </svg>
             {time}
-          </p>
+          </div>
         )}
         {location && (
-          <p className="flex items-center gap-1">
+          <div className="flex items-center gap-1">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -177,10 +177,10 @@ export default function EventPage({ event }: { event: Event }) {
                 />
               </svg>
             </div>
-          </p>
+          </div>
         )}
       </div>
-      <p className="whitespace-pre-line text-lg">{description}</p>
+      <div className="whitespace-pre-line text-lg">{description}</div>
     </div>
   );
 
