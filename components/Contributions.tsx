@@ -1,15 +1,17 @@
 import { Host, Event, Guest, Contribution, Contributions } from '../models/models.types';
-import { OptionsButton } from './OptionsButton';
+import { ContributionOptionsButton } from './ContributionOptionsButton';
 
 // assume that contributions_enabled when this component is called to render
 export function ContributionsComponent({
   contributions_frozen,
   contributions_custom_title,
   contributions,
+  host,
 }: {
   contributions_frozen: boolean;
   contributions_custom_title: string | null;
   contributions: Contributions | undefined;
+  host: Host;
 }) {
   // conditional rendering logic
   if (typeof contributions === undefined) {
@@ -23,9 +25,9 @@ export function ContributionsComponent({
 
   return (
     <div>
-      {/* <h2>Contributions:</h2> */}
-      <ContributionsTable contributions_frozen {...{ contributions, contributions_custom_title }} />
-      {/* <pre>{JSON.stringify(contributions, null, 2)}</pre> */}
+      <ContributionsTable
+        {...{ contributions_frozen, contributions, contributions_custom_title, host }}
+      />
     </div>
   );
 }
@@ -34,40 +36,42 @@ function ContributionsTable({
   contributions_frozen,
   contributions_custom_title,
   contributions,
+  host,
 }: {
   contributions_frozen: boolean;
   contributions_custom_title: string | null;
   contributions: Contributions | undefined;
+  host: Host;
 }) {
   return (
-    <div className="flex flex-col items-center pb-6">
-      <table className="table w-auto ">
-        <thead>
-          <tr>
-            <th>{contributions_custom_title || 'Contribtutons'}</th>
-            <th></th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {contributions?.map((contribution) => (
-            <ContributionsTableRow {...{ contribution }} key={contribution.contribution_id} />
+    <div className="flex flex-col items-center pb-6 ">
+      <div className="w-full gap-2  py-2">
+        <div className="text-dark text-xl font-bold">
+          {contributions_custom_title || 'Contribtutons'}
+        </div>
+        <div>
+          {contributions?.map((contribution, i) => (
+            <ContributionsTableRow
+              {...{ contribution, i, host }}
+              key={contribution.contribution_id}
+            />
           ))}
-          <tr>
-            <td>
-              <input className="input-sm border"></input>
-              <div className="btn btn-primary">Add Entry</div>
-            </td>
-            <td></td>
-            <td></td>
-          </tr>
-        </tbody>
-      </table>
+        </div>
+        {<NewContributionForm {...{ contributions_frozen }} />}
+      </div>
     </div>
   );
 }
 
-function ContributionsTableRow({ contribution }: { contribution: Contribution }) {
+function ContributionsTableRow({
+  i,
+  contribution,
+  host,
+}: {
+  i: number;
+  contribution: Contribution;
+  host: Host;
+}) {
   const {
     contribution_id,
     created_at,
@@ -76,20 +80,70 @@ function ContributionsTableRow({ contribution }: { contribution: Contribution })
     requested,
     contributor_id,
     claimed_comment,
-    guests: { guest_id, display_name },
+    guests: guest,
   } = contribution;
+  // const { avatar_url, display_name } = host;
 
-  const claimButton = <div className="btn btn-primary">claim</div>;
+  // contributions will either be:
+  // * Committed by the host   // request false, contributor null
+  const committedByHost = !requested && !contributor_id;
+  // * Committed by a guest   // request false, contributor 1234
+  const committedByGuest = !requested && contributor_id;
+  // * Requested by the host
+  //     * Claimed by no one   // requested true, contributor null
+  const requestUnclaimed = requested && !contributor_id;
+  //     * Claimed by a guest   // request true, contributor 1234
+  const requestClaimedByGuest = requested && contributor_id;
+  //     * Claimed by N guests   // future feature, for now host will need to make multiple requests if wanting to do that
+  //     * Claimed by the host.   // this is not a request, so convert
+
+  const claimButton = <div className="btn btn-primary btn-sm">Claim</div>;
+
+  const item = (
+    <div className="grow">
+      {description}
+      {requestUnclaimed && <span className="badge mx-1">Requested</span>}
+      {requestClaimedByGuest &&
+        (claimed_comment ? (
+          <span className="badge badge-ghost mx-1">Claimed as:</span>
+        ) : (
+          <span className="badge badge-ghost mx-1">Claimed</span>
+        ))}
+      {claimed_comment}
+    </div>
+  );
+  const contributor = (
+    <div className="w-40 flex-none">
+      {(committedByGuest || requestClaimedByGuest) && guest.display_name}
+      {committedByHost && host.display_name}
+    </div>
+  );
+
+  const actions = (
+    <div className="flex-none">
+      <div>{requested && !contributor_id ? claimButton : <ContributionOptionsButton />}</div>
+    </div>
+  );
 
   return (
-    <tr>
-      <td>
-        {(requested ? 'Requested: ' : '') +
-          description +
-          (claimed_comment ? ` - ${claimed_comment}` : '')}
-      </td>
-      <td>{display_name}</td>
-      <td>{requested && !contributor_id ? claimButton : <OptionsButton />}</td>
-    </tr>
+    <div className="flex items-center border-t-[1px] border-zinc-200 bg-zinc-100 py-1 px-2">
+      {item}
+      {contributor}
+      {actions}
+    </div>
+  );
+}
+
+function NewContributionForm({ contributions_frozen }: { contributions_frozen: boolean }) {
+  //grey out form inputs if frozen
+  return (
+    <>
+      {!contributions_frozen && (
+        <div className="flex w-full gap-2 pt-3">
+          <input type="text" placeholder="Add an item..." className="input input-bordered w-full" />
+          <div className="btn btn-primary text-3xl">🕊</div>
+        </div>
+      )}
+    </>
   );
 }
