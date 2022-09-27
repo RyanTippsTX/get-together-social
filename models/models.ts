@@ -17,13 +17,13 @@ export async function getContributions(event_id: string) {
     .from('contributions')
     .select('*, guests( * )')
     .eq('event_id', event_id)
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: true });
 }
 export async function getContribution(event_id: string) {
   return await supabase
     .from('contributions')
     .select('*, guests( * )')
     .eq('event_id', event_id)
-    .order('created_at', { ascending: false })
+    .order('created_at', { ascending: true })
     .single();
 }
