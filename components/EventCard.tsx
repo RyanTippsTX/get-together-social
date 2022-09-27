@@ -1,4 +1,3 @@
-import supabase from '../lib/supabase';
 import Image from 'next/image';
 import { Event } from '../lib/queries.types';
 import defaultEventImg from '../public/party.jpeg';
@@ -6,6 +5,7 @@ import defaultNewEventImg from '../public/party.jpeg';
 import { useRouter } from 'next/router';
 import { getEventViewCount } from '../lib/queries';
 import { useEffect, useState } from 'react';
+import { formatDate } from '../lib/dates';
 
 export function EventCard({ event }: { event: Event }) {
   const router = useRouter();
@@ -68,7 +68,7 @@ export function EventCard({ event }: { event: Event }) {
                   d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"
                 />
               </svg>
-              <div className="">{date}</div>
+              <div className="">{formatDate(date)}</div>
             </div>
             <div className="flex items-center gap-1 ">
               <svg
