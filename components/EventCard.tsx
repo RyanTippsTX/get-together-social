@@ -1,8 +1,11 @@
+import supabase from '../lib/supabase';
 import Image from 'next/image';
 import { Event } from '../lib/queries.types';
 import defaultEventImg from '../public/party.jpeg';
 import defaultNewEventImg from '../public/party.jpeg';
 import { useRouter } from 'next/router';
+import { getEventViewCount } from '../lib/queries';
+import { useEffect, useState } from 'react';
 
 export function EventCard({ event }: { event: Event }) {
   const router = useRouter();
@@ -24,6 +27,14 @@ export function EventCard({ event }: { event: Event }) {
     hosts: { avatar_url, display_name },
   } = event;
 
+  const [viewCount, setViewCount] = useState<number | undefined>(undefined);
+  useEffect(() => {
+    (async () => {
+      const { count, error } = await getEventViewCount(event_id);
+      setViewCount(count);
+    })();
+  }, [event_id]);
+
   return (
     <div className="card card-compact bg-base-100 h-96 w-80 flex-none shadow-xl">
       <figure className="relative h-48 w-full">
@@ -41,7 +52,47 @@ export function EventCard({ event }: { event: Event }) {
       <div className="card-body tracking-tight">
         <div>
           <h2 className="card-title truncate text-ellipsis">{title}</h2>
-          <p className="italic text-zinc-500">{date}</p>
+
+          <div className="flex gap-4 text-zinc-500">
+            <div className="flex items-center gap-1  ">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+                className="inline-block h-4 w-4 stroke-current"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"
+                />
+              </svg>
+              <div className="">{date}</div>
+            </div>
+            <div className="flex items-center gap-1 ">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+                className="inline-block h-4 w-4 stroke-current"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+
+              <div className="">{viewCount} Views</div>
+            </div>
+          </div>
         </div>
         <p className="line-clamp-2 ">{description}</p>
         <div className="card-actions justify-end">

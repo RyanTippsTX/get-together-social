@@ -1,3 +1,4 @@
+import { count } from 'console';
 import supabase from '../lib/supabase';
 
 export async function getEvents(user_id: string) {
@@ -10,6 +11,12 @@ export async function getEvent(url_code: string) {
     .eq('url_code', url_code)
     // .eq('url_string', url_string.toLowerCase())  // omit for now
     .single();
+}
+export async function getEventViewCount(event_id: string) {
+  return await supabase
+    .from('page_visits')
+    .select('*', { count: 'exact', head: true })
+    .eq('event_id', event_id);
 }
 
 export async function getContributions(event_id: string) {
