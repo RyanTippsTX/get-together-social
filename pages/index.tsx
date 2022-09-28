@@ -50,7 +50,7 @@ function Hero() {
             <button
               className="btn btn-outline text-dark"
               onClick={() => {
-                router.push('/d230d1f7-f0e3-4ca6-8161-ecd4acdea251/Halloween-Party');
+                router.push('/1234567/Dunder-Mifflin-Christmas-Party');
               }}
             >
               See Demo
