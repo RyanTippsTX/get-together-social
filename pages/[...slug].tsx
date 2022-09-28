@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../lib/auth';
 import Image from 'next/image';
 import { shimmer, toBase64 } from '../lib/image';
+import defaultEventImg from '../public/party.jpeg';
 import { ContributionsComponent } from '../components/Contributions';
 import { getEvent, getContribution, getContributions } from '../lib/queries';
 import { Host, Event, Guest, Contribution, Contributions } from '../lib/queries.types';
@@ -71,18 +72,20 @@ export default function EventPage({ event }: { event: Event }) {
   }, [event_id, contributions_enabled]);
 
   const image = (
-    <figure className="flex flex-col  items-center">
-      {/* 400 x 225 is a good */}
-      <Image
-        // layout="responsive"
-        width="400"
-        height="225"
-        src={'https://placeimg.com/400/225/arch'}
-        alt={'event photo for ' + title}
-        placeholder="blur"
-        blurDataURL={`data:image/svg+xml;base64,${toBase64(shimmer(400, 225))}`}
-      />
-    </figure>
+    <div className="flex flex-col  items-center">
+      {/* <figure className="flex flex-col  items-center"> */}
+      <figure className="relative h-[225px] w-[400px]">
+        {/* 400 x 225 is a good */}
+        <Image
+          src={defaultEventImg}
+          alt={'event photo for ' + title}
+          layout="fill"
+          objectFit="cover"
+          placeholder="blur"
+          blurDataURL={`data:image/svg+xml;base64,${toBase64(shimmer(400, 225))}`}
+        />
+      </figure>
+    </div>
   );
 
   const content = (

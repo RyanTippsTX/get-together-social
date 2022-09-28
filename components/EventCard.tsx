@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { shimmer, toBase64 } from '../lib/image';
 import { Event } from '../lib/queries.types';
 import defaultEventImg from '../public/party.jpeg';
 import defaultNewEventImg from '../public/party.jpeg';
@@ -45,7 +46,7 @@ export function EventCard({ event }: { event: Event }) {
           layout="fill"
           objectFit="cover"
           placeholder="blur"
-          blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
+          blurDataURL={`data:image/svg+xml;base64,${toBase64(shimmer(400, 225))}`}
         />
         {/* <img src="https://placeimg.com/400/225/arch" alt="Shoes" /> */}
       </figure>
@@ -152,9 +153,8 @@ export function EventCardCreate() {
           layout="fill"
           objectFit="cover"
           placeholder="blur"
-          blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
+          blurDataURL={`data:image/svg+xml;base64,${toBase64(shimmer(400, 225))}`}
         />
-        {/* <img src="https://placeimg.com/400/225/arch" alt="Shoes" /> */}
       </figure>
 
       <div className="card-body items-center justify-center">
