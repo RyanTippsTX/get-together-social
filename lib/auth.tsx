@@ -9,7 +9,7 @@ interface AuthContextInterface {
   loading: boolean;
   signOut: Function;
   signInWithGoogle: Function;
-  signInWithEmail: Function;
+  signInWithMagicLink: Function;
 }
 export const AuthContext = createContext<AuthContextInterface | null>(null);
 
@@ -76,20 +76,18 @@ export function AuthProvider({ ...props }) {
     }
   };
 
-  const signInWithEmail = async (event: FormEvent, AlertUserThatEmailHasSent: Function) => {
-    event.preventDefault();
-    const email = (event.target as HTMLFormElement).email.value;
+  const signInWithMagicLink = async ({ email }: { email: string }) => {
     const { data, error } = await supabase.auth.signInWithOtp({
       email,
       options: { emailRedirectTo: '/dashboard', shouldCreateUser: true },
     });
     if (error) {
       console.error('signin result error:', error);
+      alert('An error occured, please try again');
       router.push('/');
     } else {
       // No redirect, stay on login page
       // Toast or Modal: "Email sent to ___@gmail.com !"
-
       alert(`Email has been sent to ${email}`);
     }
   };
@@ -103,7 +101,7 @@ export function AuthProvider({ ...props }) {
         loading,
         signOut,
         signInWithGoogle,
-        signInWithEmail,
+        signInWithMagicLink,
       }}
       {...props}
     />
