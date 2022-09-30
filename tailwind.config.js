@@ -6,9 +6,9 @@ const brandColors = {
   // https://coolors.co/1c1c1c-ededed-fdfdfd-ffdf3d-388201-fff7a3-ffe0eb
   black: '#1C1C1C',
   dark: '#27272A', // bg-zinc-800
-  gray: '#EDEDED',
   light: '#EDEDED', // a very light gray, just enough to contrast with white
-  white: '#FDFDFD', // true white
+  // white: '#FDFDFD', // ever-so-slightly off-white
+  white: '#FFFFFF', // true white
   lemon: '#FFDF3D',
   'lemon-leaf': '#388201',
   lemonade: '#FFF7A3',
@@ -53,7 +53,14 @@ module.exports = {
       },
     },
   },
-  plugins: [require('daisyui'), require('@tailwindcss/line-clamp')],
+  plugins: [
+    // keep stacked, prettier ignore
+    require('daisyui'),
+    require('@tailwindcss/line-clamp'),
+    require('@tailwindcss/forms')({
+      strategy: 'class', // only generate classes
+    }),
+  ],
   daisyui: {
     // daisyUI config (optional)
     // https://daisyui.com/docs/config/

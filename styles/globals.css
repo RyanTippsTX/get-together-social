@@ -11,3 +11,20 @@
     /* @apply bg-lemonade; */
   }
 }
+
+@layer components {
+  .toggle {
+    /* @apply checked:border-blue-700 checked:bg-blue-700; */
+    /* @apply toggle-sm; */
+    /* @apply accent-green-400; */
+    @apply shadow-green-400;
+  }
+}
+
+@layer utilities {
+  .fade-when-disabled {
+    @apply disabled:border-gray-200 disabled:placeholder:text-gray-300;
+
+    @apply bg-zinc-50;
+  }
+}
