@@ -74,7 +74,7 @@ export default function EventPage({ event }: { event: Event }) {
   const image = (
     <div className="flex flex-col  items-center">
       {/* <figure className="flex flex-col  items-center"> */}
-      <figure className="relative h-[225px] w-[400px]">
+      <figure className="relative h-[225px] w-full sm:w-[400px] ">
         {/* 400 x 225 is a good */}
         <Image
           src={defaultEventImg}
@@ -89,7 +89,7 @@ export default function EventPage({ event }: { event: Event }) {
   );
 
   const content = (
-    <div className="pb-6">
+    <div className="px-2 pb-6">
       {/* {<pre>{JSON.stringify(event, null, 2)}</pre>} */}
       <h1 className="text-dark pt-4 pb-2 text-3xl font-bold tracking-tight sm:text-4xl ">
         {title}
@@ -190,7 +190,7 @@ export default function EventPage({ event }: { event: Event }) {
 
   return (
     <Layout>
-      <div className="mx-2 pb-4">
+      <div className="pb-4">
         {image}
         {content}
         {contributions_enabled && (

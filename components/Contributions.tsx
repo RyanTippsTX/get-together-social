@@ -45,8 +45,8 @@ function ContributionsTable({
 }) {
   return (
     <div className="flex flex-col items-center pb-6 ">
-      <div className="w-full gap-2  py-2">
-        <div className="text-dark text-xl font-bold">
+      <div className="w-full py-2">
+        <div className="text-dark mx-2 pb-1 text-xl font-bold">
           {contributions_custom_title || 'Contribtutons'}
         </div>
         <div>
@@ -126,7 +126,7 @@ function ContributionsTableRow({
   );
 
   return (
-    <div className="flex items-center border-t-[1px] border-zinc-200 bg-zinc-100 py-1 px-2">
+    <div className="flex items-center border-t-[1px] border-zinc-200 bg-zinc-100 py-1 px-2 sm:mx-2">
       {item}
       {contributor}
       {actions}
@@ -139,9 +139,15 @@ function NewContributionForm({ contributions_frozen }: { contributions_frozen: b
   return (
     <>
       {!contributions_frozen && (
-        <div className="flex w-full gap-2 pt-3">
-          <input type="text" placeholder="Add an item..." className="input input-bordered w-full" />
-          <div className="btn btn-primary text-3xl">🕊</div>
+        <div className="px-2">
+          <div className=" flex w-full gap-2 pt-3">
+            <input
+              type="text"
+              placeholder="Add an item..."
+              className="input input-bordered w-full"
+            />
+            <div className="btn btn-primary text-3xl">🕊</div>
+          </div>
         </div>
       )}
     </>
