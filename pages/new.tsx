@@ -17,7 +17,13 @@ export default function New() {
     watch,
     formState: { errors },
     formState,
-  } = useForm<Inputs>();
+  } = useForm<Inputs>({
+    defaultValues: {
+      contributions_enabled: true,
+      contributions_frozen: false,
+      contributions_custom_title_enabled: false,
+    },
+  });
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     // console.log('Form submission data:', data);
     (async () => {
@@ -34,6 +40,7 @@ export default function New() {
 
   // if (errors) console.log(errors);
   // console.log('Form State', formState);
+  console.log('contributions_enabled', watch('contributions_enabled'));
 
   const heading = (
     <div className="py-4">
@@ -177,7 +184,6 @@ export default function New() {
                         <div className="col-span-full col-start-1 flex items-start">
                           <div className="flex h-5 items-center">
                             <input
-                              defaultChecked
                               // disabled
                               id="contributions_enabled"
                               {...register('contributions_enabled')}
@@ -206,7 +212,6 @@ export default function New() {
                           <div className="col-span-full col-start-2 flex items-start">
                             <div className="flex h-5 items-center">
                               <input
-                                // defaultChecked
                                 // disabled
                                 id="contributions_frozen"
                                 {...register('contributions_frozen')}
@@ -235,7 +240,6 @@ export default function New() {
                             <div className="flex h-5 items-center">
                               <input
                                 // disabled
-                                // defaultChecked
                                 id="contributions_custom_title_enabled"
                                 {...register('contributions_custom_title_enabled', {})}
                                 type="checkbox"

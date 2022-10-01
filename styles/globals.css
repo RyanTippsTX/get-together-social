@@ -24,7 +24,6 @@
 @layer utilities {
   .fade-when-disabled {
     @apply disabled:border-gray-200 disabled:placeholder:text-gray-300;
-
-    @apply bg-zinc-50;
+    @apply disabled:bg-zinc-50;
   }
 }
