@@ -2,14 +2,14 @@ import Layout from '../components/layout';
 import { useRouter } from 'next/router';
 import { useAuth } from '../lib/auth';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { createEvent, createNote } from '../lib/queries';
+import { createEvent } from '../lib/queries';
 import { Inputs } from '../lib/forms.types';
 
 export default function New() {
   const router = useRouter();
   const { session, loading, user } = useAuth();
 
-  // if (!user && !loading) router.push('/login');
+  if (!user && !loading) router.push('/login');
 
   const {
     register,
@@ -19,8 +19,17 @@ export default function New() {
     formState,
   } = useForm<Inputs>();
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    console.log('Form submission data:', data);
-    // createEvent(data);
+    // console.log('Form submission data:', data);
+    (async () => {
+      const { route, error } = await createEvent({ ...data, host_id: user.id });
+      if (error) {
+        alert('An error has occured');
+        console.error(error);
+        router.push('/dashboard');
+      } else {
+        router.push(route);
+      }
+    })();
   };
 
   // if (errors) console.log(errors);
