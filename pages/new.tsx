@@ -3,12 +3,7 @@ import { useRouter } from 'next/router';
 import { useAuth } from '../lib/auth';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { createEvent, createNote } from '../lib/queries';
-
-// type Inputs = {
-//   title: string;
-//   exampleRequired: string;
-// };
-type Inputs = any;
+import { Inputs } from '../lib/forms.types';
 
 export default function New() {
   const router = useRouter();
@@ -22,11 +17,14 @@ export default function New() {
     watch,
     formState: { errors },
     formState,
-  } = useForm();
-  const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
+  } = useForm<Inputs>();
+  const onSubmit: SubmitHandler<Inputs> = (data) => {
+    console.log('Form submission data:', data);
+    // createEvent(data);
+  };
 
   // if (errors) console.log(errors);
-  console.log('Form State', formState);
+  // console.log('Form State', formState);
 
   const heading = (
     <div className="py-4">
@@ -53,14 +51,7 @@ export default function New() {
         </div>
         {/* Main Form Body */}
         <div className="mt-5 md:mt-0">
-          <form
-            noValidate
-            onSubmit={handleSubmit((data) => {
-              console.log('Form submission data:', data);
-              // createNote();
-              // createEvent(data);
-            })}
-          >
+          <form noValidate onSubmit={handleSubmit(onSubmit)}>
             <div className="overflow-hidden shadow sm:rounded-md">
               <div className="bg-white px-4 py-5 sm:p-6">
                 <div className="grid grid-cols-4 gap-6">
