@@ -3,7 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   images: {
-    domains: ['avatars.githubusercontent.com', 'placeimg.com'], // temp dev use only
+    domains: ['avatars.githubusercontent.com', 'placeimg.com', 'titcmdqlpvlqjhcculma.supabase.co'],
   },
 };
 
