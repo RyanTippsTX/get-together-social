@@ -1,9 +1,14 @@
 import Layout from '../components/layout';
 import { useRouter } from 'next/router';
 import { useAuth } from '../lib/auth';
-import { NewEventForm } from '../components/NewEventForm';
-import { useForm } from 'react-hook-form';
+import { useForm, SubmitHandler } from 'react-hook-form';
 import { createEvent, createNote } from '../lib/queries';
+
+// type Inputs = {
+//   title: string;
+//   exampleRequired: string;
+// };
+type Inputs = any;
 
 export default function New() {
   const router = useRouter();
@@ -14,10 +19,14 @@ export default function New() {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
+    formState,
   } = useForm();
+  const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
 
-  if (errors.length) console.log(errors);
+  // if (errors) console.log(errors);
+  console.log('Form State', formState);
 
   const heading = (
     <div className="py-4">
@@ -26,59 +35,6 @@ export default function New() {
         Create A New Event
       </h2>
       <p className="mt-2 text-center text-sm text-gray-600">Wooohhh Party!!!</p>
-    </div>
-  );
-
-  const oldCard = (
-    <div className="flex w-full flex-col items-center border-opacity-50 px-4 pb-6">
-      <div className="card bg-base-100 m-4 w-full max-w-sm shadow">
-        <form
-          className="card-body"
-          onSubmit={() => {
-            // do nothing
-          }}
-        >
-          <h2 className="card-title">{'Sign in with an Email Link'}</h2>
-          <p>{'No password required.'}</p>
-
-          <div className="form-control w-full">
-            <label className="label" htmlFor="email">
-              <span className="label-text">Your Email</span>
-            </label>
-
-            <input
-              className="input input-bordered w-full"
-              type="email"
-              id="email"
-              placeholder="elon@spacex.com"
-              name="email"
-            />
-          </div>
-
-          <div className="card-actions justify-center">
-            <button className="btn btn-primary w-full" type="submit">
-              Send Email Link
-            </button>
-          </div>
-        </form>
-
-        <div className="divider my-0 mx-8 text-zinc-400">OR</div>
-
-        <form
-          className="card-body"
-          onSubmit={() => {
-            // do nothing
-          }}
-        >
-          <h2 className="card-title">{'Sign In with Google'}</h2>
-          <p>{'Requires a Google account.'}</p>
-          <div className="card-actions justify-center">
-            <button className="btn btn-primary w-full" type="submit">
-              Sign In With Google
-            </button>
-          </div>
-        </form>
-      </div>
     </div>
   );
 
@@ -101,7 +57,7 @@ export default function New() {
             noValidate
             onSubmit={handleSubmit((data) => {
               console.log('Form submission data:', data);
-              createNote();
+              // createNote();
               // createEvent(data);
             })}
           >
@@ -115,12 +71,17 @@ export default function New() {
                     </label>
                     <input
                       type="text"
-                      name="title"
+                      {...register('title', {
+                        required: { value: true, message: 'Required' },
+                        maxLength: { value: 60, message: 'Too long' },
+                        // pattern: { value: /[A-Za-z]/i, message: 'Must contain a character' }, // this is done by default when field is required
+                      })}
                       id="title"
                       placeholder="Your Event Title"
                       autoComplete="off"
                       className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     />
+                    <FormError message={errors.title?.message as string} />
                   </div>
 
                   {/* input date */}
@@ -130,12 +91,15 @@ export default function New() {
                     </label>
                     <input
                       type="date"
-                      name="date"
+                      {...register('date', {
+                        required: { value: true, message: 'Required' },
+                      })}
                       id="date"
                       // placeholder=""
                       autoComplete="off"
                       className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     />
+                    <FormError message={errors.date?.message as string} />
                   </div>
 
                   {/* input time */}
@@ -145,12 +109,15 @@ export default function New() {
                     </label>
                     <input
                       type="text" // yes, "text" is intentional for the "time" field
-                      name="time"
+                      {...register('time', {
+                        maxLength: { value: 60, message: 'Too long' },
+                      })}
                       id="time"
                       placeholder="A time, a schedule, anything..."
                       autoComplete="off"
                       className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     />
+                    <FormError message={errors.time?.message as string} />
                   </div>
 
                   {/* input location */}
@@ -159,13 +126,16 @@ export default function New() {
                       {'Location (optional)'}
                     </label>
                     <input
-                      type="text" // yes, "text" is intentional for the "time" field
-                      name="location"
+                      type="text"
+                      {...register('location', {
+                        maxLength: { value: 100, message: 'Too long' },
+                      })}
                       id="location"
                       placeholder="A description, an address, anything..."
                       autoComplete="street-address"
                       className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     />
+                    <FormError message={errors.location?.message as string} />
                   </div>
 
                   {/* input description */}
@@ -179,12 +149,16 @@ export default function New() {
                     <div className="mt-1">
                       <textarea
                         id="description"
-                        name="description"
+                        {...register('description', {
+                          required: { value: true, message: 'Required' },
+                          maxLength: { value: 2000, message: 'Too long' },
+                        })}
                         rows={3}
                         placeholder="Your event description..."
                         className="form-textarea mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                       />
                     </div>
+                    <FormError message={errors.description?.message as string} />
                     <p className="mt-2 text-sm text-gray-500">
                       Brief description of your event. URLs are hyperlinked.
                     </p>
@@ -206,7 +180,7 @@ export default function New() {
                               defaultChecked
                               // disabled
                               id="contributions_enabled"
-                              name="contributions_enabled"
+                              {...register('contributions_enabled')}
                               type="checkbox"
                               className="toggle"
                             />
@@ -226,73 +200,91 @@ export default function New() {
                             </p>
                           </div>
                         </div>
+
                         {/* input contributions frozen */}
-                        <div className="col-span-full col-start-2 flex items-start">
-                          <div className="flex h-5 items-center">
-                            <input
-                              // defaultChecked
-                              // disabled
-                              id="contributions_frozen"
-                              name="contributions_frozen"
-                              type="checkbox"
-                              className="toggle"
-                            />
+                        {watch('contributions_enabled') && (
+                          <div className="col-span-full col-start-2 flex items-start">
+                            <div className="flex h-5 items-center">
+                              <input
+                                // defaultChecked
+                                // disabled
+                                id="contributions_frozen"
+                                {...register('contributions_frozen')}
+                                type="checkbox"
+                                className="toggle"
+                              />
+                            </div>
+                            <div className="ml-3 text-sm">
+                              <label
+                                htmlFor="contributions_frozen"
+                                className="font-medium text-gray-700"
+                              >
+                                Freeze Guest Contributions
+                              </label>
+                              <p className="text-gray-500">
+                                When frozen, guests can not contribute new items, but they can still
+                                claim items you have requested.
+                              </p>
+                            </div>
                           </div>
-                          <div className="ml-3 text-sm">
-                            <label
-                              htmlFor="contributions_frozen"
-                              className="font-medium text-gray-700"
-                            >
-                              Freeze Guest Contributions
-                            </label>
-                            <p className="text-gray-500">
-                              When frozen, guests can not contribute new items, but they can still
-                              claim items you have requested.
-                            </p>
+                        )}
+
+                        {/* input contributions custom title enabled */}
+                        {watch('contributions_enabled') && (
+                          <div className="col-span-full col-start-2 flex items-start">
+                            <div className="flex h-5 items-center">
+                              <input
+                                // disabled
+                                // defaultChecked
+                                id="contributions_custom_title_enabled"
+                                {...register('contributions_custom_title_enabled', {})}
+                                type="checkbox"
+                                className="toggle"
+                              />
+                            </div>
+                            <div className="ml-3 text-sm">
+                              <label htmlFor="offers" className="font-medium text-gray-700">
+                                Use Custom Title For Contributions Section
+                              </label>
+                              <p className="text-gray-500">
+                                {
+                                  'By default, the section is titled "Guest Contributions" on your event page, but you may wish to use a more specific title such as "Dessert Potluck", "Carpool Volunteers", "Karaoke Sign-ups", etc. Get creative!'
+                                }
+                              </p>
+                            </div>
                           </div>
-                        </div>
-                        {/* input contributions custom title */}
-                        <div className="col-span-full col-start-2 flex items-start">
-                          <div className="flex h-5 items-center">
-                            <input
-                              // disabled
-                              // defaultChecked
-                              id="contributions_custom_title_enabled"
-                              name="contributions_custom_title_enabled"
-                              type="checkbox"
-                              className="toggle"
-                            />
-                          </div>
-                          <div className="ml-3 text-sm">
-                            <label htmlFor="offers" className="font-medium text-gray-700">
-                              Use Custom Title For Contributions Section
-                            </label>
-                            <p className="text-gray-500">
-                              {
-                                'By default, the section is titled "Guest Contributions" on your event page, but you may wish to use a more specific title such as "Dessert Potluck", "Carpool Volunteers", "Karaoke Sign-ups", etc. Get creative!'
-                              }
-                            </p>
-                          </div>
-                        </div>
+                        )}
 
                         {/* input contributions custom title */}
-                        <div className="col-span-full col-start-3">
-                          {/* <label
+                        {watch('contributions_enabled') &&
+                          watch('contributions_custom_title_enabled') && (
+                            <div className="col-span-full col-start-3">
+                              {/* <label
                             htmlFor="title"
                             className="block text-sm font-medium text-gray-700"
                           >
                             Contributions Custom Title
                           </label> */}
-                          <input
-                            disabled
-                            type="text"
-                            name="title"
-                            id="title"
-                            placeholder="Custom Title"
-                            autoComplete="off"
-                            className="form-input fade-when-disabled mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm "
-                          />
-                        </div>
+                              <input
+                                disabled={!watch('contributions_custom_title_enabled')}
+                                type="text"
+                                {...register('contributions_custom_title', {
+                                  required: {
+                                    value: true,
+                                    message: 'Enter custom title or turn off the feature',
+                                  },
+                                  maxLength: { value: 60, message: 'Too long' },
+                                })}
+                                id="contributions_custom_title"
+                                placeholder="Custom Title"
+                                autoComplete="off"
+                                className="form-input fade-when-disabled mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm "
+                              />
+                              <FormError
+                                message={errors.contributions_custom_title?.message as string}
+                              />
+                            </div>
+                          )}
 
                         {/* end of contribution options */}
                       </div>
@@ -360,8 +352,19 @@ export default function New() {
   return (
     <Layout>
       {heading}
-      {/* {oldCard} */}
       {card}
     </Layout>
   );
+}
+
+function FormError({ message }: { message: string | undefined | null }) {
+  if (message) {
+    return (
+      <div className="text-error px-1 pt-1 text-sm font-semibold">
+        {/* {errors.email?.message as string} */}
+        {message}
+      </div>
+    );
+  }
+  return <></>;
 }
