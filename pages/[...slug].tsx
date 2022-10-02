@@ -12,9 +12,11 @@ import { formatDate } from '../lib/dates';
 
 export async function getServerSideProps(context: { params: { slug: string[] } }) {
   const { slug } = context.params;
-  const [url_code, url_string] = slug;
+  const [url_code, url_string_raw] = slug;
+  const url_string = url_string_raw.toLowerCase();
 
-  const { data: event, error } = await getEvent(url_code);
+  const { data: event, error } = await getEvent(url_code, url_string);
+  // dont bother fetching guest contributions on initial SSR
 
   if (!event) return { notFound: true }; // redirect 404
 
