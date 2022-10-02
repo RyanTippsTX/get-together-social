@@ -45,10 +45,10 @@ export function Footer() {
   return (
     <div className="bg-dark text-zinc-300">
       <div className="container mx-auto">
-        <div className=" flex flex-col-reverse gap-10 p-10 sm:flex-row  ">
+        <div className=" flex flex-col-reverse gap-10 py-10 px-6 sm:flex-row ">
           <div className="footer place-items-center sm:place-items-start ">{company}</div>
 
-          <div className=" grid grid-flow-col place-content-evenly gap-10 text-sm leading-7 sm:place-content-center">
+          <div className="grid min-w-max  grid-cols-3 place-content-between gap-4  text-sm leading-7 sm:place-content-center">
             <div className="min-w-max">
               <span className="footer-title">Site</span>
               <Links routes={sitePaths} />

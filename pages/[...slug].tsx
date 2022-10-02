@@ -190,7 +190,7 @@ export default function EventPage({ event }: { event: Event }) {
 
   return (
     <Layout>
-      <div className="pb-4">
+      <div className="pb-4 sm:mx-6">
         {image}
         {content}
         {contributions_enabled && (
