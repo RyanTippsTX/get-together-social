@@ -15,7 +15,7 @@ export async function getServerSideProps(context: { params: { slug: string[] } }
   const [url_code, url_string_raw] = slug;
   const url_string = url_string_raw.toLowerCase();
 
-  const { data: event, error } = await getEvent(url_code, url_string);
+  const { data: event, error } = await getEvent({ url_code, url_string });
   // dont bother fetching guest contributions on initial SSR
 
   if (!event) return { notFound: true }; // redirect 404
@@ -25,7 +25,10 @@ export async function getServerSideProps(context: { params: { slug: string[] } }
   };
 }
 
-export default function EventPage({ event }: { event: Event }) {
+export default function EventPage({ event: initialEvent }: { event: Event }) {
+  const [event, setEvent] = useState<Event>(initialEvent);
+  const [eventStale, setEventStale] = useState(true); // consider SSR data stale by the time it gets to client
+
   const {
     event_id,
     created_at,
@@ -65,6 +68,46 @@ export default function EventPage({ event }: { event: Event }) {
     })();
   }, [loading, user, event_id, host_id, analyticsSent]);
 
+  // fetch event data when stale
+  useEffect(() => {
+    if (eventStale) {
+      (async () => {
+        const { data, error } = await getEvent({ event_id });
+        // console.log('new contributions fetched: ', data);
+        setEvent(data as Event);
+        setEventStale(false);
+      })();
+    }
+  }, [eventStale, event_id]);
+
+  // subscribe to db realtime for event data
+  // (since realtime does not support views, use realtime to mark data stale then refetch event data with join query)
+  useEffect(() => {
+    console.log('mount');
+    console.log('subscribed to realtime event data');
+
+    const channel = supabase
+      .channel(`public:events:event_id=eq.${event_id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'events',
+          filter: `event_id=eq.${event_id}`,
+        },
+        () => {
+          setEventStale(true);
+        }
+      )
+      .subscribe();
+    return () => {
+      console.log('unmount');
+      console.log('unsubscribed from realtime event data');
+      supabase.removeChannel(channel);
+    };
+  }, [event_id, contributions_enabled]);
+
   // fetch contributions when stale
   useEffect(() => {
     if (contributions_enabled && contributionsStale) {
@@ -77,10 +120,10 @@ export default function EventPage({ event }: { event: Event }) {
     }
   }, [contributions_enabled, contributionsStale, event_id]);
 
-  // subscribe to db realtime
+  // subscribe to db realtime for contributions
   // (since realtime does not support views, use realtime to mark data stale then refetch contributions with join query)
   useEffect(() => {
-    console.log('mount & subscribe');
+    console.log('subscribed to realtime contributions');
     if (contributions_enabled) {
       const channel = supabase
         .channel(`public:contributions:event_id=eq.${event_id}`)
@@ -98,7 +141,7 @@ export default function EventPage({ event }: { event: Event }) {
         )
         .subscribe();
       return () => {
-        console.log('unmount & unsubscribe');
+        console.log('unsubscribed from realtime contributions');
         supabase.removeChannel(channel);
       };
     }

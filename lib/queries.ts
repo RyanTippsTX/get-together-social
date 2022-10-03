@@ -76,13 +76,19 @@ export async function hardDeleteEvent(event_id: string) {
 export async function getEvents(user_id: string) {
   return await supabase.from('events').select('*, hosts (*)').eq('host_id', user_id);
 }
-export async function getEvent(url_code: string, url_string: string) {
+export async function getEvent(
+  lookupKey: { url_code: string; url_string: string } | { event_id: string }
+) {
+  if ('event_id' in lookupKey) {
+    const { event_id } = lookupKey;
+    return await supabase.from('events').select('*, hosts (*)').match({ event_id }).single();
+  }
+
+  const { url_code, url_string } = lookupKey;
   return await supabase
     .from('events')
     .select('*, hosts (*)')
     .match({ url_code, url_string })
-    // .eq('url_code', url_code)
-    // .eq('url_string', url_string.toLowerCase())  // omit for now
     .single();
 }
 export async function getEventViewCount(event_id: string) {
