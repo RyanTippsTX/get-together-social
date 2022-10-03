@@ -46,8 +46,11 @@ export default function EventPage({ event }: { event: Event }) {
   } = event;
 
   const [contributions, setContributions] = useState<Contributions | undefined>(undefined);
+  const [contributionsStale, setContributionsStale] = useState(false);
+
   const [analyticsSent, setAnalyticsSent] = useState<boolean>(false);
   const { session, user, loading, signOut, signInWithEmail, signInWithGoogle } = useAuth();
+  const [dataDump, setDataDump] = useState<any>(null);
 
   // log page visit only once
   useEffect(() => {
@@ -58,20 +61,58 @@ export default function EventPage({ event }: { event: Event }) {
         .from('page_visits')
         .insert([{ event_id, user_is_host: user?.id == host_id }]);
       setAnalyticsSent(true);
-      console.log('site visit logged for ', user?.email || user?.id || 'guest');
+      // console.log('site visit logged for ', user?.email || user?.id || 'guest');
     })();
   }, [loading, user, event_id, host_id, analyticsSent]);
 
-  // fetch contributions if applicable
+  // fetch contributions when stale
   useEffect(() => {
-    (async () => {
-      if (contributions_enabled) {
+    if (contributions_enabled && contributionsStale) {
+      (async () => {
         const { data, error } = await getContributions(event_id);
-
+        // console.log('new contributions fetched: ', data);
         setContributions(data as Contributions);
-      }
-    })();
+        setContributionsStale(false);
+      })();
+    }
+  }, [contributions_enabled, contributionsStale, event_id]);
+
+  // subscribe to db realtime
+  // (since realtime does not support views, use realtime to mark data stale then refetch contributions with join query)
+  useEffect(() => {
+    console.log('mount & subscribe');
+    if (contributions_enabled) {
+      const channel = supabase
+        .channel(`public:contributions:event_id=eq.${event_id}`)
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'contributions',
+            filter: `event_id=eq.${event_id}`,
+          },
+          () => {
+            setContributionsStale(true);
+          }
+        )
+        .subscribe();
+      return () => {
+        console.log('unmount & unsubscribe');
+        supabase.removeChannel(channel);
+      };
+    }
   }, [event_id, contributions_enabled]);
+
+  // enable/disable contributions fetching & subscriptions
+  // (basically prevents unnecesry network traffic if the feature is disabled by user)
+  useEffect(() => {
+    if (contributions_enabled) {
+      setContributionsStale(true);
+    } else {
+      setContributionsStale(false);
+    }
+  }, [contributions_enabled]);
 
   const image = (
     <div className="flex flex-col  items-center">
