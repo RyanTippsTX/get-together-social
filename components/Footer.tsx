@@ -5,9 +5,9 @@ import { Brand } from './Brand';
 // currently, some paths included in SiteMap for dev convience only
 const sitePaths = new Map<string, string>([
   ['/', 'Home'],
+  ['/1234567/Dunder-Mifflin-Christmas-Party', 'Demo'], // omit in production
   ['/about', 'About'],
-  ['/stats', 'Site Statistics'],
-  ['/1234567/Dunder-Mifflin-Christmas-Party', 'Sample Event'], // omit in production
+  ['/stats', 'Statistics'],
 ]);
 const hostPaths = new Map<string, string>([
   ['/login', 'Host Login'],
