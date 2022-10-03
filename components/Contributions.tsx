@@ -97,7 +97,13 @@ function ContributionsTableRow({
   //     * Claimed by N guests   // future feature, for now host will need to make multiple requests if wanting to do that
   //     * Claimed by the host.   // this is not a request, so convert
 
-  const claimButton = <div className="btn btn-primary btn-sm">Claim</div>;
+  const claimButton = (
+    <div className="btn btn-sm gap-1">
+      <p className="">Claim</p>
+      <p className="text-2xl">🙋🏻</p>
+      {/* <p className="block text-2xl">✋🏻</p> */}
+    </div>
+  );
 
   const item = (
     <div className="grow">
@@ -146,7 +152,11 @@ function NewContributionForm({ contributions_frozen }: { contributions_frozen: b
               placeholder="Add an item..."
               className="input input-bordered w-full"
             />
-            <div className="btn btn-primary text-3xl">🕊</div>
+            {/* <div className="btn btn-primary text-3xl">🕊</div> */}
+            <div className="btn gap-2">
+              <p className="text-lg">Submit</p>
+              <p className="text-3xl">✍🏻</p>
+            </div>
           </div>
         </div>
       )}
