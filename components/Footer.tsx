@@ -4,25 +4,25 @@ import { Brand } from './Brand';
 // list paths you want to show up in the Site Map in the site-wide footer
 // currently, some paths included in SiteMap for dev convience only
 const sitePaths = new Map<string, string>([
-  ['/', 'Home'],
-  ['/1234567/Dunder-Mifflin-Christmas-Party', 'Demo'], // omit in production
-  ['/about', 'About'],
-  ['/stats', 'Statistics'],
+  ['Home', '/'],
+  ['Demo', '/1234567/Dunder-Mifflin-Christmas-Party'], // omit in production
+  ['About', '/about'],
+  ['Statistics', '/stats'],
 ]);
 const hostPaths = new Map<string, string>([
-  ['/login', 'Host Login'],
-  ['/dashboard', 'Dashboard'],
-  ['/new', 'New Event'], // omit in productin
+  ['Host Login', '/login'],
+  ['Dashboard', '/dashboard'],
+  ['New Event', '/new'], // omit in productin
 ]);
 const legalPaths = new Map<string, string>([
-  ['/legal/terms', 'Terms of use'],
-  ['/legal/privacy', 'Privacy policy'],
-  ['/legal/cookies', 'Cookie policy'],
+  ['Terms of use', '/legal/'],
+  ['Privacy policy', '/legal/'],
+  ['Cookie policy', '/legal/'],
 ]);
 
 const Links = ({ routes }: { routes: Map<string, string> }) => {
   const navElements: React.ReactElement[] = [];
-  routes.forEach((title, path) => {
+  routes.forEach((path, title) => {
     navElements.push(
       <div key={path}>
         <Link href={path}>
