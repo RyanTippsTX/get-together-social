@@ -103,7 +103,7 @@ export function EventCard({ event }: { event: Event }) {
               const eventUrl = 'https://gettogether.social/' + url_code + '/' + url_string;
               navigator.clipboard.writeText(eventUrl);
               // Alert the copied text
-              alert('Copied the text: ' + eventUrl);
+              alert('Copied to clipboard: ' + eventUrl);
             }}
             className="btn btn-primary flex"
           >
