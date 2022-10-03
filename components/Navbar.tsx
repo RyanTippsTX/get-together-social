@@ -1,5 +1,5 @@
 import { Brand } from './Brand';
-import { OptionsButton } from './OptionsButton';
+import { OptionsButton } from './NavbarOptionsButton';
 import { Avatar } from './Avatar';
 import { useAuth } from '../lib/auth';
 import { useProfile } from '../lib/profile';
