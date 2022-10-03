@@ -1,4 +1,9 @@
-export function OptionsButton() {
+import Link from 'next/link';
+import { MouseEventHandler } from 'react';
+import { useAuth } from '../lib/auth';
+
+export function NavbarOptionsButton() {
+  const { signOut } = useAuth();
   return (
     <div className="dropdown dropdown-end flex">
       <div tabIndex={0} className="btn btn-square btn-ghost">
@@ -22,18 +27,25 @@ export function OptionsButton() {
         className="menu menu-compact dropdown-content rounded-box absolute top-full right-0 mt-3 w-auto bg-white p-2 shadow"
       >
         <li>
-          <a className="justify-between">
-            Profile
-            {/* <span className="badge">New</span> */}
-          </a>
+          <Link href={'/dashboard'}>
+            <a className="">Dashboard</a>
+          </Link>
         </li>
         <li>
-          <a>Settings</a>
+          <Link href={'/new'}>
+            <a className="">New Event</a>
+          </Link>
         </li>
         <li>
-          <a>Logout</a>
+          <button onClick={signOut as MouseEventHandler} className="">
+            Sign Out
+          </button>
         </li>
       </ul>
     </div>
   );
 }
+
+// ['/login', 'Host Login'],
+// ['/dashboard', 'Dashboard'],
+// ['/new', 'New Event'], // omit in productin

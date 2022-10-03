@@ -37,9 +37,13 @@ export default function Dashboard() {
   }, [user]);
 
   // route to log-in page if not logged in
-  if (!sessionLoading && !user) {
-    router.push('/login');
-  }
+  // (this is inside a useEffect hook so that it does not take precence over the routing when signing out)
+  useEffect(() => {
+    if (!sessionLoading && !user) {
+      router.push('/login');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Layout>
