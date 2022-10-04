@@ -11,6 +11,7 @@ function generateUrlCode() {
 function readableUrlEncodeTitle(title: string) {
   return title
     .replace(/[^a-zA-Z\d\s:]/g, '') // alphanumeric only
+    .trim() // remove whitespace from beginning or end, often leftover from removal of leading / trailing emoji
     .split(/\s{1,}/g) // condense white space
     .join('-') // hyphen delineated
     .toLowerCase(); // lowercase
