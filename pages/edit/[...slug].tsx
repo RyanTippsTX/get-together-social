@@ -1,11 +1,47 @@
-import Layout from '../components/layout';
+import Layout from '../../components/layout';
+import { useAuth } from '../../lib/auth';
+import { getEvent, getContribution, getContributions } from '../../lib/queries';
+import { Host, Event, Guest, Contribution, Contributions } from '../../lib/queries.types';
 import { useRouter } from 'next/router';
-import { useAuth } from '../lib/auth';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { createEvent } from '../lib/queries';
-import { Inputs } from '../lib/forms.types';
+import { updateEvent } from '../../lib/queries';
+import { Inputs } from '../../lib/forms.types';
 
-export default function New() {
+export async function getServerSideProps(context: { params: { slug: string[] } }) {
+  const { slug } = context.params;
+  const [url_code, url_string_raw] = slug;
+  const url_string = url_string_raw.toLowerCase();
+
+  const { data: event, error } = await getEvent({ url_code });
+  // dont bother fetching guest contributions on initial SSR
+
+  if (!event) return { notFound: true }; // redirect 404
+
+  return {
+    props: { event },
+  };
+}
+
+export default function Edit({ event }: { event: Event }) {
+  const {
+    event_id,
+    created_at,
+    host_id,
+    title,
+    date,
+    time,
+    location,
+    photo_url,
+    description,
+    contributions_enabled,
+    contributions_frozen,
+    contributions_custom_title,
+    url_code,
+    url_string,
+    hosts: host,
+    hosts: { avatar_url, display_name },
+  } = event;
+
   const router = useRouter();
   const { session, loading, user } = useAuth();
 
@@ -15,19 +51,25 @@ export default function New() {
     register,
     handleSubmit,
     watch,
-    formState: { errors },
+    formState: { errors, dirtyFields },
     formState,
   } = useForm<Inputs>({
     defaultValues: {
-      contributions_enabled: true,
-      contributions_frozen: false,
-      contributions_custom_title_enabled: false,
+      title,
+      date,
+      time: time || undefined,
+      location: location || undefined,
+      description,
+      contributions_enabled,
+      contributions_frozen,
+      contributions_custom_title_enabled: contributions_custom_title ? true : false,
+      contributions_custom_title: contributions_custom_title || undefined,
     },
   });
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     // console.log('Form submission data:', data);
     (async () => {
-      const { route, error } = await createEvent({ ...data, host_id: user.id });
+      const { route, error } = await updateEvent({ ...data, event_id, url_code: `${url_code}` });
       if (error) {
         alert('An error has occured');
         console.error(error);
@@ -38,15 +80,16 @@ export default function New() {
     })();
   };
 
+  if (dirtyFields) console.log('dirty fields: ', dirtyFields);
   // if (errors) console.log(errors);
   // console.log('Form State', formState);
-  console.log('contributions_enabled', watch('contributions_enabled'));
+  // console.log('contributions_enabled', watch('contributions_enabled'));
 
   const heading = (
     <div className="py-4">
       <h2 className="mt-6 text-center text-5xl font-bold tracking-tight text-gray-900">🥳</h2>
       <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
-        Create A New Event
+        Edit Your Event Page
       </h2>
       <p className="mt-2 text-center text-sm text-gray-600">Wooohhh Party!!!</p>
     </div>
@@ -89,6 +132,13 @@ export default function New() {
                       className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     />
                     <FormError message={errors.title?.message as string} />
+                    {dirtyFields?.title && (
+                      <FormError
+                        message={
+                          'Warning: Modifying your event title will also change the URL, however old URLs will still work.'
+                        }
+                      />
+                    )}
                   </div>
 
                   {/* input date */}
@@ -343,7 +393,7 @@ export default function New() {
                   type="submit"
                   className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 >
-                  Create
+                  Save
                 </button>
               </div>
             </div>

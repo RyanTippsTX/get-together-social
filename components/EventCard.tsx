@@ -125,7 +125,14 @@ export function EventCard({ event }: { event: Event }) {
             </div>
             Copy Link
           </button>
-          <button className="btn btn-primary">Edit</button>
+          <button
+            onClick={() => {
+              router.push('/edit/' + url_code + '/' + url_string);
+            }}
+            className="btn btn-primary"
+          >
+            Edit
+          </button>
           <button
             onClick={() => {
               router.push('/' + url_code + '/' + url_string);
