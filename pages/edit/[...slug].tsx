@@ -80,7 +80,6 @@ export default function Edit({ event }: { event: Event }) {
     })();
   };
 
-  if (dirtyFields) console.log('dirty fields: ', dirtyFields);
   // if (errors) console.log(errors);
   // console.log('Form State', formState);
   // console.log('contributions_enabled', watch('contributions_enabled'));
