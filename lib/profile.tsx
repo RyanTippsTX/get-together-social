@@ -29,6 +29,8 @@ export function ProfileProvider({ ...props }) {
           .eq('host_id', user.id)
           .single();
         setProfile(data);
+        console.log('profile:', error);
+        setLoading(false);
       } else {
         setProfile(null);
       }
