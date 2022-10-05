@@ -1,6 +1,21 @@
 import supabase from '../lib/supabase';
-import { Inputs } from './forms.types';
+import { ProfileInputs, Inputs } from './forms.types';
 import { Event } from '../lib/queries.types';
+
+export async function createHostProfile({
+  display_name,
+  // avatar_url,
+  host_id,
+}: ProfileInputs & { host_id: string }) {
+  const { error } = await supabase.from('hosts').insert([
+    {
+      display_name,
+      // avatar_url,
+      host_id,
+    },
+  ]);
+  return { error };
+}
 
 // Returns a random integer from 0 to 9,999,999:
 function generateUrlCode() {
