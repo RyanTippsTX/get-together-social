@@ -24,7 +24,7 @@ const Links = ({ routes }: { routes: Map<string, string> }) => {
   const navElements: React.ReactElement[] = [];
   routes.forEach((path, title) => {
     navElements.push(
-      <div key={path}>
+      <div key={title}>
         <Link href={path}>
           <a className="link link-hover">{title}</a>
         </Link>
