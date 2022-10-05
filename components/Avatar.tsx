@@ -61,7 +61,7 @@ export function Avatar({
   return (
     <div className="avatar placeholder">
       <div className="bg-neutral-focus text-neutral-content w-10 rounded-full">
-        <span className="text-3xl">{getInitials(displayName || email || '?')}</span>
+        <span className="text-xl font-medium">{getInitials(displayName || email || '?')}</span>
       </div>
     </div>
   );

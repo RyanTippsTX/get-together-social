@@ -1,3 +1,4 @@
+import { getInitials } from '../lib/initials';
 import { useEffect, useState } from 'react';
 import Layout from '../components/layout';
 import supabase from '../lib/supabase';
@@ -53,20 +54,30 @@ export default function Dashboard() {
         {user && profile && (
           <div className="flex flex-wrap place-content-between items-center gap-4 ">
             <div className="flex-0 flex items-center gap-4">
-              <div className="avatar">
-                <div className="w-12 rounded-full">
-                  <figure className="relative h-full w-full">
-                    <Image
-                      src={profile.avatar_url} // avoid abusing GitHub's image hosting
-                      alt={'picture of ' + profile.display_name}
-                      layout="fill"
-                      objectFit="cover"
-                      placeholder="blur"
-                      blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
-                    />
-                  </figure>
+              {profile.avatar_url ? (
+                <div className="avatar">
+                  <div className="w-12 rounded-full">
+                    <figure className="relative h-full w-full">
+                      <Image
+                        src={profile.avatar_url} // avoid abusing GitHub's image hosting
+                        alt={'picture of ' + profile.display_name}
+                        layout="fill"
+                        objectFit="cover"
+                        placeholder="blur"
+                        blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
+                      />
+                    </figure>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="avatar placeholder">
+                  <div className="bg-neutral-focus text-neutral-content w-12 rounded-full">
+                    <span className="text-2xl font-medium">
+                      {getInitials(profile.display_name || profile.email || '?')}
+                    </span>
+                  </div>
+                </div>
+              )}
               <div>
                 <h1 className="text-lg font-semibold">{profile.display_name}</h1>
                 <h2 className="">{user.email}</h2>
