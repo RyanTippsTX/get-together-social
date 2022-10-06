@@ -40,7 +40,7 @@ export default function New() {
 
   // if (errors) console.log(errors);
   // console.log('Form State', formState);
-  console.log('contributions_enabled', watch('contributions_enabled'));
+  // console.log('contributions_enabled', watch('contributions_enabled'));
 
   const heading = (
     <div className="py-4">
