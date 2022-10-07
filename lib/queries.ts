@@ -16,6 +16,21 @@ export async function createHostProfile({
   ]);
   return { error };
 }
+export async function updateHostDisplayName({
+  display_name,
+  host_id,
+}: {
+  display_name: string;
+  host_id: string;
+}) {
+  const { error } = await supabase
+    .from('hosts')
+    .update({
+      display_name,
+    })
+    .match({ host_id });
+  return { error };
+}
 
 // Returns a random integer from 0 to 9,999,999:
 function generateUrlCode() {
