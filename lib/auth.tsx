@@ -6,7 +6,7 @@ import { Session, User } from '@supabase/supabase-js';
 interface AuthContextInterface {
   session: Session | null;
   user: User | null;
-  loading: boolean;
+  sessionStale: boolean;
   signOut: Function;
   signInWithGoogle: Function;
   signInWithMagicLink: Function;
@@ -15,28 +15,28 @@ export const AuthContext = createContext<AuthContextInterface | null>(null);
 
 export function AuthProvider({ ...props }) {
   const [session, setSession] = useState<Session | null>(null);
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  // useEffect(() => {
-  //   console.log('loading: ', loading);
-  // }, [loading]);
+  const [sessionStale, setSessionStale] = useState(true);
+  // const [sessionLoading, setSessionLoading] = useState(true);
 
   useEffect(() => {
+    // setSessionLoading(true);
     (async () => {
       // get initial session
+      console.log('⚙️ loading initial session');
       const { data, error } = await supabase.auth.getSession();
-      // console.log('initial session loaded: ', data.session);
-      setSession(data.session);
-      setUser(data.session?.user ?? null);
-      setLoading(false);
 
       // supabase updates session on future auth state changes
-      supabase.auth.onAuthStateChange((event: string, session: any) => {
+      supabase.auth.onAuthStateChange((event: string, session: Session | null) => {
         setSession(session);
-        setUser(session?.user ?? null);
+        setSessionStale(false);
+        // setUser(session?.user ?? null);
         // console.log('supabase updated Auth state');
       });
+
+      // console.log('initial session loaded: ', data.session);
+      setSession(data.session);
+      setSessionStale(false);
+      console.log('⚙️ initial session done loading');
 
       // housekeeping
       // return () => {
@@ -50,9 +50,9 @@ export function AuthProvider({ ...props }) {
 
   // Functions for Auth mutation & page redirect
   const signOut = async () => {
-    setLoading(true);
+    // setSessionLoading(true);
     const { error } = await supabase.auth.signOut();
-    setLoading(false);
+    // setSessionLoading(false);
     if (error) {
       console.error(error);
       router.push('/dashboard');
@@ -62,11 +62,11 @@ export function AuthProvider({ ...props }) {
   };
 
   const signInWithGoogle = async () => {
-    setLoading(true);
+    setSessionStale(true);
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
     });
-    setLoading(false);
+    setSessionStale(false);
     if (error) {
       console.error(error);
       router.push('/');
@@ -92,13 +92,15 @@ export function AuthProvider({ ...props }) {
     }
   };
 
+  console.log('session is:', session);
+
   return (
     <AuthContext.Provider
       value={{
         // provides auth state & auth mutation functions
         session,
-        user,
-        loading,
+        user: session?.user || null,
+        sessionStale,
         signOut,
         signInWithGoogle,
         signInWithMagicLink,
@@ -110,6 +112,7 @@ export function AuthProvider({ ...props }) {
 
 // hook for using app-wide Auth state & Auth mutation functions
 export function useAuth() {
+  111;
   const context: any = useContext(AuthContext);
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');

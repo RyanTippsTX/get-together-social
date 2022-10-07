@@ -15,15 +15,8 @@ import { ModalAvatarForm } from '../components/ModalAvatarForm';
 
 export default function Dashboard() {
   const router = useRouter();
-  const {
-    session,
-    user,
-    loading: sessionLoading,
-    signOut,
-    signInWithEmail,
-    signInWithGoogle,
-  } = useAuth();
-  const { profile, loading: profileLoading } = useProfile();
+  const { session, user, sessionStale, signOut, signInWithEmail, signInWithGoogle } = useAuth();
+  const { profile, avatar_url, display_name, profileStale } = useProfile();
 
   const [avatarModalOpen, setAvatarModalOpen] = useState<boolean>(false);
   const [displayNameModalOpen, setDisplayNameModalOpen] = useState<boolean>(false);
@@ -31,25 +24,27 @@ export default function Dashboard() {
 
   // fetch events
   useEffect(() => {
-    (async () => {
-      if (user) {
+    if (user) {
+      (async () => {
         const { data, error } = await getEvents(user.id);
         setEvents(data as Events);
-      } else {
-        setEvents(undefined);
-      }
-      return;
-    })();
+      })();
+    } else {
+      setEvents(undefined);
+    }
   }, [user]);
 
   // route to log-in page if not logged in
   // (this is inside a useEffect hook so that it does not take precence over the routing when signing out)
   useEffect(() => {
-    if (!sessionLoading && !user) {
+    if (!sessionStale && !user) {
       router.push('/login');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [sessionStale]);
+
+  console.log('render with profile:', profile);
+  console.log('render with display_name:', display_name);
 
   return (
     <Layout>
@@ -70,7 +65,7 @@ export default function Dashboard() {
       <div className="px-2 py-4 text-zinc-800">
         <h1 className="pb-2 text-4xl font-bold tracking-tight">Host Dashboard</h1>
 
-        {user && profile && (
+        {!sessionStale && user && !profileStale && profile && (
           <div className="flex flex-wrap place-content-between items-center gap-4 ">
             <div className="flex-0 flex items-center gap-4">
               <div
@@ -79,14 +74,14 @@ export default function Dashboard() {
                 }}
                 className="hover:cursor-pointer"
               >
-                {profile.avatar_url ? (
+                {avatar_url ? (
                   <div className="avatar">
                     <EditImageIcon />
                     <div className="w-16 rounded-full">
                       <figure className="relative h-full w-full">
                         <Image
-                          src={profile.avatar_url} // avoid abusing GitHub's image hosting
-                          alt={'picture of ' + profile.display_name}
+                          src={avatar_url} // avoid abusing GitHub's image hosting
+                          alt={'picture of ' + display_name}
                           layout="fill"
                           objectFit="cover"
                           placeholder="blur"

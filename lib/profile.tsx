@@ -11,43 +11,63 @@ interface ProfileContextInterface {
   profile: Profile | null | undefined;
   // undefined - user is authenticated but does not have profile data
   // null - no user
-  loading: boolean;
+  avatar_url: string | null | undefined;
+  display_name: string | null | undefined;
+  profileStale: boolean;
   setProfileStale: Function;
 }
 export const ProfileContext = createContext<ProfileContextInterface | null>(null);
 
 export function ProfileProvider({ ...props }) {
   const router = useRouter();
-  const { user } = useAuth();
+  const { session, user, sessionStale } = useAuth();
   const [profile, setProfile] = useState<Profile | null | undefined>(null);
   const [profileStale, setProfileStale] = useState<boolean>(true);
-  const [loading, setLoading] = useState(true);
+  // const [profileLoading, setProfileLoading] = useState(false);
+
+  // useEffect(() => {
+  //   if (session && sessionLoading) console.error('batch failed');
+  // }, [session, sessionLoading]);
 
   // route first-time sign-ups to Welcome page to create their profile
   useEffect(() => {
-    if (user && !loading && !profile) {
+    if (user && !profile && !profileStale) {
       router.push('/welcome');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading]);
+  }, []);
+
+  console.log('user is:', user?.email);
+  console.log('didplay name is:', profile?.display_name);
+
+  // on any change in session/user, mark profile stale
+  useEffect(() => {
+    setProfileStale(true);
+  }, [user]);
 
   // fetch profile data
   useEffect(() => {
-    (async () => {
-      if (user && profileStale) {
+    if (user!) {
+      setProfile(null);
+      setProfileStale(false);
+    }
+
+    if (user && profileStale) {
+      (async () => {
         const { data, error } = await supabase
           .from('hosts')
           .select('*')
           .eq('host_id', user.id)
           .single();
+        console.log('fetched profile:', data);
         setProfile(data);
-        // console.log('profile:', error);
-        setLoading(false);
-      } else {
-        setProfile(null);
-      }
-      return;
-    })();
+        setProfileStale(false);
+        // if (error) console.log('profile error', error);
+      })();
+    }
+    // setProfileStale(false);
+    // setProfileLoading(false);
+    // return;
   }, [user, profileStale]);
 
   return (
@@ -55,7 +75,9 @@ export function ProfileProvider({ ...props }) {
       value={{
         // provides profile state & profile mutation functions
         profile,
-        loading,
+        avatar_url: profile?.avatar_url,
+        display_name: profile?.display_name,
+        profileStale,
         setProfileStale,
         // add profile mutation functions here, e.g:
         // setHostAvatarUrl,
