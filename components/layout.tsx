@@ -1,6 +1,9 @@
 import Head from 'next/head';
 import { Footer } from './Footer';
 import { Navbar } from './Navbar';
+import { useAuth } from '../lib/auth';
+import { useProfile } from '../lib/profile';
+import { Loading } from './Loading';
 
 export const siteTitle = 'GetTogether.social';
 const siteAuthor = 'Ryan Tipps';
@@ -12,6 +15,8 @@ export default function Layout({
   children: React.ReactNode | React.ReactNode[];
   home?: boolean;
 }) {
+  // const { sessionLoading } = useAuth();
+  // const { profileLoading } = useProfile();
   return (
     <>
       <Head>
@@ -35,6 +40,11 @@ export default function Layout({
       </header>
       <main className="xs:min-h-[45rem] min-h-[35rem] bg-zinc-50">
         <div className="container mx-auto">{children}</div>
+        {/* {sessionLoading || profileLoading ? (
+          <Loading />
+        ) : (
+          <div className="container mx-auto">{children}</div>
+        )} */}
       </main>
       <footer>
         <Footer />
