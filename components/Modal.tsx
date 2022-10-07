@@ -27,7 +27,7 @@ export function Modal({
           // console.log('clicked card');
         }}
       >
-        <div className="card-body">{children}</div>
+        {children}
       </div>
     </div>
   );
