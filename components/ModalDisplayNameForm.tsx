@@ -75,12 +75,12 @@ export function ModalDisplayNameForm({
 
           {/* end of inputs */}
 
-          {/* submit button */}
+          {/* action buttons */}
           <div className="modal-action">
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                // console.log('clicked card');
+                // console.log('clicked button');
                 closeModal();
               }}
               className="btn btn-ghost"
