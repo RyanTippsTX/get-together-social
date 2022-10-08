@@ -2,9 +2,7 @@ import { Modal } from './Modal';
 import { useAuth } from '../lib/auth';
 import { useProfile } from '../lib/profile';
 import { updateHostDisplayName } from '../lib/queries';
-import { useRouter } from 'next/router';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { ProfileInputs } from '../lib/forms.types';
 
 export function ModalDisplayNameForm({
   isOpen,
@@ -13,7 +11,6 @@ export function ModalDisplayNameForm({
   isOpen: boolean;
   closeModal: Function;
 }) {
-  const router = useRouter();
   const { session, user, sessionStale, signOut, signInWithEmail, signInWithGoogle } = useAuth();
   const { profile, display_name, profileStale, setProfileStale } = useProfile();
 
