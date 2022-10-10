@@ -43,9 +43,6 @@ export default function Dashboard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionStale]);
 
-  console.log('render with profile:', profile);
-  console.log('render with display_name:', display_name);
-
   return (
     <Layout>
       {displayNameModalOpen && (
@@ -143,51 +140,9 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* {user && profile && (
-          // <div className="flex flex-1 flex-col items-center gap-2 pb-4">
-          <div className="flex flex-1 flex-col items-center gap-2 pb-4">
-            <div className="avatar">
-              <div className="w-40 rounded-full">
-                <figure className="relative h-full w-full">
-                  <Image
-                    src={profile.avatar_url} // avoid abusing GitHub's image hosting
-                    alt={'picture of ' + profile.display_name}
-                    layout="fill"
-                    objectFit="cover"
-                    placeholder="blur"
-                    blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
-                  />
-                </figure>
-              </div>
-            </div>
-
-            <div className="flex flex-1 flex-col items-center">
-              <h1 className="text-2xl font-bold">{profile.display_name}</h1>
-              <h2 className="text-zinc-500">{user.email}</h2>
-            </div>
-
-            <div className="card-actions mt-2">
-              <button
-                onClick={() => {
-                  router.push('/new');
-                }}
-                className="btn btn-primary"
-              >
-                Create New Event
-              </button>
-              <button onClick={signOut} className="btn btn-primary">
-                Sign Out
-              </button>
-            </div>
-          </div>
-        )} */}
-
         {events && (
           <div className="mb-4 py-4 ">
             <h1 className="pb-4 text-3xl font-bold tracking-tight">Your Events:</h1>
-            {/* <div className="flex items-center justify-center">
-              <h1 className="pb-4 text-3xl font-bold tracking-tight">Your Events</h1>
-            </div> */}
             <div className="flex flex-wrap place-content-center gap-6">
               {events.map((event: Event) => (
                 <EventCard key={event.event_id} {...{ event }} />
