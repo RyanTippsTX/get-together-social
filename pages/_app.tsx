@@ -1,15 +1,18 @@
 import '../styles/globals.css';
 import type { AppProps } from 'next/app';
+import { AppLoadingProvider } from '../lib/appLoading';
 import { AuthProvider } from '../lib/auth';
 import { ProfileProvider } from '../lib/profile';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <AuthProvider>
-      <ProfileProvider>
-        <Component {...pageProps} />
-      </ProfileProvider>
-    </AuthProvider>
+    <AppLoadingProvider>
+      <AuthProvider>
+        <ProfileProvider>
+          <Component {...pageProps} />
+        </ProfileProvider>
+      </AuthProvider>
+    </AppLoadingProvider>
   );
 }
 
