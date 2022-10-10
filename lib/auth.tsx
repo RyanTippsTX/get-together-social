@@ -16,27 +16,23 @@ export const AuthContext = createContext<AuthContextInterface | null>(null);
 export function AuthProvider({ ...props }) {
   const [session, setSession] = useState<Session | null>(null);
   const [sessionStale, setSessionStale] = useState(true);
-  // const [sessionLoading, setSessionLoading] = useState(true);
 
   useEffect(() => {
     // setSessionLoading(true);
     (async () => {
       // get initial session
-      console.log('⚙️ loading initial session');
       const { data, error } = await supabase.auth.getSession();
 
       // supabase updates session on future auth state changes
       supabase.auth.onAuthStateChange((event: string, session: Session | null) => {
         setSession(session);
         setSessionStale(false);
-        // setUser(session?.user ?? null);
         // console.log('supabase updated Auth state');
       });
 
       // console.log('initial session loaded: ', data.session);
       setSession(data.session);
       setSessionStale(false);
-      console.log('⚙️ initial session done loading');
 
       // housekeeping
       // return () => {
@@ -91,8 +87,6 @@ export function AuthProvider({ ...props }) {
       alert(`Email has been sent to ${email}`);
     }
   };
-
-  console.log('session is:', session);
 
   return (
     <AuthContext.Provider

@@ -1,6 +1,5 @@
 import { createContext, useContext, useEffect, useState, FormEvent } from 'react';
 import supabase from './supabase';
-import { Session, User } from '@supabase/supabase-js';
 import { Database } from './database.types';
 import { useAuth } from './auth';
 import { useRouter } from 'next/router';
@@ -22,12 +21,7 @@ export function ProfileProvider({ ...props }) {
   const router = useRouter();
   const { session, user, sessionStale } = useAuth();
   const [profile, setProfile] = useState<Profile | null | undefined>(null);
-  const [profileStale, setProfileStale] = useState<boolean>(true);
-  // const [profileLoading, setProfileLoading] = useState(false);
-
-  // useEffect(() => {
-  //   if (session && sessionLoading) console.error('batch failed');
-  // }, [session, sessionLoading]);
+  const [profileStale, setProfileStale] = useState<boolean>(false); // "stale" with respect to the provided user/session, regardless if that user/session is marked stale
 
   // route first-time sign-ups to Welcome page to create their profile
   useEffect(() => {
@@ -37,38 +31,39 @@ export function ProfileProvider({ ...props }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  console.log('user is:', user?.email);
-  console.log('didplay name is:', profile?.display_name);
-
-  // on any change in session/user, mark profile stale
+  // on any change in session/user:
+  // if no user, clear profile data
+  // if new user, mark profile stale
   useEffect(() => {
-    setProfileStale(true);
-  }, [user]);
-
-  // fetch profile data
-  useEffect(() => {
-    if (user!) {
+    if (!user) {
       setProfile(null);
       setProfileStale(false);
+    } else {
+      setProfileStale(true);
     }
+    // console.log('user is', user);
+  }, [user]);
 
-    if (user && profileStale) {
+  // if profile stale, fetch profile data (stale implies there IS a user)
+  useEffect(() => {
+    if (profileStale) {
       (async () => {
         const { data, error } = await supabase
           .from('hosts')
           .select('*')
           .eq('host_id', user.id)
           .single();
-        console.log('fetched profile:', data);
+        // console.log('fetched profile:', data);
+        // if (error) console.log('profile error', error);
         setProfile(data);
         setProfileStale(false);
-        // if (error) console.log('profile error', error);
       })();
     }
-    // setProfileStale(false);
-    // setProfileLoading(false);
-    // return;
-  }, [user, profileStale]);
+  }, [profileStale, user]);
+
+  // console.log('session is:', session);
+  // console.log('user is:', user);
+  // console.log('profile is:', profile);
 
   return (
     <ProfileContext.Provider
@@ -79,9 +74,6 @@ export function ProfileProvider({ ...props }) {
         display_name: profile?.display_name,
         profileStale,
         setProfileStale,
-        // add profile mutation functions here, e.g:
-        // setHostAvatarUrl,
-        // setHostDisplayName,
       }}
       {...props}
     />

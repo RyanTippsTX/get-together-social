@@ -2,9 +2,7 @@ import { Modal } from './Modal';
 import { useAuth } from '../lib/auth';
 import { useProfile } from '../lib/profile';
 import { updateHostDisplayName } from '../lib/queries';
-import { useRouter } from 'next/router';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { ProfileInputs } from '../lib/forms.types';
 
 export function ModalDisplayNameForm({
   isOpen,
@@ -13,7 +11,6 @@ export function ModalDisplayNameForm({
   isOpen: boolean;
   closeModal: Function;
 }) {
-  const router = useRouter();
   const { session, user, sessionStale, signOut, signInWithEmail, signInWithGoogle } = useAuth();
   const { profile, display_name, profileStale, setProfileStale } = useProfile();
 
@@ -78,8 +75,19 @@ export function ModalDisplayNameForm({
 
           {/* end of inputs */}
 
-          {/* submit button */}
+          {/* action buttons */}
           <div className="modal-action">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                // console.log('clicked button');
+                closeModal();
+              }}
+              className="btn btn-ghost"
+            >
+              Cancel
+            </button>
+
             <button
               type="submit"
               // className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
