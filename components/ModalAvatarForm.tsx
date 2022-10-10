@@ -3,12 +3,13 @@ import { Modal } from './Modal';
 import { useProfile } from '../lib/profile';
 import { useState, useEffect } from 'react';
 import { FileUploader } from 'react-drag-drop-files';
+import { useAppLoading } from '../lib/appLoading';
 
 const fileTypes = ['JPG', 'JPEG', 'PNG', 'GIF'];
 
 export function ModalAvatarForm({ isOpen, closeModal }: { isOpen: boolean; closeModal: Function }) {
   const { profile, setProfileStale } = useProfile();
-
+  const { appLoading, setAppLoading } = useAppLoading();
   const [avatarFile, setAvatarFile] = useState<any>(null);
   const [previewURL, setPreviewURL] = useState<string | null>(null);
 
@@ -76,10 +77,12 @@ export function ModalAvatarForm({ isOpen, closeModal }: { isOpen: boolean; close
               e.stopPropagation();
               // console.log('clicked button');
               // console.log('file is:', avatarFile);
+              closeModal();
+              setAppLoading(true);
               (async () => {
                 await updateHostAvatar({ host_id: profile?.host_id, avatarFile });
+                setAppLoading(false);
                 setProfileStale(true);
-                closeModal();
               })();
             }}
             className="btn btn-primary"
