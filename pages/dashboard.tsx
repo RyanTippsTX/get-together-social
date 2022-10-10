@@ -72,8 +72,7 @@ export default function Dashboard() {
                 className="hover:cursor-pointer"
               >
                 {avatar_url ? (
-                  <div className="avatar">
-                    <EditImageIcon />
+                  <div className="avatar placeholder block">
                     <div className="w-16 rounded-full">
                       <figure className="relative h-full w-full">
                         <Image
@@ -86,6 +85,7 @@ export default function Dashboard() {
                         />
                       </figure>
                     </div>
+                    <EditImageIcon />
                   </div>
                 ) : (
                   <div className="avatar placeholder">
