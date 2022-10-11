@@ -46,7 +46,7 @@ export async function updateHostAvatar({
     });
 
   // set url in host profile
-  const publicUrl = `https://titcmdqlpvlqjhcculma.supabase.co/storage/v1/object/public/hosts/avatars/a25f3d41-01c4-49e8-b828-39c3fc9e1081/v${newVersion}`;
+  const publicUrl = `https://titcmdqlpvlqjhcculma.supabase.co/storage/v1/object/public/hosts/avatars/${host_id}/v${newVersion}`;
   const { error } = await supabase
     .from('hosts')
     .update({
