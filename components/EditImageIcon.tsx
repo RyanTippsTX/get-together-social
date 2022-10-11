@@ -1,6 +1,6 @@
 export function EditImageIcon() {
   return (
-    <div className="absolute -bottom-1.5 -right-1.5 z-50 flex h-1/2 w-1/2 rounded-full   bg-white text-zinc-800 shadow">
+    <div className="absolute -bottom-1.5 -right-1.5 z-30 flex h-1/2 w-1/2 rounded-full   bg-white text-zinc-800 shadow">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
