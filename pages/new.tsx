@@ -296,7 +296,7 @@ export default function New() {
                   </div>
 
                   {/* input photo */}
-                  <div className="col-span-full">
+                  {/* <div className="col-span-full">
                     <label className="block text-sm font-medium text-gray-700">Cover Photo</label>
                     <div className="mt-1 flex justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6">
                       <div className="space-y-1 text-center">
@@ -332,7 +332,7 @@ export default function New() {
                         <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
 
                   {/* end of inputs */}
                 </div>
