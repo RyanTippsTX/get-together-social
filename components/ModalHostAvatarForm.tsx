@@ -8,7 +8,13 @@ import Image from 'next/image';
 
 const fileTypes = ['JPG', 'JPEG', 'PNG', 'GIF'];
 
-export function ModalAvatarForm({ isOpen, closeModal }: { isOpen: boolean; closeModal: Function }) {
+export function ModalHostAvatarForm({
+  isOpen,
+  closeModal,
+}: {
+  isOpen: boolean;
+  closeModal: Function;
+}) {
   const { profile, setProfileStale } = useProfile();
   const { appLoading, setAppLoading } = useAppLoading();
   const [avatarFile, setAvatarFile] = useState<any>(null);
@@ -49,7 +55,6 @@ export function ModalAvatarForm({ isOpen, closeModal }: { isOpen: boolean; close
     <Modal {...{ isOpen }} {...{ closeModal }}>
       <div className="card-body ">
         <h2 className="card-title">Upload a New Image</h2>
-        <p></p>
 
         {previewURL && (
           <div className="avatar placeholder flex place-content-center pb-2">

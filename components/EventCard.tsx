@@ -7,8 +7,9 @@ import { useRouter } from 'next/router';
 import { getEventViewCount } from '../lib/queries';
 import { useEffect, useState } from 'react';
 import { formatDate } from '../lib/dates';
+import { ModalEventAvatarForm } from './ModalEventAvatarForm';
 
-export function EventCard({ event }: { event: Event }) {
+export function EventCard({ event, setEventsStale }: { event: Event; setEventsStale: Function }) {
   const router = useRouter();
   const {
     event_id,
@@ -28,6 +29,7 @@ export function EventCard({ event }: { event: Event }) {
     hosts: { avatar_url, display_name },
   } = event;
 
+  const [eventAvatarModalOpen, setEventAvatarModalOpen] = useState<boolean>(false);
   const [viewCount, setViewCount] = useState<number | undefined>(undefined);
   useEffect(() => {
     (async () => {
@@ -38,10 +40,17 @@ export function EventCard({ event }: { event: Event }) {
 
   return (
     <div className="card card-compact bg-base-100 h-96 w-80 flex-none shadow-xl">
+      <ModalEventAvatarForm
+        event={event}
+        setEventsStale={setEventsStale}
+        isOpen={eventAvatarModalOpen}
+        closeModal={() => {
+          setEventAvatarModalOpen(false);
+        }}
+      />
       <figure className="relative h-48 w-full">
         <Image
-          // src={photo_url || defaultEventImg}
-          src={defaultEventImg}
+          src={photo_url || defaultEventImg}
           alt="Shoes"
           layout="fill"
           objectFit="cover"
@@ -140,6 +149,15 @@ export function EventCard({ event }: { event: Event }) {
             className="btn btn-primary"
           >
             View
+          </button>
+          <button
+            onClick={() => {
+              // open modal
+              setEventAvatarModalOpen(true);
+            }}
+            className="btn btn-primary"
+          >
+            Edit Photo
           </button>
           {/* <button className="btn btn-warning">Delete</button> */}
         </div>

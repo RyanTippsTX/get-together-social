@@ -151,7 +151,11 @@ export async function hardDeleteEvent(event_id: string) {
 }
 
 export async function getEvents(user_id: string) {
-  return await supabase.from('events').select('*, hosts (*)').eq('host_id', user_id);
+  return await supabase
+    .from('events')
+    .select('*, hosts (*)')
+    .eq('host_id', user_id)
+    .order('date', { ascending: true });
 }
 export async function getEvent(lookupKey: { url_code: string } | { event_id: string }) {
   if ('event_id' in lookupKey) {
