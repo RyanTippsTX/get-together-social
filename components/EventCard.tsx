@@ -39,7 +39,14 @@ export function EventCard({ event, setEventsStale }: { event: Event; setEventsSt
   }, [event_id]);
 
   return (
-    <div className="card card-compact bg-base-100 h-96 w-80 flex-none shadow-xl">
+    <div
+      className="card card-compact bg-base-100 h-96 w-80 flex-none shadow-xl hover:cursor-pointer"
+      onClick={(e) => {
+        e.stopPropagation();
+        // console.log('clicked event card');
+        router.push('/' + url_code + '/' + url_string);
+      }}
+    >
       <ModalEventAvatarForm
         event={event}
         setEventsStale={setEventsStale}
@@ -123,7 +130,13 @@ export function EventCard({ event, setEventsStale }: { event: Event; setEventsSt
           </div>
         </div>
         <p className="line-clamp-2 ">{description}</p>
-        <div className="card-actions justify-end">
+        <div
+          className="card-actions justify-end"
+          onClick={(e) => {
+            // prevent all child buttons from bubbling up to the card's onClick
+            e.stopPropagation();
+          }}
+        >
           <button
             onClick={() => {
               // Get URL and copy to clipboard
@@ -160,14 +173,14 @@ export function EventCard({ event, setEventsStale }: { event: Event; setEventsSt
           >
             Edit
           </button>
-          <button
+          {/* <button
             onClick={() => {
               router.push('/' + url_code + '/' + url_string);
             }}
             className="btn btn-primary"
           >
             View
-          </button>
+          </button> */}
           <button
             onClick={() => {
               // open modal
