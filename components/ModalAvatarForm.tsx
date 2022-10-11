@@ -13,6 +13,13 @@ export function ModalAvatarForm({ isOpen, closeModal }: { isOpen: boolean; close
   const [avatarFile, setAvatarFile] = useState<any>(null);
   const [previewURL, setPreviewURL] = useState<string | null>(null);
 
+  // clear previous avatarFile anytime the modal is opened
+  useEffect(() => {
+    if (isOpen) {
+      setAvatarFile(null);
+    }
+  }, [isOpen]);
+
   useEffect(() => {
     // wipe current state on any avatarFile change (initial, change, deletion)
     if (previewURL) {
@@ -34,6 +41,8 @@ export function ModalAvatarForm({ isOpen, closeModal }: { isOpen: boolean; close
   const handleChange = (avatarFile: any) => {
     setAvatarFile(avatarFile);
   };
+
+  // if (avatarFile) console.log(avatarFile);
 
   return (
     <Modal {...{ isOpen }} {...{ closeModal }}>
