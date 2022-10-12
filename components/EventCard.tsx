@@ -188,7 +188,7 @@ export function EventCard({ event, setEventsStale }: { event: Event; setEventsSt
             }}
             className="btn btn-primary"
           >
-            Edit Photo
+            Photo
           </button>
           {/* <button className="btn btn-warning">Delete</button> */}
         </div>
