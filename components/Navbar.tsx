@@ -26,7 +26,7 @@ export function Navbar() {
     <div className="flex-none">
       {user && (
         <>
-          <NavbarOptionsButton />
+          {/* <NavbarOptionsButton /> */}
           <Avatar
             profileLoading={profileLoading}
             displayName={profile?.display_name}

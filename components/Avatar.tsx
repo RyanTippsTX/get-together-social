@@ -1,6 +1,10 @@
-import Image from 'next/image';
 import { shimmer, toBase64 } from '../lib/image';
 import { getInitials } from '../lib/initials';
+import Link from 'next/link';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+import { MouseEventHandler } from 'react';
+import { useAuth } from '../lib/auth';
 
 export function Avatar({
   profileLoading,
@@ -13,6 +17,8 @@ export function Avatar({
   email: string | undefined;
   avatarUrl: string | undefined;
 }) {
+  const router = useRouter();
+  const { signOut } = useAuth();
   if (!displayName && !email && !profileLoading) {
     // this means the component was rendered before user data was available ...
     console.error('Avatar is being rendered withoput a display name');
@@ -22,7 +28,12 @@ export function Avatar({
   // normal Avatar
   if (avatarUrl || profileLoading) {
     return (
-      <div className="dropdown dropdown-end flex">
+      <div
+        className="dropdown dropdown-end flex"
+        // onClick={() => {
+        //   router.push('/dashboard');
+        // }}
+      >
         <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
           <div className="w-10 rounded-full">
             <Image
@@ -38,20 +49,29 @@ export function Avatar({
         </label>
         <ul
           tabIndex={0}
-          className="menu menu-compact dropdown-content rounded-box absolute top-full right-0 mt-3 w-auto bg-white p-2 shadow"
+          className="menu menu-compact dropdown-content rounded-box absolute top-full right-0 mt-3 min-w-max bg-white p-2 shadow"
         >
           <li>
+            <Link href={'/dashboard'}>
+              <a className="">Dashboard</a>
+            </Link>
+          </li>
+          <li>
+            <Link href={'/new'}>
+              <a className="">New Event</a>
+            </Link>
+          </li>
+          <li>
+            <button onClick={signOut as MouseEventHandler} className="">
+              Sign Out
+            </button>
+          </li>
+          {/* <li>
             <a className="justify-between">
               Profile
               <span className="badge">New</span>
             </a>
-          </li>
-          <li>
-            <a>Settings</a>
-          </li>
-          <li>
-            <a>Logout</a>
-          </li>
+          </li> */}
         </ul>
       </div>
     );
