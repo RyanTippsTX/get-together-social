@@ -1,6 +1,8 @@
 import Head from 'next/head';
 import { Footer } from './Footer';
 import { Navbar } from './Navbar';
+import { useAppLoading } from '../lib/appLoading';
+import { AppLoadingIndicator, AppLoadingSplash } from './AppLoading';
 
 export const siteTitle = 'GetTogether.social';
 const siteAuthor = 'Ryan Tipps';
@@ -12,6 +14,7 @@ export default function Layout({
   children: React.ReactNode | React.ReactNode[];
   home?: boolean;
 }) {
+  const { appLoading, setAppLoading } = useAppLoading();
   return (
     <>
       <Head>
@@ -34,7 +37,12 @@ export default function Layout({
         <Navbar />
       </header>
       <main className="xs:min-h-[45rem] min-h-[35rem] bg-zinc-50">
-        <div className="container mx-auto">{children}</div>
+        <div className="container mx-auto">{appLoading ? <AppLoadingSplash /> : children}</div>
+        {/* {sessionLoading || profileLoading ? (
+          <Loading />
+        ) : (
+          <div className="container mx-auto">{children}</div>
+        )} */}
       </main>
       <footer>
         <Footer />

@@ -24,7 +24,7 @@ const Links = ({ routes }: { routes: Map<string, string> }) => {
   const navElements: React.ReactElement[] = [];
   routes.forEach((path, title) => {
     navElements.push(
-      <div key={path}>
+      <div key={title}>
         <Link href={path}>
           <a className="link link-hover">{title}</a>
         </Link>
@@ -37,7 +37,7 @@ const Links = ({ routes }: { routes: Map<string, string> }) => {
 const company = (
   <div className="place-items-center sm:place-items-start">
     <Brand />
-    <p>Copyright © 2022 - All right reserved</p>
+    <p>Copyright © 2022 - All rights reserved</p>
   </div>
 );
 

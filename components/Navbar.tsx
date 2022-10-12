@@ -28,8 +28,9 @@ export function Navbar() {
         <>
           <NavbarOptionsButton />
           <Avatar
-            profileLoading
+            profileLoading={profileLoading}
             displayName={profile?.display_name}
+            email={user.email}
             avatarUrl={profile?.avatar_url}
           />
         </>

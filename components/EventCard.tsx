@@ -7,8 +7,9 @@ import { useRouter } from 'next/router';
 import { getEventViewCount } from '../lib/queries';
 import { useEffect, useState } from 'react';
 import { formatDate } from '../lib/dates';
+import { ModalEventAvatarForm } from './ModalEventAvatarForm';
 
-export function EventCard({ event }: { event: Event }) {
+export function EventCard({ event, setEventsStale }: { event: Event; setEventsStale: Function }) {
   const router = useRouter();
   const {
     event_id,
@@ -28,6 +29,7 @@ export function EventCard({ event }: { event: Event }) {
     hosts: { avatar_url, display_name },
   } = event;
 
+  const [eventAvatarModalOpen, setEventAvatarModalOpen] = useState<boolean>(false);
   const [viewCount, setViewCount] = useState<number | undefined>(undefined);
   useEffect(() => {
     (async () => {
@@ -37,18 +39,50 @@ export function EventCard({ event }: { event: Event }) {
   }, [event_id]);
 
   return (
-    <div className="card card-compact bg-base-100 h-96 w-80 flex-none shadow-xl">
+    <div
+      className="card card-compact bg-base-100 h-96 w-80 flex-none shadow-xl hover:cursor-pointer"
+      onClick={(e) => {
+        e.stopPropagation();
+        // console.log('clicked event card');
+        router.push('/' + url_code + '/' + url_string);
+      }}
+    >
+      <ModalEventAvatarForm
+        event={event}
+        setEventsStale={setEventsStale}
+        isOpen={eventAvatarModalOpen}
+        closeModal={() => {
+          setEventAvatarModalOpen(false);
+        }}
+      />
       <figure className="relative h-48 w-full">
-        <Image
-          // src={photo_url || defaultEventImg}
-          src={defaultEventImg}
-          alt="Shoes"
-          layout="fill"
-          objectFit="cover"
-          placeholder="blur"
-          blurDataURL={`data:image/svg+xml;base64,${toBase64(shimmer(400, 225))}`}
-        />
-        {/* <img src="https://placeimg.com/400/225/arch" alt="Shoes" /> */}
+        {photo_url ? (
+          <Image
+            src={photo_url || defaultEventImg}
+            alt="Shoes"
+            layout="fill"
+            objectFit="cover"
+            placeholder="blur"
+            blurDataURL={`data:image/svg+xml;base64,${toBase64(shimmer(400, 225))}`}
+          />
+        ) : (
+          <div className="grid h-full w-full place-items-center bg-zinc-300 ">
+            <svg
+              className="h-16 w-16 text-zinc-400"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.25}
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
+              />
+            </svg>
+          </div>
+        )}
       </figure>
       <div className="card-body tracking-tight">
         <div>
@@ -96,7 +130,13 @@ export function EventCard({ event }: { event: Event }) {
           </div>
         </div>
         <p className="line-clamp-2 ">{description}</p>
-        <div className="card-actions justify-end">
+        <div
+          className="card-actions justify-end"
+          onClick={(e) => {
+            // prevent all child buttons from bubbling up to the card's onClick
+            e.stopPropagation();
+          }}
+        >
           <button
             onClick={() => {
               // Get URL and copy to clipboard
@@ -133,13 +173,22 @@ export function EventCard({ event }: { event: Event }) {
           >
             Edit
           </button>
-          <button
+          {/* <button
             onClick={() => {
               router.push('/' + url_code + '/' + url_string);
             }}
             className="btn btn-primary"
           >
             View
+          </button> */}
+          <button
+            onClick={() => {
+              // open modal
+              setEventAvatarModalOpen(true);
+            }}
+            className="btn btn-primary"
+          >
+            Photo
           </button>
           {/* <button className="btn btn-warning">Delete</button> */}
         </div>

@@ -163,7 +163,7 @@ export default function EventPage({ event: initialEvent }: { event: Event }) {
       <figure className="relative h-[225px] w-full sm:w-[400px] ">
         {/* 400 x 225 is a good */}
         <Image
-          src={defaultEventImg}
+          src={photo_url || defaultEventImg}
           alt={'event photo for ' + title}
           layout="fill"
           objectFit="cover"
@@ -286,7 +286,7 @@ export default function EventPage({ event: initialEvent }: { event: Event }) {
   return (
     <Layout>
       <div className="pb-4 sm:mx-6">
-        {image}
+        {photo_url && image}
         {content}
         {contributions_enabled && (
           <ContributionsComponent

@@ -5,13 +5,15 @@ import { getInitials } from '../lib/initials';
 export function Avatar({
   profileLoading,
   displayName,
+  email,
   avatarUrl,
 }: {
   profileLoading: boolean;
   displayName: string | undefined;
+  email: string | undefined;
   avatarUrl: string | undefined;
 }) {
-  if (!displayName && !profileLoading) {
+  if (!displayName && !email && !profileLoading) {
     // this means the component was rendered before user data was available ...
     console.error('Avatar is being rendered withoput a display name');
   }
@@ -59,7 +61,7 @@ export function Avatar({
   return (
     <div className="avatar placeholder">
       <div className="bg-neutral-focus text-neutral-content w-10 rounded-full">
-        <span className="text-3xl">{getInitials(displayName || '?')}</span>
+        <span className="text-xl font-medium">{getInitials(displayName || email || '?')}</span>
       </div>
     </div>
   );

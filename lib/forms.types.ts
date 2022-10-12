@@ -13,3 +13,8 @@ export type Inputs = {
   contributions_custom_title_enabled: boolean;
   contributions_custom_title?: string;
 };
+
+export type ProfileInputs = {
+  display_name: string;
+  avatar_url?: string | null;
+};

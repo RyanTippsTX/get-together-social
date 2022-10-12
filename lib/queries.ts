@@ -1,6 +1,36 @@
 import supabase from '../lib/supabase';
-import { Inputs } from './forms.types';
+import { ProfileInputs, Inputs } from './forms.types';
 import { Event } from '../lib/queries.types';
+
+export async function createHostProfile({
+  display_name,
+  // avatar_url,
+  host_id,
+}: ProfileInputs & { host_id: string }) {
+  const { error } = await supabase.from('hosts').insert([
+    {
+      display_name,
+      // avatar_url,
+      host_id,
+    },
+  ]);
+  return { error };
+}
+export async function updateHostDisplayName({
+  display_name,
+  host_id,
+}: {
+  display_name: string;
+  host_id: string;
+}) {
+  const { error } = await supabase
+    .from('hosts')
+    .update({
+      display_name,
+    })
+    .match({ host_id });
+  return { error };
+}
 
 // Returns a random integer from 0 to 9,999,999:
 function generateUrlCode() {
@@ -121,7 +151,11 @@ export async function hardDeleteEvent(event_id: string) {
 }
 
 export async function getEvents(user_id: string) {
-  return await supabase.from('events').select('*, hosts (*)').eq('host_id', user_id);
+  return await supabase
+    .from('events')
+    .select('*, hosts (*)')
+    .eq('host_id', user_id)
+    .order('date', { ascending: true });
 }
 export async function getEvent(lookupKey: { url_code: string } | { event_id: string }) {
   if ('event_id' in lookupKey) {
