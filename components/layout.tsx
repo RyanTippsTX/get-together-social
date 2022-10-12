@@ -33,7 +33,7 @@ export default function Layout({
           href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🥳</text></svg>"
         />
       </Head>
-      <header>
+      <header className="sticky top-0 z-40">
         <Navbar />
       </header>
       <main className="xs:min-h-[45rem] min-h-[35rem] bg-zinc-50">
