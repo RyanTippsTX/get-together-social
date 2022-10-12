@@ -77,8 +77,8 @@ export function ModalEventAvatarForm({
         <h2 className="card-title">Upload a New Cover Photo for {title}</h2>
 
         {previewURL && (
-          <div className="avatar placeholder flex place-content-center pb-2">
-            <div className="w-40 rounded-full">
+          <div className="flex place-content-center pb-2">
+            <div className="h-48 w-80">
               <figure className="relative h-full w-full">
                 <Image
                   src={previewURL}
