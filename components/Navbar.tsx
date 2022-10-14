@@ -39,7 +39,7 @@ export function Navbar() {
         <Link href={'/login'}>
           <a className="">
             <div className="flex items-center gap-1">
-              <div className="font-medium">Sign In</div>
+              <div className="font-medium">Host Login</div>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
