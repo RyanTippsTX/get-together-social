@@ -1,6 +1,6 @@
 import supabase from '../lib/supabase';
 import Layout from '../components/layout';
-import { GuestAuthProvider, useGuestAuth } from '../lib/guestAuth';
+import { useGuestAuth } from '../lib/guestAuth';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../lib/auth';
 import Image from 'next/image';
@@ -22,19 +22,11 @@ export async function getServerSideProps(context: { params: { slug: string[] } }
   if (!event) return { notFound: true }; // redirect 404
 
   return {
-    props: { event },
+    props: { initialEvent: event },
   };
 }
 
-export default function EventPageWrapper({ event: initialEvent }: { event: Event }) {
-  return (
-    <GuestAuthProvider>
-      <EventPage {...{ initialEvent }} />
-    </GuestAuthProvider>
-  );
-}
-
-export function EventPage({ initialEvent }: { initialEvent: Event }) {
+export default function EventPage({ initialEvent }: { initialEvent: Event }) {
   const { guest, setGuest, guestList, setGuestList } = useGuestAuth();
   const [event, setEvent] = useState<Event>(initialEvent);
   const [eventStale, setEventStale] = useState(true); // consider SSR data stale by the time it gets to client
@@ -294,7 +286,7 @@ export function EventPage({ initialEvent }: { initialEvent: Event }) {
   );
 
   return (
-    <Layout>
+    <Layout eventPage>
       <div className="pb-4 sm:mx-6">
         {photo_url && image}
         {content}
