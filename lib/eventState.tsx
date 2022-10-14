@@ -2,20 +2,20 @@ import { createContext, useContext, useEffect, useState, FormEvent } from 'react
 // import { Session, User } from '@supabase/supabase-js';
 
 interface EventStateInterface {
-  eventContext: string | null;
-  setEventContext: Function;
+  event: string | null;
+  setEvent: Function;
 }
 export const EventStateContext = createContext<EventStateInterface | undefined>(undefined);
 
 export function EventStateProvider({ ...props }) {
-  const [eventContext, setEventContext] = useState<string | null>(null);
+  const [event, setEvent] = useState<string | null>(null);
 
   return (
     <EventStateContext.Provider
       value={{
         // provides access to shared event state
-        eventContext,
-        setEventContext,
+        event,
+        setEvent,
       }}
       {...props}
     />

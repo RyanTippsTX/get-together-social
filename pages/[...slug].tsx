@@ -1,6 +1,7 @@
 import supabase from '../lib/supabase';
 import Layout from '../components/layout';
 import { useGuestAuth } from '../lib/guestAuth';
+import { useEventState } from '../lib/eventState';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../lib/auth';
 import Image from 'next/image';
@@ -28,7 +29,8 @@ export async function getServerSideProps(context: { params: { slug: string[] } }
 
 export default function EventPage({ initialEvent }: { initialEvent: Event }) {
   const { guest, setGuest, guestList, setGuestList } = useGuestAuth();
-  const [event, setEvent] = useState<Event>(initialEvent);
+  const { event, setEvent } = useEventState();
+  // const [event, setEvent] = useState<Event>(initialEvent);
   const [eventStale, setEventStale] = useState(true); // consider SSR data stale by the time it gets to client
 
   const {
@@ -48,7 +50,7 @@ export default function EventPage({ initialEvent }: { initialEvent: Event }) {
     url_string,
     hosts: host,
     hosts: { avatar_url, display_name },
-  } = event;
+  } = event || initialEvent;
 
   const [contributions, setContributions] = useState<Contributions | undefined>(undefined);
   const [contributionsStale, setContributionsStale] = useState(false);
@@ -80,7 +82,7 @@ export default function EventPage({ initialEvent }: { initialEvent: Event }) {
         setEventStale(false);
       })();
     }
-  }, [eventStale, event_id]);
+  }, [eventStale, event_id, setEvent]);
 
   // subscribe to db realtime for event data
   // (since realtime does not support views, use realtime to mark data stale then refetch event data with join query)
@@ -158,6 +160,13 @@ export default function EventPage({ initialEvent }: { initialEvent: Event }) {
       setContributionsStale(false);
     }
   }, [contributions_enabled]);
+
+  // clear event state on teardown
+  useEffect(() => {
+    return () => {
+      setEvent(null);
+    };
+  }, [setEvent]);
 
   const image = (
     <div className="flex flex-col  items-center">
