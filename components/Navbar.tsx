@@ -5,7 +5,7 @@ import { useAuth } from '../lib/auth';
 import { useProfile } from '../lib/profile';
 import Link from 'next/link';
 
-export function Navbar() {
+export function Navbar({ eventPage }: { eventPage?: boolean }) {
   const {
     session,
     user,
@@ -15,6 +15,28 @@ export function Navbar() {
     signInWithGoogle,
   } = useAuth();
   const { profile, loading: profileLoading } = useProfile();
+  const { guest, setGuest, guestList, setGuestList } = useGuestAuth();
+  const {
+    event: {
+      event_id,
+      created_at,
+      host_id,
+      title,
+      date,
+      time,
+      location,
+      photo_url,
+      description,
+      contributions_enabled,
+      contributions_frozen,
+      contributions_custom_title,
+      url_code,
+      url_string,
+      hosts: host,
+      hosts: { avatar_url, display_name },
+    },
+    setEvent,
+  } = useEventState();
 
   const navLeft = (
     <div className="flex-1">
