@@ -6,7 +6,7 @@ import { useRouter } from 'next/router';
 import { MouseEventHandler } from 'react';
 import { useAuth } from '../lib/auth';
 
-export function Avatar({
+export function AvatarDropdown({
   profileLoading,
   displayName,
   email,
@@ -24,64 +24,84 @@ export function Avatar({
     console.error('Avatar is being rendered withoput a display name');
   }
 
-  const blurDataURL = `data:image/svg+xml;base64,${toBase64(shimmer(150, 150))}`;
-  // normal Avatar
-  if (avatarUrl || profileLoading) {
-    return (
-      <div
-        className="dropdown dropdown-end flex"
-        // onClick={() => {
-        //   router.push('/dashboard');
-        // }}
+  return (
+    <div
+      className="dropdown dropdown-end flex"
+      // onClick={() => {
+      //   router.push('/dashboard');
+      // }}
+    >
+      {/* avatar */}
+      {avatarUrl || profileLoading ? (
+        <Avatar {...{ avatarUrl, displayName: displayName as string }} />
+      ) : (
+        <AvatarPlaceholder {...{ displayName, email }} />
+      )}
+      <ul
+        tabIndex={0}
+        className="menu menu-compact dropdown-content rounded-box absolute top-full right-0 mt-3 min-w-max bg-white p-2 shadow"
       >
-        <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
-          <div className="w-10 rounded-full">
-            <Image
-              layout="responsive"
-              width="150"
-              height="150"
-              src={avatarUrl || blurDataURL} // this works but does not blur
-              alt={'picture of ' + displayName}
-              placeholder="blur"
-              blurDataURL={blurDataURL}
-            />
-          </div>
-        </label>
-        <ul
-          tabIndex={0}
-          className="menu menu-compact dropdown-content rounded-box absolute top-full right-0 mt-3 min-w-max bg-white p-2 shadow"
-        >
-          <li>
-            <Link href={'/dashboard'}>
-              <a className="">Dashboard</a>
-            </Link>
-          </li>
-          <li>
-            <Link href={'/new'}>
-              <a className="">New Event</a>
-            </Link>
-          </li>
-          <li>
-            <button onClick={signOut as MouseEventHandler} className="">
-              Sign Out
-            </button>
-          </li>
-          {/* <li>
+        <li>
+          <Link href={'/dashboard'}>
+            <a className="">Dashboard</a>
+          </Link>
+        </li>
+        <li>
+          <Link href={'/new'}>
+            <a className="">New Event</a>
+          </Link>
+        </li>
+        <li>
+          <button onClick={signOut as MouseEventHandler} className="">
+            Sign Out
+          </button>
+        </li>
+        {/* <li>
             <a className="justify-between">
               Profile
               <span className="badge">New</span>
             </a>
           </li> */}
-        </ul>
-      </div>
-    );
-  }
+      </ul>
+    </div>
+  );
+}
 
-  // Avatar placeholder
+export function AvatarPlaceholder({
+  displayName,
+  email,
+}: {
+  displayName?: string;
+  email?: string;
+}) {
   return (
-    <div className="avatar placeholder">
+    <div tabIndex={0} className="btn btn-ghost btn-circle avatar placeholder">
       <div className="bg-neutral-focus text-neutral-content w-10 rounded-full">
         <span className="text-xl font-medium">{getInitials(displayName || email || '?')}</span>
+      </div>
+    </div>
+  );
+}
+export function Avatar({
+  avatarUrl,
+  displayName,
+}: {
+  avatarUrl?: string | undefined;
+  displayName: string;
+}) {
+  const blurDataURL = `data:image/svg+xml;base64,${toBase64(shimmer(150, 150))}`;
+  return (
+    <div tabIndex={0} className="btn btn-ghost btn-circle avatar">
+      <div className="w-10 rounded-full">
+        <Image
+          layout="responsive"
+          width="150"
+          height="150"
+          src={avatarUrl || blurDataURL} // this works but does not blur
+          alt={'picture of ' + displayName}
+          placeholder="blur"
+          blurDataURL={blurDataURL}
+        />
       </div>
     </div>
   );
