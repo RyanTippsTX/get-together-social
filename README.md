@@ -1,4 +1,4 @@
-# GetTogether.social
+# 🥳 GetTogether.social 🥳
 
 ## About
 
@@ -6,9 +6,10 @@ This repo contains the source code for [GetTogether.social](https://gettogether.
 
 ## Technologies
 
-- Next.js
-- Supabase (Realtime Postgres, Auth, & File Storage)
-- Tailwind
+- Next.js, deployed on Vercel
+- Typescript
+- Supabase (for Realtime Postgres, Auth, & File Storage)
+- Tailwind CSS
 - Daisy UI
 
 ## Contact
