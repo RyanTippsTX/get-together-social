@@ -106,3 +106,48 @@ export function Avatar({
     </div>
   );
 }
+
+export function GuestAvatarDropdown({ displayName }: { displayName: string }) {
+  return (
+    <div
+      className="dropdown dropdown-end flex"
+      // onClick={() => {
+      //   router.push('/dashboard');
+      // }}
+    >
+      {/* avatar */}
+
+      <AvatarPlaceholder {...{ displayName }} />
+
+      <ul
+        tabIndex={0}
+        className="menu menu-compact dropdown-content rounded-box absolute top-full right-0 mt-3 min-w-max bg-white p-2 shadow"
+      >
+        <li>
+          <Link href={'/dashboard'}>
+            <a className="">Dashboard</a>
+          </Link>
+        </li>
+        <li>
+          <Link href={'/new'}>
+            <a className="">New Event</a>
+          </Link>
+        </li>
+        <li>
+          <button
+            // onClick={signOut as MouseEventHandler}
+            className=""
+          >
+            Sign Out
+          </button>
+        </li>
+        {/* <li>
+            <a className="justify-between">
+              Profile
+              <span className="badge">New</span>
+            </a>
+          </li> */}
+      </ul>
+    </div>
+  );
+}

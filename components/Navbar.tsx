@@ -1,9 +1,13 @@
 import { Brand } from './Brand';
-import { NavbarOptionsButton } from './NavbarOptionsButton';
-import { Avatar } from './Avatar';
+import { HostNavbarOptionsDropdown, GuestNavbarOptionsDropdown } from './EventPageOptionsDropdowns';
+import { AvatarDropdown, AvatarPlaceholder } from './Avatar';
 import { useAuth } from '../lib/auth';
 import { useProfile } from '../lib/profile';
+import { useEventState } from '../lib/eventState';
+import { useGuestAuth } from '../lib/guestAuth';
 import Link from 'next/link';
+import { useState } from 'react';
+import { ModalGuestLogin } from './ModalGuestLogin';
 
 export function Navbar({ eventPage }: { eventPage?: boolean }) {
   const {
@@ -16,27 +20,10 @@ export function Navbar({ eventPage }: { eventPage?: boolean }) {
   } = useAuth();
   const { profile, loading: profileLoading } = useProfile();
   const { guest, setGuest, guestList, setGuestList } = useGuestAuth();
-  const {
-    event: {
-      event_id,
-      created_at,
-      host_id,
-      title,
-      date,
-      time,
-      location,
-      photo_url,
-      description,
-      contributions_enabled,
-      contributions_frozen,
-      contributions_custom_title,
-      url_code,
-      url_string,
-      hosts: host,
-      hosts: { avatar_url, display_name },
-    },
-    setEvent,
-  } = useEventState();
+  const { event, setEvent } = useEventState();
+
+  // modal states - move to context and add renderings there if possible
+  const [hostAvatarModalOpen, setHostAvatarModalOpen] = useState<boolean>(false);
 
   const navLeft = (
     <div className="flex-1">
@@ -44,12 +31,21 @@ export function Navbar({ eventPage }: { eventPage?: boolean }) {
     </div>
   );
 
-  const navRight = (
+  const isHost = !sessionLoading && user && user.id === event?.host_id;
+  const isGuest = !sessionLoading && guest && !isHost; // let host account take precedence in event of a shared device
+  const isSpectator = !sessionLoading && !isHost && !isGuest; // note, this could be an authenticated host account for a different event, or a non-authenticated page viewer.
+  // note that when sessionLoading, none of these are true. i.e. no fallback while loading
+
+  // if user is NOT host, alert with modal that they may still participate as guest
+
+  const navRight = eventPage ? (
+    // nav items for event-page:
     <div className="flex-none">
-      {user && (
+      {isHost && (
         <>
-          {/* <NavbarOptionsButton /> */}
-          <Avatar
+          <HostNavbarOptionsDropdown />
+          <div className="px-1 font-medium tracking-tight">Host:</div>
+          <AvatarDropdown
             profileLoading={profileLoading}
             displayName={profile?.display_name}
             email={user.email}
@@ -57,7 +53,47 @@ export function Navbar({ eventPage }: { eventPage?: boolean }) {
           />
         </>
       )}
-      {!sessionLoading && !user && (
+      {isGuest && (
+        <>
+          <GuestNavbarOptionsDropdown />
+          <div className="px-1 font-medium tracking-tight">Guest:</div>
+          <AvatarPlaceholder displayName={'John Huest'} />
+          {/* <div className="px-1 font-normal tracking-tight">{'John Huest'}</div> */}
+        </>
+      )}
+      {isSpectator && (
+        <div className="flex items-center gap-1">
+          <div className="font-medium">Guest Login</div>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.75}
+            className="inline-block h-6 w-6 stroke-current"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
+            />
+          </svg>
+        </div>
+      )}
+    </div>
+  ) : (
+    // nav items for non-event-pages:
+    <div className="flex-none">
+      {user && (
+        <>
+          <AvatarDropdown
+            profileLoading={profileLoading}
+            displayName={profile?.display_name}
+            email={user.email}
+            avatarUrl={profile?.avatar_url}
+          />
+        </>
+      )}
+      {!user && !sessionLoading && (
         <Link href={'/login'}>
           <a className="">
             <div className="flex items-center gap-1">
