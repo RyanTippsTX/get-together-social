@@ -35,10 +35,11 @@ export function ModalGuestLogin({
     // console.log('Form submission data:', data);
     closeModal();
     (async () => {
-      const returningGuestUser = guestList?.find((guest) => guest.display_name === display_name);
+      const returningGuestUser = guestList?.find((g) => g.display_name === display_name);
       if (returningGuestUser) {
         // returning user
-        setGuest(returningGuestUser);
+        const { guest_id } = returningGuestUser;
+        setGuest({ guest_id });
         return;
       } else {
         // new user
