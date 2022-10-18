@@ -19,6 +19,9 @@
     /* @apply accent-green-400; */
     @apply shadow-green-400;
   }
+  .dropdown .dropdown-content {
+    @apply z-30;
+  }
 }
 
 @layer utilities {
