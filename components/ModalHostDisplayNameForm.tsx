@@ -11,7 +11,7 @@ export function ModalHostDisplayNameForm({
   isOpen: boolean;
   closeModal: Function;
 }) {
-  const { session, user, sessionStale, signOut, signInWithEmail, signInWithGoogle } = useAuth();
+  const { session, user, sessionStale, signOut, signInWithMagicLink, signInWithGoogle } = useAuth();
   const { profile, display_name, profileStale, setProfileStale } = useProfile();
 
   const {
@@ -27,7 +27,7 @@ export function ModalHostDisplayNameForm({
   const onSubmit: SubmitHandler<{ display_name: string }> = (data) => {
     // console.log('Form submission data:', data);
     (async () => {
-      const { error } = await updateHostDisplayName({ ...data, host_id: user.id });
+      const { error } = await updateHostDisplayName({ ...data, host_id: user!.id });
       if (error) {
         alert('An error has occured');
         console.error(error);

@@ -23,7 +23,7 @@ export function AppLoadingProvider({ ...props }) {
 
 // hook for using app-wide Profile state & Profile mutation functions
 export function useAppLoading() {
-  const context: any = useContext(AppLoadingContext);
+  const context = useContext(AppLoadingContext);
   if (context === undefined) {
     throw new Error('useAppLoading must be used within an AppLoadingProvider');
   }

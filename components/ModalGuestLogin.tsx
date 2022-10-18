@@ -3,6 +3,7 @@ import { createGuest } from '../lib/queries';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useGuestAuth } from '../lib/guestAuth';
 import { useEventState } from '../lib/eventState';
+import { useAppLoading } from '../lib/appLoading';
 import { Host, Event, Guest, Contribution, Contributions } from '../lib/queries.types';
 
 export function ModalGuestLogin({
@@ -16,6 +17,7 @@ export function ModalGuestLogin({
 }) {
   const { guest, setGuest, guestList, setGuestList } = useGuestAuth();
   const { event } = useEventState();
+  const { appLoading, setAppLoading } = useAppLoading();
 
   const {
     register,
@@ -30,6 +32,7 @@ export function ModalGuestLogin({
   const onSubmit: SubmitHandler<{ display_name: string }> = (formData) => {
     if (!event) return;
     // console.log('Form submission data:', data);
+    closeModal();
     (async () => {
       if (guestList?.has(formData.display_name)) {
         // returning user
@@ -37,6 +40,7 @@ export function ModalGuestLogin({
         return;
       } else {
         // new user
+        setAppLoading(true);
         const { data, error } = await createGuest({
           event_id: event.event_id,
           display_name: formData.display_name,
@@ -46,6 +50,7 @@ export function ModalGuestLogin({
           return;
         }
         setGuest(data.display_name);
+        setAppLoading(false);
       }
     })();
   };

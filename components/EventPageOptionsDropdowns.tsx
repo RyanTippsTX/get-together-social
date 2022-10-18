@@ -3,6 +3,7 @@ import { MouseEventHandler } from 'react';
 import { useAuth } from '../lib/auth';
 import { useRouter } from 'next/router';
 import { useEventState } from '../lib/eventState';
+import { useGuestAuth } from '../lib/guestAuth';
 
 export function HostNavbarOptionsDropdown() {
   const router = useRouter();
@@ -62,6 +63,7 @@ export function HostNavbarOptionsDropdown() {
         <li>
           <button
             onClick={() => {
+              if (!event) return;
               // Get URL and copy to clipboard
               const eventUrl =
                 'https://gettogether.social/' + event.url_code + '/' + event.url_string;
@@ -81,6 +83,7 @@ export function HostNavbarOptionsDropdown() {
 
 export function GuestNavbarOptionsDropdown() {
   const router = useRouter();
+  const { guest, setGuest, guestList, setGuestList } = useGuestAuth();
   const { signOut } = useAuth();
   const { event, setEvent } = useEventState();
   return (
@@ -106,7 +109,13 @@ export function GuestNavbarOptionsDropdown() {
         className="menu menu-compact dropdown-content rounded-box absolute top-full right-0 mt-3 min-w-max bg-white p-2 shadow"
       >
         <li>
-          <button>Sign Out of Guest Account</button>
+          <button
+            onClick={() => {
+              setGuest(null);
+            }}
+          >
+            Sign Out of Guest Account
+          </button>
         </li>
         <li>
           <button>Edit My Display Name</button>
