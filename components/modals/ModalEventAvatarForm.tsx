@@ -1,21 +1,41 @@
-import { updateHostAvatar } from '../lib/storage';
+import { updateEventAvatar } from '../../lib/storage';
 import { Modal } from './Modal';
-import { useProfile } from '../lib/profile';
+import { useProfile } from '../../lib/profile';
 import { useState, useEffect } from 'react';
 import { FileUploader } from 'react-drag-drop-files';
-import { useAppLoading } from '../lib/appLoading';
+import { useAppLoading } from '../../lib/appLoading';
 import Image from 'next/image';
+import { Event } from '../../lib/queries.types';
 
-const fileTypes = ['JPG', 'JPEG', 'PNG', 'GIF'];
+const fileTypes = ['JPG', 'JPEG', 'PNG', 'GIF', 'WebP'];
 
-export function ModalHostAvatarForm({
+export function ModalEventAvatarForm({
+  event: {
+    event_id,
+    created_at,
+    host_id,
+    title,
+    date,
+    time,
+    location,
+    photo_url,
+    description,
+    contributions_enabled,
+    contributions_frozen,
+    contributions_custom_title,
+    url_code,
+    url_string,
+  },
+  setEventsStale,
   isOpen,
   closeModal,
 }: {
+  event: Event;
+  setEventsStale: Function;
   isOpen: boolean;
   closeModal: Function;
 }) {
-  const { profile, setProfileStale } = useProfile();
+  // const { profile, setProfileStale } = useProfile();
   const { appLoading, setAppLoading } = useAppLoading();
   const [avatarFile, setAvatarFile] = useState<any>(null);
   const [previewURL, setPreviewURL] = useState<string | null>(null);
@@ -54,11 +74,11 @@ export function ModalHostAvatarForm({
   return (
     <Modal {...{ isOpen }} {...{ closeModal }}>
       <div className="card-body ">
-        <h2 className="card-title">Upload a New Image</h2>
+        <h2 className="card-title">Upload a New Cover Photo for {title}</h2>
 
         {previewURL && (
-          <div className="avatar placeholder flex place-content-center pb-2">
-            <div className="w-40 rounded-full">
+          <div className="flex place-content-center pb-2">
+            <div className="h-48 w-80">
               <figure className="relative h-full w-full">
                 <Image
                   src={previewURL}
@@ -138,9 +158,9 @@ export function ModalHostAvatarForm({
               closeModal();
               setAppLoading(true);
               (async () => {
-                await updateHostAvatar({ host_id: profile?.host_id, avatarFile });
+                await updateEventAvatar({ event_id, avatarFile });
                 setAppLoading(false);
-                setProfileStale(true);
+                setEventsStale(true);
               })();
             }}
             className="btn btn-primary"

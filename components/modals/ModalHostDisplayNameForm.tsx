@@ -1,7 +1,7 @@
 import { Modal } from './Modal';
-import { useAuth } from '../lib/auth';
-import { useProfile } from '../lib/profile';
-import { updateHostDisplayName } from '../lib/queries';
+import { useAuth } from '../../lib/auth';
+import { useProfile } from '../../lib/profile';
+import { updateHostDisplayName } from '../../lib/queries';
 import { useForm, SubmitHandler } from 'react-hook-form';
 
 export function ModalHostDisplayNameForm({

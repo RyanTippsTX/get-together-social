@@ -7,7 +7,7 @@ import { useRouter } from 'next/router';
 import { getEventViewCount } from '../lib/queries';
 import { useEffect, useState } from 'react';
 import { formatDate } from '../lib/dates';
-import { ModalEventAvatarForm } from './ModalEventAvatarForm';
+import { ModalEventAvatarForm } from './modals/ModalEventAvatarForm';
 
 export function EventCard({ event, setEventsStale }: { event: Event; setEventsStale: Function }) {
   const router = useRouter();

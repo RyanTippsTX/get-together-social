@@ -10,12 +10,13 @@ import { getEvents } from '../lib/queries';
 import { Event, Events } from '../lib/queries.types';
 import { EventCard, EventCardCreate } from '../components/EventCard';
 import { useRouter } from 'next/router';
-import { ModalHostDisplayNameForm } from '../components/ModalHostDisplayNameForm';
-import { ModalHostAvatarForm } from '../components/ModalHostAvatarForm';
+import { ModalHostDisplayNameForm } from '../components/modals/ModalHostDisplayNameForm';
+import { ModalHostAvatarForm } from '../components/modals/ModalHostAvatarForm';
+import { MouseEventHandler } from 'react';
 
 export default function Dashboard() {
   const router = useRouter();
-  const { session, user, sessionStale, signOut, signInWithEmail, signInWithGoogle } = useAuth();
+  const { session, user, sessionStale, signOut, signInWithMagicLink, signInWithGoogle } = useAuth();
   const { profile, avatar_url, display_name, profileStale } = useProfile();
 
   const [hostAvatarModalOpen, setHostAvatarModalOpen] = useState<boolean>(false);
@@ -148,7 +149,7 @@ export default function Dashboard() {
               >
                 Create New Event
               </button>
-              <button onClick={signOut} className="btn btn-primary">
+              <button onClick={signOut as MouseEventHandler} className="btn btn-primary">
                 Sign Out
               </button>
             </div>

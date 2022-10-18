@@ -7,17 +7,10 @@ import { useEventState } from '../lib/eventState';
 import { useGuestAuth } from '../lib/guestAuth';
 import Link from 'next/link';
 import { useState } from 'react';
-import { ModalGuestLogin } from './ModalGuestLogin';
+import { ModalGuestLogin } from './modals/ModalGuestLogin';
 
 export function Navbar({ eventPage }: { eventPage?: boolean }) {
-  const {
-    session,
-    user,
-    loading: sessionLoading,
-    signOut,
-    signInWithEmail,
-    signInWithGoogle,
-  } = useAuth();
+  const { session, user, sessionStale, signOut, signInWithMagicLink, signInWithGoogle } = useAuth();
   const { profile, loading: profileLoading } = useProfile();
   const { guest, setGuest, guestList, setGuestList } = useGuestAuth();
   const { event, setEvent } = useEventState();
@@ -31,10 +24,9 @@ export function Navbar({ eventPage }: { eventPage?: boolean }) {
     </div>
   );
 
-  const isHost = !sessionLoading && user && user.id === event?.host_id;
-  const isGuest = !sessionLoading && guest && !isHost; // let host account take precedence in event of a shared device
-  const isSpectator = !sessionLoading && !isHost && !isGuest; // note, this could be an authenticated host account for a different event, or a non-authenticated page viewer.
-  // note that when sessionLoading, none of these are true. i.e. no fallback while loading
+  const isHost = user && user.id === event?.host_id;
+  const isGuest = guest && !isHost; // let host account take precedence in event of a shared device
+  const isSpectator = !isHost && !isGuest; // note, this could be an authenticated host account for a different event, or a non-authenticated page viewer.
 
   // if user is NOT host, alert with modal that they may still participate as guest
 
@@ -110,7 +102,7 @@ export function Navbar({ eventPage }: { eventPage?: boolean }) {
           />
         </>
       )}
-      {!user && !sessionLoading && (
+      {!user && (
         <Link href={'/login'}>
           <a className="">
             <div className="flex items-center gap-1">

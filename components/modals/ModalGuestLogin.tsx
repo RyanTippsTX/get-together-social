@@ -1,10 +1,10 @@
 import { Modal } from './Modal';
-import { createGuest } from '../lib/queries';
+import { createGuest } from '../../lib/queries';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { useGuestAuth } from '../lib/guestAuth';
-import { useEventState } from '../lib/eventState';
-import { useAppLoading } from '../lib/appLoading';
-import { Host, Event, Guest, Contribution, Contributions } from '../lib/queries.types';
+import { useGuestAuth } from '../../lib/guestAuth';
+import { useEventState } from '../../lib/eventState';
+import { useAppLoading } from '../../lib/appLoading';
+import { Host, Event, Guest, Contribution, Contributions } from '../../lib/queries.types';
 
 export function ModalGuestLogin({
   isOpen,
