@@ -8,7 +8,7 @@ import Image from 'next/image';
 import { shimmer, toBase64 } from '../lib/image';
 import defaultEventImg from '../public/party.jpeg';
 import { ContributionsComponent } from '../components/Contributions';
-import { getEvent, getContribution, getContributions } from '../lib/queries';
+import { getEvent, getContribution, getContributions, getGuestList } from '../lib/queries';
 import { Host, Event, Guest, Contribution, Contributions } from '../lib/queries.types';
 import { formatDate } from '../lib/dates';
 
@@ -54,23 +54,23 @@ export default function EventPage({ initialEvent }: { initialEvent: Event }) {
 
   const [contributions, setContributions] = useState<Contributions | undefined>(undefined);
   const [contributionsStale, setContributionsStale] = useState(false);
+  const [guestListStale, setGuestListStale] = useState(false);
 
   const [analyticsSent, setAnalyticsSent] = useState<boolean>(false);
-  const { session, user, loading, signOut, signInWithEmail, signInWithGoogle } = useAuth();
+  const { session, user, sessionStale, signOut, signInWithMagicLink, signInWithGoogle } = useAuth();
   const [dataDump, setDataDump] = useState<any>(null);
 
   // log page visit only once
   useEffect(() => {
     (async () => {
-      if (loading) return;
-      if (analyticsSent) return;
+      if (analyticsSent) return; // this prevents duplicate visits from Fast Refresh in dev
       const { data, error } = await supabase
         .from('page_visits')
         .insert([{ event_id, user_is_host: user?.id == host_id }]);
       setAnalyticsSent(true);
-      // console.log('site visit logged for ', user?.email || user?.id || 'guest');
     })();
-  }, [loading, user, event_id, host_id, analyticsSent]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [event_id]);
 
   // fetch event data when stale
   useEffect(() => {
@@ -151,13 +151,63 @@ export default function EventPage({ initialEvent }: { initialEvent: Event }) {
     }
   }, [event_id, contributions_enabled]);
 
-  // enable/disable contributions fetching & subscriptions
+  // fetch guest list when stale
+  useEffect(() => {
+    if (contributions_enabled && guestListStale) {
+      (async () => {
+        const { data, error } = await getGuestList(event_id);
+        // console.log('new guest list fetched: ', data);
+        setGuestList(
+          data
+            ? new Map(
+                // store as map: name->id
+                data.map(({ display_name, guest_id }) => {
+                  return [display_name, guest_id];
+                })
+              )
+            : null
+        );
+        setGuestListStale(false);
+      })();
+    }
+  }, [contributions_enabled, guestListStale, event_id, setGuestList]);
+
+  // subscribe to db realtime for guest list
+  // (since realtime does not support views, use realtime to mark data stale then refetch guest list with join query)
+  useEffect(() => {
+    console.log('subscribed to realtime contributions');
+    if (contributions_enabled) {
+      const channel = supabase
+        .channel(`public:guests:event_id=eq.${event_id}`)
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'guests',
+            filter: `event_id=eq.${event_id}`,
+          },
+          () => {
+            setGuestListStale(true);
+          }
+        )
+        .subscribe();
+      return () => {
+        console.log('unsubscribed from realtime guest list');
+        supabase.removeChannel(channel);
+      };
+    }
+  }, [event_id, contributions_enabled]);
+
+  // enable/disable contributions/guestList fetching & subscriptions
   // (basically prevents unnecesry network traffic if the feature is disabled by user)
   useEffect(() => {
     if (contributions_enabled) {
       setContributionsStale(true);
+      setGuestListStale(true);
     } else {
       setContributionsStale(false);
+      setGuestListStale(false);
     }
   }, [contributions_enabled]);
 
@@ -165,8 +215,10 @@ export default function EventPage({ initialEvent }: { initialEvent: Event }) {
   useEffect(() => {
     return () => {
       setEvent(null);
+      setGuest(null);
+      setGuestList(null);
     };
-  }, [setEvent]);
+  }, [setEvent, setGuest, setGuestList]);
 
   const image = (
     <div className="flex flex-col  items-center">

@@ -10,7 +10,7 @@ import { getEvents } from '../lib/queries';
 import { Event, Events } from '../lib/queries.types';
 import { EventCard, EventCardCreate } from '../components/EventCard';
 import { useRouter } from 'next/router';
-import { ModalDisplayNameForm } from '../components/ModalDisplayNameForm';
+import { ModalHostDisplayNameForm } from '../components/ModalHostDisplayNameForm';
 import { ModalHostAvatarForm } from '../components/ModalHostAvatarForm';
 
 export default function Dashboard() {
@@ -62,7 +62,7 @@ export default function Dashboard() {
 
   return (
     <Layout>
-      <ModalDisplayNameForm
+      <ModalHostDisplayNameForm
         isOpen={displayNameModalOpen}
         closeModal={() => {
           setDisplayNameModalOpen(false);

@@ -11,7 +11,7 @@ interface AuthContextInterface {
   signInWithGoogle: Function;
   signInWithMagicLink: Function;
 }
-export const AuthContext = createContext<AuthContextInterface | null>(null);
+export const AuthContext = createContext<AuthContextInterface | undefined>(undefined);
 
 export function AuthProvider({ ...props }) {
   const [session, setSession] = useState<Session | null>(null);
@@ -106,8 +106,7 @@ export function AuthProvider({ ...props }) {
 
 // hook for using app-wide Auth state & Auth mutation functions
 export function useAuth() {
-  111;
-  const context: any = useContext(AuthContext);
+  const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }

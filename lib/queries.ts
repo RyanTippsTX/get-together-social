@@ -178,6 +178,30 @@ export async function getEventViewCount(event_id: string) {
     .match({ event_id });
 }
 
+export async function getGuestList(event_id: string) {
+  return await supabase
+    .from('guests')
+    .select('display_name, guest_id')
+    .match({ event_id })
+    .order('display_name', { ascending: true });
+}
+export async function createGuest({
+  event_id,
+  display_name,
+}: {
+  event_id: string;
+  display_name: string;
+}) {
+  return await supabase
+    .from('guests')
+    .insert({
+      event_id,
+      display_name,
+    })
+    .select()
+    .single();
+}
+
 export async function getContributions(event_id: string) {
   return await supabase
     .from('contributions')

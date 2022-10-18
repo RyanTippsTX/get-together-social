@@ -1,17 +1,20 @@
-import { createContext, useContext, useEffect, useState, FormEvent } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 // import { Session, User } from '@supabase/supabase-js';
 
 interface GuestAuthInterface {
   guest: string | null;
   setGuest: Function;
-  guestList: Set<string> | null;
+  // guestList: string[] | undefined | null;
+  // key: display_name, value: guest_id
+  guestList: Map<string, string> | null;
   setGuestList: Function;
 }
 export const GuestAuthContext = createContext<GuestAuthInterface | undefined>(undefined);
 
 export function GuestAuthProvider({ ...props }) {
   const [guest, setGuest] = useState<string | null>(null);
-  const [guestList, setGuestList] = useState<Set<string> | null>(null);
+  // const [guest, setGuest] = useState<string | null>('Jane Doe');
+  const [guestList, setGuestList] = useState<GuestAuthInterface['guestList']>(null);
   // setState(prev => new Set(prev.add(foo)))
 
   // save/load guest from local storage
@@ -34,7 +37,7 @@ export function GuestAuthProvider({ ...props }) {
 }
 
 export function useGuestAuth() {
-  const context: any = useContext(GuestAuthContext);
+  const context = useContext(GuestAuthContext);
   if (context === undefined) {
     throw new Error('useGuestAuth must be used within a GuestAuthProvider');
   }
