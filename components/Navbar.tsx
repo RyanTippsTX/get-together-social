@@ -50,7 +50,7 @@ export function Navbar({ eventPage }: { eventPage?: boolean }) {
           <GuestNavbarOptionsDropdown />
           <div className="px-1 font-medium tracking-tight">Guest:</div>
           {/* <AvatarPlaceholder displayName={guest} /> */}
-          <div className="px-1 font-normal tracking-tight">{guest}</div>
+          <div className="px-1 font-normal tracking-tight">{guest.display_name}</div>
         </>
       )}
       {isSpectator && (

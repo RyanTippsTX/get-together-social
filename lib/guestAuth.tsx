@@ -1,21 +1,19 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 // import { Session, User } from '@supabase/supabase-js';
 
+type Guest = { display_name: string; guest_id: string };
+
 interface GuestAuthInterface {
-  guest: string | null;
+  guest: Guest | null; // guest_id
   setGuest: Function;
-  // guestList: string[] | undefined | null;
-  // key: display_name, value: guest_id
-  guestList: Map<string, string> | null;
+  guestList: Guest[] | null;
   setGuestList: Function;
 }
 export const GuestAuthContext = createContext<GuestAuthInterface | undefined>(undefined);
 
 export function GuestAuthProvider({ ...props }) {
-  const [guest, setGuest] = useState<string | null>(null);
-  // const [guest, setGuest] = useState<string | null>('Jane Doe');
+  const [guest, setGuest] = useState<GuestAuthInterface['guest']>(null);
   const [guestList, setGuestList] = useState<GuestAuthInterface['guestList']>(null);
-  // setState(prev => new Set(prev.add(foo)))
 
   // save/load guest from local storage
   useEffect(() => {

@@ -157,16 +157,7 @@ export default function EventPage({ initialEvent }: { initialEvent: Event }) {
       (async () => {
         const { data, error } = await getGuestList(event_id);
         // console.log('new guest list fetched: ', data);
-        setGuestList(
-          data
-            ? new Map(
-                // store as map: name->id
-                data.map(({ display_name, guest_id }) => {
-                  return [display_name, guest_id];
-                })
-              )
-            : null
-        );
+        setGuestList(data || null);
         setGuestListStale(false);
       })();
     }

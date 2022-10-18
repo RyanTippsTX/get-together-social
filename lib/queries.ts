@@ -201,6 +201,20 @@ export async function createGuest({
     .select()
     .single();
 }
+export async function updateGuest({
+  guest_id,
+  display_name,
+}: {
+  guest_id: string;
+  display_name: string;
+}) {
+  return await supabase
+    .from('guests')
+    .update({
+      display_name,
+    })
+    .match({ guest_id });
+}
 
 export async function getContributions(event_id: string) {
   return await supabase

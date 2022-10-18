@@ -29,28 +29,31 @@ export function ModalGuestLogin({
       // display_name: guest,
     },
   });
-  const onSubmit: SubmitHandler<{ display_name: string }> = (formData) => {
+  const onSubmit: SubmitHandler<{ display_name: string }> = ({ display_name }) => {
     if (!event) return;
+    const { event_id } = event;
     // console.log('Form submission data:', data);
     closeModal();
     (async () => {
-      if (guestList?.has(formData.display_name)) {
+      const returningGuestUser = guestList?.find((guest) => guest.display_name === display_name);
+      if (returningGuestUser) {
         // returning user
-        setGuest(formData.display_name);
+        setGuest(returningGuestUser);
         return;
       } else {
         // new user
         setAppLoading(true);
         const { data, error } = await createGuest({
-          event_id: event.event_id,
-          display_name: formData.display_name,
+          event_id,
+          display_name,
         });
+        setAppLoading(false);
         if (error) {
           console.error(error);
+          setGuest(null);
           return;
         }
-        setGuest(data.display_name);
-        setAppLoading(false);
+        setGuest(data);
       }
     })();
   };
@@ -96,10 +99,8 @@ export function ModalGuestLogin({
           />
           <datalist id="guests">
             {guestList &&
-              Array.from(guestList.keys()).map((display_name) => {
-                return (
-                  <option key={display_name as unknown as string} value={display_name}></option>
-                );
+              guestList.map(({ display_name }) => {
+                return <option key={display_name} value={display_name}></option>;
               })}
           </datalist>
 
