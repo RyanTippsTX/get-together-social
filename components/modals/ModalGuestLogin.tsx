@@ -5,6 +5,7 @@ import { useGuestAuth } from '../../lib/guestAuth';
 import { useEventState } from '../../lib/eventState';
 import { useAppLoading } from '../../lib/appLoading';
 import { Host, Event, Guest, Contribution, Contributions } from '../../lib/queries.types';
+import { useEffect } from 'react';
 
 export function ModalGuestLogin({
   isOpen,
@@ -23,12 +24,21 @@ export function ModalGuestLogin({
     register,
     handleSubmit,
     watch,
+    reset,
     formState: { errors },
   } = useForm<{ display_name: string }>({
     defaultValues: {
       // display_name: guest,
     },
   });
+
+  // clear previous form state anytime the modal is opened
+  useEffect(() => {
+    if (isOpen) {
+      reset();
+    }
+  }, [isOpen, reset]);
+
   const onSubmit: SubmitHandler<{ display_name: string }> = ({ display_name }) => {
     if (!event) return;
     const { event_id } = event;
