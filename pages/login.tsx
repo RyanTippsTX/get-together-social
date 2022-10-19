@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import { useAuth } from '../lib/auth';
 import { useForm } from 'react-hook-form';
 import Layout from '../components/layout';
+import { FormEventHandler } from 'react';
 
 export default function Login() {
   const { session, user, signOut, signInWithMagicLink, signInWithGoogle } = useAuth();
@@ -75,7 +76,7 @@ export default function Login() {
 
         <div className="divider my-0 mx-8 text-zinc-400">OR</div>
 
-        <form className="card-body" onSubmit={signInWithGoogle}>
+        <form className="card-body" onSubmit={signInWithGoogle as FormEventHandler}>
           <h2 className="card-title">{'Sign In with Google'}</h2>
           <p>{'Requires a Google account.'}</p>
           <div className="card-actions justify-center">
@@ -89,7 +90,7 @@ export default function Login() {
   );
 
   return (
-    <Layout home>
+    <Layout>
       {heading}
       {card}
     </Layout>

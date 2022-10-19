@@ -13,14 +13,7 @@ import { ProfileInputs } from '../lib/forms.types';
 
 export default function Welcome() {
   const router = useRouter();
-  const {
-    session,
-    user,
-    loading: sessionLoading,
-    signOut,
-    signInWithEmail,
-    signInWithGoogle,
-  } = useAuth();
+  const { session, user, sessionStale, signOut, signInWithMagicLink, signInWithGoogle } = useAuth();
   const { profile, loading: profileLoading, setProfileStale } = useProfile();
 
   // route to dashboard if profile is already created
@@ -40,18 +33,20 @@ export default function Welcome() {
   });
   const onSubmit: SubmitHandler<ProfileInputs> = (data) => {
     // console.log('Form submission data:', data);
-    (async () => {
-      const { error } = await createHostProfile({ ...data, host_id: user.id });
-      if (error) {
-        alert('An error has occured');
-        console.error(error);
-        signOut();
-        router.push('/');
-      } else {
-        setProfileStale();
-        router.push('/dashboard');
-      }
-    })();
+    if (user) {
+      (async () => {
+        const { error } = await createHostProfile({ ...data, host_id: user.id });
+        if (error) {
+          alert('An error has occured');
+          console.error(error);
+          signOut();
+          router.push('/');
+        } else {
+          setProfileStale();
+          router.push('/dashboard');
+        }
+      })();
+    }
   };
 
   const heading = (

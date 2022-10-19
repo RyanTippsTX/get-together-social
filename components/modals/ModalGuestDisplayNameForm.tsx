@@ -94,9 +94,7 @@ export function ModalGuestDisplayNameForm({
           <datalist id="guests">
             {guestList &&
               Array.from(guestList.keys()).map((display_name) => {
-                return (
-                  <option key={display_name as unknown as string} value={display_name}></option>
-                );
+                return <option key={display_name} value={display_name}></option>;
               })}
           </datalist>
 

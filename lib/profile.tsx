@@ -46,7 +46,7 @@ export function ProfileProvider({ ...props }) {
 
   // if profile stale, fetch profile data (stale implies there IS a user)
   useEffect(() => {
-    if (profileStale) {
+    if (profileStale && user) {
       (async () => {
         const { data, error } = await supabase
           .from('hosts')
