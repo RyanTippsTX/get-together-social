@@ -43,9 +43,9 @@ export default function Edit({ event }: { event: Event }) {
   } = event;
 
   const router = useRouter();
-  const { session, loading, user } = useAuth();
+  const { session, sessionStale, user } = useAuth();
 
-  if (!user && !loading) router.push('/login');
+  if (!user && !sessionStale) router.push('/login');
 
   const {
     register,
