@@ -5,6 +5,7 @@ import { useGuestAuth } from '../../lib/guestAuth';
 import { useEventState } from '../../lib/eventState';
 import { useAppLoading } from '../../lib/appLoading';
 import { Host, Event, Guest, Contribution, Contributions } from '../../lib/queries.types';
+import { useEffect } from 'react';
 
 export function ModalGuestDisplayNameForm({
   isOpen,
@@ -19,16 +20,19 @@ export function ModalGuestDisplayNameForm({
   const { event } = useEventState();
   const { appLoading, setAppLoading } = useAppLoading();
 
-  const returningGuestUser = guestList?.find((g) => g.guest_id === guest!.guest_id);
+  const returningGuestUser = guestList?.find((g) => g.guest_id === guest?.guest_id);
+
+  console.log('user:', returningGuestUser?.display_name);
 
   const {
     register,
     handleSubmit,
+    reset,
     watch,
     formState: { errors },
   } = useForm<{ display_name: string }>({
     defaultValues: {
-      display_name: returningGuestUser!.display_name,
+      display_name: returningGuestUser?.display_name,
     },
   });
   const onSubmit: SubmitHandler<{ display_name: string }> = ({ display_name }) => {
@@ -36,15 +40,20 @@ export function ModalGuestDisplayNameForm({
     // console.log('Form submission data:', data);
     closeModal();
     (async () => {
+      if (!guest) return;
       setAppLoading(true);
 
-      await updateGuest({ guest_id: guest!.guest_id, display_name });
+      await updateGuest({ guest_id: guest.guest_id, display_name });
       setAppLoading(false);
     })();
   };
 
-  // guestList && console.log([...guestList?.values()]);
-  console.log(guestList);
+  // clear previous form state anytime the modal is opened
+  useEffect(() => {
+    if (isOpen) {
+      reset(); // note, this resets values to their originally defined default value, the default value expression is not re-evaluated
+    }
+  }, [isOpen, reset, guest, guestList]);
 
   return (
     <Modal {...{ isOpen }} {...{ closeModal }}>
@@ -58,6 +67,7 @@ export function ModalGuestDisplayNameForm({
       <form autoComplete="off" noValidate onSubmit={handleSubmit(onSubmit)} className="">
         <div className="card-body ">
           <h2 className="card-title">Edit Your Display Name</h2>
+          <pre>{JSON.stringify(returningGuestUser, null, 2)}</pre>
           <p>
             Your Display Name is your guest log-in username and is shown with any contributions you
             make in the {event?.contributions_custom_title || 'Guest Contribtutons'}.

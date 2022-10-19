@@ -43,11 +43,54 @@ function ContributionsTable({
   contributions: Contributions | undefined;
   host: Host;
 }) {
+  function Tooltip() {
+    const icon = (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth={1.5}
+        stroke="currentColor"
+        className="h-6 w-6 text-zinc-400"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+        />
+      </svg>
+    );
+
+    const popup = (
+      <div
+        className="text-md invisible absolute left-2/4 bottom-full mb-1
+         w-40 -translate-x-2/4 
+        items-center rounded
+        bg-zinc-700 p-2 font-medium text-zinc-100 shadow hover:visible group-hover:visible"
+      >
+        <div className="">
+          {/* <h2 className="font-bold ">To Participate:</h2> */}
+          {'Log in as a Guest to participate'}
+          {/* {contributions_custom_title || 'Contribtutons'} */}
+        </div>
+      </div>
+    );
+    return (
+      <div className="group relative px-1">
+        {icon}
+        {popup}
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col items-center pb-6 ">
       <div className="w-full py-2">
-        <div className="text-dark mx-2 pb-1 text-xl font-bold">
-          {contributions_custom_title || 'Contribtutons'}
+        <div className="mx-2 flex items-center gap-1 pb-1">
+          <div className="text-dark text-xl font-bold">
+            {contributions_custom_title || 'Contribtutons'}{' '}
+          </div>
+          <Tooltip />
         </div>
         <div>
           {contributions?.map((contribution, i) => (

@@ -64,13 +64,10 @@ export function ModalGuestLogin({
           setGuest(null);
           return;
         }
-        setGuest(data);
+        setGuest({ guest_id: data.guest_id });
       }
     })();
   };
-
-  // guestList && console.log([...guestList?.values()]);
-  console.log(guestList);
 
   return (
     <Modal {...{ isOpen }} {...{ closeModal }}>

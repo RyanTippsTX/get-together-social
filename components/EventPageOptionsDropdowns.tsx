@@ -90,12 +90,14 @@ export function GuestNavbarOptionsDropdown() {
   const [guestDisplayNameModalOpen, setGuestDisplayNameModalOpen] = useState<boolean>(false);
   return (
     <>
-      <ModalGuestDisplayNameForm
-        isOpen={guestDisplayNameModalOpen}
-        closeModal={() => {
-          setGuestDisplayNameModalOpen(false);
-        }}
-      />
+      {guestDisplayNameModalOpen && (
+        <ModalGuestDisplayNameForm
+          isOpen={guestDisplayNameModalOpen}
+          closeModal={() => {
+            setGuestDisplayNameModalOpen(false);
+          }}
+        />
+      )}
       <div className="dropdown dropdown-end flex">
         <div tabIndex={0} className="btn btn-square btn-ghost flex flex-col">
           <svg
