@@ -117,7 +117,7 @@ export default function EventPage({ initialEvent }: { initialEvent: Event }) {
     if (contributions_enabled && contributionsStale) {
       (async () => {
         const { data, error } = await getContributions(event_id);
-        // console.log('new contributions fetched: ', data);
+        console.log('new contributions fetched: ', data);
         setContributions(data as Contributions);
         setContributionsStale(false);
       })();
@@ -342,9 +342,15 @@ export default function EventPage({ initialEvent }: { initialEvent: Event }) {
       <div className="pb-4 sm:mx-6">
         {photo_url && image}
         {content}
-        {contributions_enabled && (
+        {contributions_enabled && contributions && (
+          // "contributions" is undefined until loaded, if there are actually no contributions then "contributions" will be an empty array, which is truthy
           <ContributionsComponent
-            {...{ contributions, contributions_custom_title, contributions_frozen, host }}
+            {...{
+              contributions,
+              contributions_custom_title,
+              contributions_frozen,
+              host,
+            }}
           />
         )}
       </div>

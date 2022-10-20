@@ -1,7 +1,11 @@
 import { Host, Event, Guest, Contribution, Contributions } from '../lib/queries.types';
 import { ContributionOptionsButton } from './ContributionOptionsButton';
+import { useAuth } from '../lib/auth';
+import { useProfile } from '../lib/profile';
+import { useEventState } from '../lib/eventState';
+import { useGuestAuth } from '../lib/guestAuth';
 
-// assume that contributions_enabled when this component is called to render
+// component assumes that contributions are enabled if its being called to render
 export function ContributionsComponent({
   contributions_frozen,
   contributions_custom_title,
@@ -10,87 +14,26 @@ export function ContributionsComponent({
 }: {
   contributions_frozen: boolean;
   contributions_custom_title: string | null;
-  contributions: Contributions | undefined;
+  contributions: Contributions; // array will be empty if there are no contributions
   host: Host;
 }) {
-  // conditional rendering logic
-  if (typeof contributions === undefined) {
-    // contributions are still loading
-    return <div>{'loading ...'}</div>;
-  }
-  if (typeof contributions === null) {
-    // contributions are enabled but
-    return <div>{'No contributions yet, please consider contributing!'}</div>;
-  }
+  const { session, user, sessionStale, signOut, signInWithMagicLink, signInWithGoogle } = useAuth();
+  const { profile, loading: profileLoading } = useProfile();
+  const { guest, setGuest, guestList, setGuestList } = useGuestAuth();
+  const { event, setEvent } = useEventState();
 
-  return (
-    <div>
-      <ContributionsTable
-        {...{ contributions_frozen, contributions, contributions_custom_title, host }}
-      />
-    </div>
-  );
-}
-
-function ContributionsTable({
-  contributions_frozen,
-  contributions_custom_title,
-  contributions,
-  host,
-}: {
-  contributions_frozen: boolean;
-  contributions_custom_title: string | null;
-  contributions: Contributions | undefined;
-  host: Host;
-}) {
-  function Tooltip() {
-    const icon = (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        strokeWidth={1.5}
-        stroke="currentColor"
-        className="h-6 w-6 text-zinc-400"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
-        />
-      </svg>
-    );
-
-    const popup = (
-      <div
-        className="text-md invisible absolute left-2/4 bottom-full mb-1
-         w-40 -translate-x-2/4 
-        items-center rounded
-        bg-zinc-700 p-2 font-medium text-zinc-100 shadow hover:visible group-hover:visible"
-      >
-        <div className="">
-          {/* <h2 className="font-bold ">To Participate:</h2> */}
-          {'Log in as a Guest to participate'}
-          {/* {contributions_custom_title || 'Contribtutons'} */}
-        </div>
-      </div>
-    );
-    return (
-      <div className="group relative px-1">
-        {icon}
-        {popup}
-      </div>
-    );
-  }
+  const isHost = user && user.id === event?.host_id;
+  const isGuest = guest && !isHost; // let host account take precedence in event of a shared device
+  const isSpectator = !isHost && !isGuest; // note, this could be an authenticated host account for a different event, or a non-authenticated page viewer.
 
   return (
     <div className="flex flex-col items-center pb-6 ">
       <div className="w-full py-2">
         <div className="mx-2 flex items-center gap-1 pb-1">
-          <div className="text-dark text-xl font-bold">
-            {contributions_custom_title || 'Contribtutons'}{' '}
+          <div className="text-dark  text-xl font-bold">
+            {contributions_custom_title || 'Contribtutons'}
           </div>
-          <Tooltip />
+          {isSpectator && <Tooltip message="Log in as a Guest to participate" />}
         </div>
         <div>
           {contributions?.map((contribution, i) => (
@@ -102,6 +45,42 @@ function ContributionsTable({
         </div>
         {<NewContributionForm {...{ contributions_frozen }} />}
       </div>
+    </div>
+  );
+}
+
+function Tooltip({ message }: { message: string }) {
+  const icon = (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
+      className="h-6 w-6 text-zinc-400"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+      />
+    </svg>
+  );
+
+  const popup = (
+    <div
+      className="text-md invisible absolute left-2/4 bottom-full mb-1
+       w-40 -translate-x-2/4 
+      items-center rounded
+      bg-zinc-700 p-2 font-medium text-zinc-100 shadow hover:visible group-hover:visible"
+    >
+      <div className="">{message}</div>
+    </div>
+  );
+  return (
+    <div className="group relative px-1">
+      {icon}
+      {popup}
     </div>
   );
 }
@@ -184,23 +163,67 @@ function ContributionsTableRow({
 }
 
 function NewContributionForm({ contributions_frozen }: { contributions_frozen: boolean }) {
-  //grey out form inputs if frozen
+  const { session, user, sessionStale, signOut, signInWithMagicLink, signInWithGoogle } = useAuth();
+  const { profile, loading: profileLoading } = useProfile();
+  const { guest, setGuest, guestList, setGuestList } = useGuestAuth();
+  const { event, setEvent } = useEventState();
+
+  const isHost = user && user.id === event?.host_id;
+  const isGuest = guest && !isHost; // let host account take precedence in event of a shared device
+  const isSpectator = !isHost && !isGuest; // note, this could be an authenticated host account for a different event, or a non-authenticated page viewer.
+
+  const NewItemForm = (
+    <>
+      <div className="pt-3">
+        {/* {isHost && (
+          // this label is only necesary when disambiguating from the new request form for event hosts
+          <div className=" mx-1 flex items-center gap-1 pb-1">
+            <div className="text-dark text-md font-bold">New entry in your name</div>
+            <Tooltip message="This implies y" />
+          </div>
+        )} */}
+        <div className=" flex w-full gap-2">
+          <input type="text" placeholder="Add an item..." className="input input-bordered w-full" />
+          {/* <div className="btn btn-primary text-3xl">🕊</div> */}
+          <div className="btn gap-2">
+            <p className="text-lg">Submit</p>
+            {/* <p className="text-3xl">✍🏻</p> */}
+          </div>
+        </div>
+      </div>
+    </>
+  );
+  const NewRequestForm = (
+    <>
+      <div className="pt-8">
+        {/* label */}
+        <div className=" mx-1 flex items-center gap-1 pb-1">
+          <div className="text-dark text-md font-bold tracking-tight">Make a Request</div>
+          <Tooltip message="Requests can be claimed by guests" />
+        </div>
+        {/* form */}
+        <div className=" flex w-full gap-2">
+          <input
+            type="text"
+            placeholder="Add a request..."
+            className="input input-bordered w-full"
+          />
+          {/* <div className="btn btn-primary text-3xl">🕊</div> */}
+          <div className="btn gap-2">
+            <p className="text-lg">Request</p>
+            {/* <p className="text-3xl">✍🏻</p> */}
+          </div>
+        </div>
+      </div>
+    </>
+  );
+
   return (
     <>
       {!contributions_frozen && (
         <div className="px-2">
-          <div className=" flex w-full gap-2 pt-3">
-            <input
-              type="text"
-              placeholder="Add an item..."
-              className="input input-bordered w-full"
-            />
-            {/* <div className="btn btn-primary text-3xl">🕊</div> */}
-            <div className="btn gap-2">
-              <p className="text-lg">Submit</p>
-              <p className="text-3xl">✍🏻</p>
-            </div>
-          </div>
+          {NewItemForm}
+          {isHost && NewRequestForm}
         </div>
       )}
     </>
