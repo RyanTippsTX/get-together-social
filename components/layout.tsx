@@ -36,7 +36,7 @@ export default function Layout({
       <header className="sticky top-0 z-40">
         <Navbar {...{ eventPage }} />
       </header>
-      <main className="xs:min-h-[45rem] min-h-[35rem] bg-zinc-50">
+      <main className="xs:min-h-[45rem] min-h-[35rem] bg-white">
         <div className="container mx-auto">{appLoading ? <AppLoadingSplash /> : children}</div>
         {/* {sessionLoading || profileLoading ? (
           <Loading />
