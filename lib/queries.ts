@@ -2,6 +2,8 @@ import supabase from '../lib/supabase';
 import { ProfileInputs, Inputs } from './forms.types';
 import { Event } from '../lib/queries.types';
 
+// ---------- HOST PROFILE ----------
+
 export async function createHostProfile({
   display_name,
   // avatar_url,
@@ -31,6 +33,8 @@ export async function updateHostDisplayName({
     .match({ host_id });
   return { error };
 }
+
+// ---------- EVENTS ----------
 
 // Returns a random integer from 0 to 9,999,999:
 function generateUrlCode() {
@@ -87,7 +91,6 @@ export async function createEvent({
   return { route, error };
 }
 
-// export async function updateEvent({ event }: { event: Event }) {
 export async function updateEvent({
   title,
   date,
@@ -142,12 +145,12 @@ export async function updateEvent({
 
 export async function softDeleteEvent(event_id: string) {
   // doesnt actually delete the data. Just marks the event "deleted" and makes it inaccessible to users. Useful for future analytics.
-  return await supabase.from('events').delete().match({ event_id });
+  // return await supabase.from('events').delete().match({ event_id });
 }
 export async function hardDeleteEvent(event_id: string) {
   // Actually deletes event data
   // Must delete associated data first (contributions, guests, etc)
-  return await supabase.from('events').delete().match({ event_id });
+  // return await supabase.from('events').delete().match({ event_id });
 }
 
 export async function getEvents(user_id: string) {
@@ -177,6 +180,8 @@ export async function getEventViewCount(event_id: string) {
     .select('*', { count: 'exact', head: true })
     .match({ event_id });
 }
+
+// ---------- GUESTS ----------
 
 export async function getGuestList(event_id: string) {
   return await supabase
@@ -215,6 +220,13 @@ export async function updateGuest({
     })
     .match({ guest_id });
 }
+export async function safeDeleteGuest() {
+  // revoke any claimed requests
+  // delete any contributions
+  // delete guest account
+}
+
+// ---------- CONTRIBUTIONS ----------
 
 export async function getContributions(event_id: string) {
   return await supabase
@@ -232,110 +244,73 @@ export async function getContribution(event_id: string) {
     .single();
 }
 
-// export async function createContribution(event_id: string) {
-//   return await supabase
-//     .from('contributions')
-//     .select('*, guests( * )')
-//     .match({ event_id })
-//     .order('created_at', { ascending: true })
-//     .single();
-// }
+// - - - - - as guest - - - - -
+export async function createGuestContribution(event_id: string) {
+  // do stuff
+}
+export async function claimRequestAsGuest(contribution_id: string) {
+  // do stuff
+}
+export async function unclaimRequest(contribution_id: string) {
+  // do stuff
+}
+export async function updateClaimedAsDescription(contribution_id: string) {
+  // overwrites the 'claimed-as' description field
+  // do stuff
+}
 
-// export async function createEvent({
-//   title,
-//   date,
-//   time,
-//   location,
-//   description,
-//   contributions_enabled,
-//   contributions_frozen,
-//   contributions_custom_title_enabled,
-//   contributions_custom_title,
-//   host_id,
-// }: Inputs & { host_id: string }) {
-//   // do some data processing stuff
+// - - - - - as host - - - - -
+export async function createHostContribution({
+  event_id,
+  description,
+}: {
+  event_id: string;
+  description: string;
+}) {
+  // do stuff
+  return await supabase.from('contributions').insert([
+    {
+      event_id,
+      description,
+      requested: false,
+      contributor_id: null,
+      claimed_comment: null,
+    },
+  ]);
+}
+export async function createRequest({
+  event_id,
+  description,
+}: {
+  event_id: string;
+  description: string;
+}) {
+  // do stuff
+  return await supabase.from('contributions').insert([
+    {
+      event_id,
+      description,
+      requested: true,
+      contributor_id: null,
+      claimed_comment: null,
+    },
+  ]);
+}
+export async function convertRequestToContribution(contribution_id: string) {
+  // aka when a host claims his/her own request
+  // do stuff
+}
+export async function convertContributionToRequest(contribution_id: string) {
+  // must be a host contribution
+  // do stuff
+}
+// - - - - - shared - - - - -
+export async function updateDescription(contribution_id: string) {
+  // same function for guest contribution, host contribution, & requests
+  return await supabase.from('contributions').delete().match({ contribution_id });
+}
 
-//   const url_code = generateUrlCode(); // random 7 digit
-//   const url_string = readableUrlEncodeTitle(title); // one-way, human-readable encoding
-//   const route = '/' + url_code + '/' + url_string;
-
-//   const { error } = await supabase.from('events').insert([
-//     // ECMA specifies that undefined shorthand values will not be passed as properties at all (e.g. if 'time' is undefined, it will not return an undefined property, it will simply not return a property at all)
-//     {
-//       // event_id, // uuid generated by postgres
-//       // created_at, // generated by postgres
-//       host_id,
-//       title,
-//       date,
-//       time,
-//       location,
-//       // photo_url,
-//       description,
-//       contributions_enabled,
-//       contributions_frozen,
-//       contributions_custom_title,
-//       url_code,
-//       url_string,
-//     },
-//   ]);
-//   return { route, error };
-// }
-
-// // export async function updateEvent({ event }: { event: Event }) {
-// export async function updateEvent({
-//   title,
-//   date,
-//   time,
-//   location,
-//   description,
-//   contributions_enabled,
-//   contributions_frozen,
-//   contributions_custom_title_enabled,
-//   contributions_custom_title,
-//   event_id,
-//   url_code,
-// }: Inputs & { event_id: string; url_code: string }) {
-//   // const {
-//   //   event_id,
-//   //   created_at,
-//   //   host_id,
-//   //   title,
-//   //   date,
-//   //   time,
-//   //   location,
-//   //   photo_url,
-//   //   description,
-//   //   contributions_enabled,
-//   //   contributions_frozen,
-//   //   contributions_custom_title,
-//   //   url_code,
-//   //   url_string,
-//   // } = event;
-
-//   const url_string = readableUrlEncodeTitle(title); // one-way, human-readable encoding
-//   const route = '/' + url_code + '/' + url_string;
-
-//   const { error } = await supabase
-//     .from('events')
-//     .update({
-//       title,
-//       date,
-//       time,
-//       location,
-//       // photo_url,
-//       description,
-//       contributions_enabled,
-//       contributions_frozen,
-//       contributions_custom_title,
-//       url_string,
-//     })
-//     .match({ event_id });
-
-//   return { route, error };
-// }
-
-// export async function deleteContribution(event_id: string) {
-//   // Actually deletes event data
-//   // Must delete associated data first (contributions, guests, etc)
-//   return await supabase.from('events').delete().match({ event_id });
-// }
+export async function deleteContribution(contribution_id: string) {
+  // same function for guest contribution, host contribution, & requests
+  return await supabase.from('contributions').delete().match({ contribution_id });
+}
