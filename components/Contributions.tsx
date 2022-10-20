@@ -210,7 +210,7 @@ function NewContributionForm({ contributions_frozen }: { contributions_frozen: b
           />
           {/* <div className="btn btn-primary text-3xl">🕊</div> */}
           <div className="btn gap-2">
-            <p className="text-lg">Request</p>
+            <p className="text-lg">Submit</p>
             {/* <p className="text-3xl">✍🏻</p> */}
           </div>
         </div>
