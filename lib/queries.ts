@@ -277,7 +277,7 @@ export async function claimRequestAsGuest({
     .from('contributions')
     .update({
       claimed_comment,
-      guest_id,
+      contributor_id: guest_id,
     })
     .match({ contribution_id });
 }

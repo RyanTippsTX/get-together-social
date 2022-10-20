@@ -5,7 +5,12 @@ import { useProfile } from '../lib/profile';
 import { useEventState } from '../lib/eventState';
 import { useGuestAuth } from '../lib/guestAuth';
 import { useForm } from 'react-hook-form';
-import { createRequest, createHostContribution, createGuestContribution } from '../lib/queries';
+import {
+  createRequest,
+  createHostContribution,
+  createGuestContribution,
+  claimRequestAsGuest,
+} from '../lib/queries';
 
 // component assumes that contributions are enabled if its being called to render
 export function ContributionsComponent({
@@ -89,14 +94,7 @@ function Tooltip({ message }: { message: string }) {
 
 function ContributionsTableRow({
   i,
-  contribution,
-  host,
-}: {
-  i: number;
-  contribution: Contribution;
-  host: Host;
-}) {
-  const {
+  contribution: {
     contribution_id,
     created_at,
     event_id,
@@ -105,8 +103,22 @@ function ContributionsTableRow({
     contributor_id,
     claimed_comment,
     guests: guest,
-  } = contribution;
-  // const { avatar_url, display_name } = host;
+  },
+  host,
+}: {
+  i: number;
+  contribution: Contribution;
+  host: Host;
+}) {
+  const { session, user, sessionStale, signOut, signInWithMagicLink, signInWithGoogle } = useAuth();
+  const { profile, loading: profileLoading } = useProfile();
+  const { guest: authenticatedGuest, setGuest, guestList, setGuestList } = useGuestAuth();
+  const { event, setEvent } = useEventState();
+
+  // user authorization status for actions:
+  const isHost = user && user.id === event?.host_id;
+  const isGuest = authenticatedGuest && !isHost; // let host account take precedence in event of a shared device
+  const isSpectator = !isHost && !isGuest; // note, this could be an authenticated host account for a different event, or a non-authenticated page viewer.
 
   // contributions will either be:
   // * Committed by the host   // request false, contributor null
@@ -122,7 +134,20 @@ function ContributionsTableRow({
   //     * Claimed by the host.   // this is not a request, so convert
 
   const claimButton = (
-    <div className="btn btn-sm gap-1">
+    <div
+      className="btn btn-sm gap-1"
+      onClick={() => {
+        if (isGuest) {
+          (async () => {
+            const { data, error } = await claimRequestAsGuest({
+              contribution_id,
+              claimed_comment: null,
+              guest_id: authenticatedGuest.guest_id,
+            });
+          })();
+        }
+      }}
+    >
       <p className="">Claim</p>
       <p className="text-2xl">🙋🏻</p>
       {/* <p className="block text-2xl">✋🏻</p> */}
