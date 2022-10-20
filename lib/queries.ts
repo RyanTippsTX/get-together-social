@@ -245,11 +245,41 @@ export async function getContribution(event_id: string) {
 }
 
 // - - - - - as guest - - - - -
-export async function createGuestContribution(event_id: string) {
-  // do stuff
+export async function createGuestContribution({
+  event_id,
+  description,
+  guest_id,
+}: {
+  event_id: string;
+  description: string;
+  guest_id: string;
+}) {
+  return await supabase.from('contributions').insert([
+    {
+      event_id,
+      description,
+      requested: false,
+      contributor_id: guest_id,
+      claimed_comment: null,
+    },
+  ]);
 }
-export async function claimRequestAsGuest(contribution_id: string) {
-  // do stuff
+export async function claimRequestAsGuest({
+  contribution_id,
+  claimed_comment,
+  guest_id,
+}: {
+  contribution_id: string;
+  claimed_comment: string | null;
+  guest_id: string;
+}) {
+  return await supabase
+    .from('contributions')
+    .update({
+      claimed_comment,
+      guest_id,
+    })
+    .match({ contribution_id });
 }
 export async function unclaimRequest(contribution_id: string) {
   // do stuff
@@ -267,7 +297,6 @@ export async function createHostContribution({
   event_id: string;
   description: string;
 }) {
-  // do stuff
   return await supabase.from('contributions').insert([
     {
       event_id,

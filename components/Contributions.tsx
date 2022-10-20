@@ -4,6 +4,8 @@ import { useAuth } from '../lib/auth';
 import { useProfile } from '../lib/profile';
 import { useEventState } from '../lib/eventState';
 import { useGuestAuth } from '../lib/guestAuth';
+import { useForm } from 'react-hook-form';
+import { createRequest, createHostContribution, createGuestContribution } from '../lib/queries';
 
 // component assumes that contributions are enabled if its being called to render
 export function ContributionsComponent({
@@ -168,9 +170,28 @@ function NewContributionForm({ contributions_frozen }: { contributions_frozen: b
   const { guest, setGuest, guestList, setGuestList } = useGuestAuth();
   const { event, setEvent } = useEventState();
 
+  const { event_id } = event! || {}; // safe to assume event exists if this page is rendering
+  const { guest_id } = guest! || {}; // kinda dangerous, but value is only consumed by functions available when there is a guest user
+
   const isHost = user && user.id === event?.host_id;
   const isGuest = guest && !isHost; // let host account take precedence in event of a shared device
   const isSpectator = !isHost && !isGuest; // note, this could be an authenticated host account for a different event, or a non-authenticated page viewer.
+
+  // form state for New Item
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm();
+
+  // form state for New Request
+  const {
+    register: register2,
+    handleSubmit: handleSubmit2,
+    formState: { errors: errors2 },
+    reset: reset2,
+  } = useForm();
 
   const NewItemForm = (
     <>
@@ -182,14 +203,47 @@ function NewContributionForm({ contributions_frozen }: { contributions_frozen: b
             <Tooltip message="This implies y" />
           </div>
         )} */}
-        <div className=" flex w-full gap-2">
-          <input type="text" placeholder="Add an item..." className="input input-bordered w-full" />
+        <form
+          className=" flex w-full gap-2"
+          noValidate
+          autoComplete="off"
+          onSubmit={handleSubmit(({ description }) => {
+            // console.log('New Item submission data:', data);
+            if (isSpectator) {
+              // promt guest login
+              return; // for now
+            }
+            reset();
+            if (isHost) {
+              createHostContribution({
+                event_id,
+                description,
+              });
+            }
+            if (isGuest) {
+              createGuestContribution({
+                event_id,
+                description,
+                guest_id,
+              });
+            }
+          })}
+        >
+          <input
+            type="text"
+            placeholder="Add an item..."
+            className="input input-bordered w-full"
+            {...register('description', {
+              required: { value: true, message: 'Required' },
+              maxLength: { value: 200, message: 'Too long' },
+              // pattern: { value: /[A-Za-z]/i, message: 'Must contain a character' }, // this is done by default when field is required
+            })}
+          />
           {/* <div className="btn btn-primary text-3xl">🕊</div> */}
-          <div className="btn gap-2">
-            <p className="text-lg">Submit</p>
-            {/* <p className="text-3xl">✍🏻</p> */}
-          </div>
-        </div>
+          <button type="submit" className="btn gap-2 text-lg">
+            Submit
+          </button>
+        </form>
       </div>
     </>
   );
@@ -202,18 +256,36 @@ function NewContributionForm({ contributions_frozen }: { contributions_frozen: b
           <Tooltip message="Requests can be claimed by guests" />
         </div>
         {/* form */}
-        <div className=" flex w-full gap-2">
+        <form
+          className=" flex w-full gap-2"
+          noValidate
+          autoComplete="off"
+          onSubmit={handleSubmit2(({ description }) => {
+            reset2();
+            // console.log('New Request submission data:', data);
+            if (isHost) {
+              createRequest({
+                event_id,
+                description,
+              });
+            }
+          })}
+        >
           <input
             type="text"
             placeholder="Add a request..."
             className="input input-bordered w-full"
+            {...register2('description', {
+              required: { value: true, message: 'Required' },
+              maxLength: { value: 200, message: 'Too long' },
+              // pattern: { value: /[A-Za-z]/i, message: 'Must contain a character' }, // this is done by default when field is required
+            })}
           />
           {/* <div className="btn btn-primary text-3xl">🕊</div> */}
-          <div className="btn gap-2">
-            <p className="text-lg">Submit</p>
-            {/* <p className="text-3xl">✍🏻</p> */}
-          </div>
-        </div>
+          <button type="submit" className="btn gap-2 text-lg">
+            Submit
+          </button>
+        </form>
       </div>
     </>
   );
