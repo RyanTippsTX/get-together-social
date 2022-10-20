@@ -325,11 +325,22 @@ export async function createRequest({
     },
   ]);
 }
-export async function convertRequestToContribution(contribution_id: string) {
+export async function convertRequestToHostContribution({
+  contribution_id,
+}: {
+  contribution_id: string;
+}) {
   // aka when a host claims his/her own request
-  // do stuff
+  return await supabase
+    .from('contributions')
+    .update({
+      claimed_comment: null,
+      contributor_id: null,
+      requested: false,
+    })
+    .match({ contribution_id });
 }
-export async function convertContributionToRequest(contribution_id: string) {
+export async function convertHostContributionToRequest(contribution_id: string) {
   // must be a host contribution
   // do stuff
 }

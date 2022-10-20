@@ -10,6 +10,7 @@ import {
   createHostContribution,
   createGuestContribution,
   claimRequestAsGuest,
+  convertRequestToHostContribution,
 } from '../lib/queries';
 
 // component assumes that contributions are enabled if its being called to render
@@ -143,6 +144,13 @@ function ContributionsTableRow({
               contribution_id,
               claimed_comment: null,
               guest_id: authenticatedGuest.guest_id,
+            });
+          })();
+        }
+        if (isHost) {
+          (async () => {
+            const { data, error } = await convertRequestToHostContribution({
+              contribution_id,
             });
           })();
         }
