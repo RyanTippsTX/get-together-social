@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import { useEventState } from '../lib/eventState';
 import { useGuestAuth } from '../lib/guestAuth';
 import { ModalGuestDisplayNameForm } from './modals/ModalGuestDisplayNameForm';
+import { safeDeleteGuestAndContributions } from '../lib/queries';
 
 export function HostNavbarOptionsDropdown() {
   const router = useRouter();
@@ -88,6 +89,10 @@ export function GuestNavbarOptionsDropdown() {
   const { signOut } = useAuth();
   const { event, setEvent } = useEventState();
   const [guestDisplayNameModalOpen, setGuestDisplayNameModalOpen] = useState<boolean>(false);
+
+  const { event_id } = event! || {}; // safe to assume event exists if this page is rendering
+  const { guest_id } = guest! || {}; // kinda dangerous, but value is only consumed by functions available when there is a guest user
+
   return (
     <>
       {guestDisplayNameModalOpen && (
@@ -138,7 +143,14 @@ export function GuestNavbarOptionsDropdown() {
             </button>
           </li>
           <li>
-            <button>Delete All My Contributions</button>
+            <button
+              onClick={() => {
+                setGuest(null);
+                safeDeleteGuestAndContributions(guest_id);
+              }}
+            >
+              Delete My Account & Contributions
+            </button>
           </li>
           {/* Future option: allow account merge in case a user accidentally contributes under multiple names */}
           {/* <li>

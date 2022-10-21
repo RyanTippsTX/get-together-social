@@ -220,10 +220,26 @@ export async function updateGuest({
     })
     .match({ guest_id });
 }
-export async function safeDeleteGuest() {
-  // revoke any claimed requests
-  // delete any contributions
-  // delete guest account
+export async function safeDeleteGuestAndContributions(guest_id: string) {
+  await Promise.all([
+    // unclaim requests
+    supabase
+      .from('contributions')
+      .update({
+        claimed_comment: null,
+        contributor_id: null,
+      })
+      .match({ contributor_id: guest_id, requested: true }),
+
+    // delete contributions
+    supabase.from('contributions').delete().match({ contributor_id: guest_id, requested: false }),
+  ]).then((values) => {
+    console.log(values);
+  });
+
+  // then delete account
+  await supabase.from('guests').delete().match({ guest_id });
+  return;
 }
 
 // ---------- CONTRIBUTIONS ----------
@@ -358,8 +374,7 @@ export async function convertHostContributionToRequest(contribution_id: string) 
 }
 // - - - - - shared - - - - -
 export async function updateDescription(contribution_id: string) {
-  // same function for guest contribution, host contribution, & requests
-  return await supabase.from('contributions').delete().match({ contribution_id });
+  // do stuff
 }
 
 export async function deleteContribution(contribution_id: string) {
