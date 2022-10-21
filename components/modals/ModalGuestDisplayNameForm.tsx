@@ -67,7 +67,7 @@ export function ModalGuestDisplayNameForm({
       <form autoComplete="off" noValidate onSubmit={handleSubmit(onSubmit)} className="">
         <div className="card-body ">
           <h2 className="card-title">Edit Your Display Name</h2>
-          <pre>{JSON.stringify(returningGuestUser, null, 2)}</pre>
+          {/* <pre>{JSON.stringify(returningGuestUser, null, 2)}</pre> */}
           <p>
             Your Display Name is your guest log-in username and is shown with any contributions you
             make in the {event?.contributions_custom_title || 'Guest Contribtutons'}.
