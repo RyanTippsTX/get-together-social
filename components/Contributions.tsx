@@ -11,6 +11,7 @@ import {
   createGuestContribution,
   claimRequestAsGuest,
   convertRequestToHostContribution,
+  deleteContribution,
 } from '../lib/queries';
 
 // component assumes that contributions are enabled if its being called to render
@@ -190,7 +191,14 @@ function ContributionsTableRow({
         </li>
         {isHost && (
           <li>
-            <a>Delete</a>
+            <button
+              onClick={() => {
+                deleteContribution(contribution_id);
+              }}
+              className=""
+            >
+              Delete
+            </button>
           </li>
         )}
         {isGuest && (
