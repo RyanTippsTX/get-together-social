@@ -343,6 +343,14 @@ export async function convertRequestToHostContribution({
 export async function convertHostContributionToRequest(contribution_id: string) {
   // must be a host contribution
   // do stuff
+  return await supabase
+    .from('contributions')
+    .update({
+      claimed_comment: null,
+      contributor_id: null,
+      requested: true,
+    })
+    .match({ contribution_id });
 }
 // - - - - - shared - - - - -
 export async function updateDescription(contribution_id: string) {

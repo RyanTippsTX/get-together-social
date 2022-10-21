@@ -11,6 +11,7 @@ import {
   createGuestContribution,
   claimRequestAsGuest,
   convertRequestToHostContribution,
+  convertHostContributionToRequest,
   deleteContribution,
 } from '../lib/queries';
 
@@ -184,11 +185,9 @@ function ContributionsTableRow({
       {/* dropdown */}
       <ul
         tabIndex={0}
-        className="menu menu-compact dropdown-content rounded-box absolute top-full right-0 mt-3 w-auto bg-white p-2 shadow"
+        className="menu menu-compact dropdown-content rounded-box absolute top-full right-0 mt-3 w-auto min-w-max bg-white p-2 shadow"
       >
-        <li>
-          <a>Placeholder</a>
-        </li>
+        {/* Host options */}
         {isHost && (
           <li>
             <button
@@ -201,6 +200,19 @@ function ContributionsTableRow({
             </button>
           </li>
         )}
+        {isHost && !contributor_id && (
+          <li>
+            <button
+              onClick={() => {
+                convertHostContributionToRequest(contribution_id);
+              }}
+              className=""
+            >
+              Convert to Request
+            </button>
+          </li>
+        )}
+        {/* Guest options */}
         {isGuest && (
           <li>
             <a>Delete</a>
