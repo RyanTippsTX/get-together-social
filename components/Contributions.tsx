@@ -1,5 +1,5 @@
 import { Host, Event, Guest, Contribution, Contributions } from '../lib/queries.types';
-import { ContributionOptionsButton } from './ContributionOptionsButton';
+// import { ContributionOptionsButton } from './ContributionOptionsButton';
 import { useAuth } from '../lib/auth';
 import { useProfile } from '../lib/profile';
 import { useEventState } from '../lib/eventState';
@@ -103,7 +103,7 @@ function ContributionsTableRow({
     requested,
     contributor_id,
     claimed_comment,
-    guests: guest,
+    guests: contributor,
   },
   host,
 }: {
@@ -113,12 +113,12 @@ function ContributionsTableRow({
 }) {
   const { session, user, sessionStale, signOut, signInWithMagicLink, signInWithGoogle } = useAuth();
   const { profile, loading: profileLoading } = useProfile();
-  const { guest: authenticatedGuest, setGuest, guestList, setGuestList } = useGuestAuth();
+  const { guest, setGuest, guestList, setGuestList } = useGuestAuth();
   const { event, setEvent } = useEventState();
 
   // user authorization status for actions:
   const isHost = user && user.id === event?.host_id;
-  const isGuest = authenticatedGuest && !isHost; // let host account take precedence in event of a shared device
+  const isGuest = guest && !isHost; // let host account take precedence in event of a shared device
   const isSpectator = !isHost && !isGuest; // note, this could be an authenticated host account for a different event, or a non-authenticated page viewer.
 
   // contributions will either be:
@@ -143,7 +143,7 @@ function ContributionsTableRow({
             const { data, error } = await claimRequestAsGuest({
               contribution_id,
               claimed_comment: null,
-              guest_id: authenticatedGuest.guest_id,
+              guest_id: guest.guest_id,
             });
           })();
         }
@@ -162,36 +162,79 @@ function ContributionsTableRow({
     </div>
   );
 
-  const item = (
-    <div className="grow">
-      {description}
-      {requestUnclaimed && <span className="badge mx-1">Requested</span>}
-      {requestClaimedByGuest &&
-        (claimed_comment ? (
-          <span className="badge badge-ghost mx-1">Claimed as:</span>
-        ) : (
-          <span className="badge badge-ghost mx-1">Claimed</span>
-        ))}
-      {claimed_comment}
+  const optionsButton = (
+    <div className="dropdown dropdown-end flex">
+      {/* button */}
+      <div tabIndex={0} className="btn btn-square btn-ghost btn-sm">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          className="inline-block h-5 w-5 stroke-current"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
+          ></path>
+        </svg>
+      </div>
+      {/* dropdown */}
+      <ul
+        tabIndex={0}
+        className="menu menu-compact dropdown-content rounded-box absolute top-full right-0 mt-3 w-auto bg-white p-2 shadow"
+      >
+        <li>
+          <a>Placeholder</a>
+        </li>
+        {isHost && (
+          <li>
+            <a>Delete</a>
+          </li>
+        )}
+        {isGuest && (
+          <li>
+            <a>Delete</a>
+          </li>
+        )}
+      </ul>
     </div>
   );
-  const contributor = (
-    <div className="w-40 flex-none">
-      {(committedByGuest || requestClaimedByGuest) && guest.display_name}
+
+  const descriptionDisplay = (
+    <div className="flex grow flex-wrap items-center">
+      <div>{description}</div>
+      {requestUnclaimed && <div className="badge mx-1">Requested</div>}
+      {requestClaimedByGuest &&
+        (claimed_comment ? (
+          <div className="badge badge-ghost mx-1">Claimed as:</div>
+        ) : (
+          <div className="badge badge-ghost mx-1">Claimed</div>
+        ))}
+      <div>{claimed_comment}</div>
+    </div>
+  );
+  const contributorDisplay = (
+    <div className="w-28 flex-none text-ellipsis tracking-tighter">
+      {(committedByGuest || requestClaimedByGuest) && contributor.display_name}
       {committedByHost && host.display_name}
+      {requested && !contributor_id && claimButton}
     </div>
   );
 
   const actions = (
-    <div className="flex-none">
-      <div>{requested && !contributor_id ? claimButton : <ContributionOptionsButton />}</div>
+    <div className="flex">
+      <div className="w-8">
+        {(isHost || (isGuest && contributor_id === guest.guest_id)) && optionsButton}
+      </div>
     </div>
   );
 
   return (
-    <div className="flex items-center border-t-[1px] border-zinc-200 bg-zinc-100 py-1 px-2 sm:mx-2">
-      {item}
-      {contributor}
+    <div className="flex flex-nowrap items-center gap-2 border-t-[1px] border-zinc-200 bg-zinc-100 py-2 px-2 sm:mx-2">
+      {descriptionDisplay}
+      {contributorDisplay}
       {actions}
     </div>
   );
