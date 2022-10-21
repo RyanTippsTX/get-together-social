@@ -282,7 +282,12 @@ export async function claimRequestAsGuest({
     .match({ contribution_id });
 }
 export async function unclaimRequest(contribution_id: string) {
-  // do stuff
+  return await supabase
+    .from('contributions')
+    .update({
+      contributor_id: null,
+    })
+    .match({ contribution_id });
 }
 export async function updateClaimedAsDescription(contribution_id: string) {
   // overwrites the 'claimed-as' description field
@@ -342,7 +347,6 @@ export async function convertRequestToHostContribution({
 }
 export async function convertHostContributionToRequest(contribution_id: string) {
   // must be a host contribution
-  // do stuff
   return await supabase
     .from('contributions')
     .update({

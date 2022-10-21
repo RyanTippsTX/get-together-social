@@ -10,6 +10,7 @@ import {
   createHostContribution,
   createGuestContribution,
   claimRequestAsGuest,
+  unclaimRequest,
   convertRequestToHostContribution,
   convertHostContributionToRequest,
   deleteContribution,
@@ -213,9 +214,28 @@ function ContributionsTableRow({
           </li>
         )}
         {/* Guest options */}
-        {isGuest && (
+        {isGuest && !requested && (
           <li>
-            <a>Delete</a>
+            <button
+              onClick={() => {
+                deleteContribution(contribution_id);
+              }}
+              className=""
+            >
+              Delete
+            </button>
+          </li>
+        )}
+        {isGuest && requested && (
+          <li>
+            <button
+              onClick={() => {
+                unclaimRequest(contribution_id);
+              }}
+              className=""
+            >
+              Unclaim
+            </button>
           </li>
         )}
       </ul>
