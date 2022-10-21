@@ -19,7 +19,7 @@ export function Navbar({ eventPage }: { eventPage?: boolean }) {
   const [guestLoginModalOpen, setGuestLoginModalOpen] = useState<boolean>(false);
 
   const navLeft = (
-    <div className="flex-1">
+    <div className="flex-none">
       <Brand />
     </div>
   );
@@ -32,7 +32,7 @@ export function Navbar({ eventPage }: { eventPage?: boolean }) {
 
   const navRight = eventPage ? (
     // nav items for event-page:
-    <div className="flex-none">
+    <div className="flex flex-none flex-shrink place-content-end items-center">
       {isHost && (
         <>
           <HostNavbarOptionsDropdown />
@@ -48,11 +48,14 @@ export function Navbar({ eventPage }: { eventPage?: boolean }) {
       {isGuest && (
         <>
           <GuestNavbarOptionsDropdown />
+
           <div className="px-1 font-medium tracking-tight">Guest:</div>
-          {/* <AvatarPlaceholder displayName={guest} /> */}
-          <div className="px-1 font-normal tracking-tight">
+          <div className="flex-shrink whitespace-nowrap px-1 font-normal tracking-tight">
             {guestList?.find((g) => g.guest_id === guest.guest_id)?.display_name}
           </div>
+          {/* <AvatarPlaceholder
+            displayName={guestList?.find((g) => g.guest_id === guest.guest_id)?.display_name}
+          /> */}
         </>
       )}
       {isSpectator && (
@@ -132,7 +135,7 @@ export function Navbar({ eventPage }: { eventPage?: boolean }) {
   return (
     <div className="border-b-[1px] border-zinc-200 bg-white">
       <div className="container mx-auto ">
-        <div className="navbar ">
+        <div className="flex h-16 place-content-between items-center gap-1 p-2">
           {navLeft}
           {navRight}
         </div>
