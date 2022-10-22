@@ -79,7 +79,7 @@ function StatCardCombo({ stats }: { stats: Stats }) {
   const { hostCount, guestCount, eventCount, visitCount } = stats;
 
   return (
-    <div className="stats sm:stats-horizontal stats-vertical mb-8 shadow">
+    <div className="stats sm:stats-horizontal stats-vertical mb-8 border-[1px] border-zinc-100 shadow-md">
       <StatItem
         title={'Active Users'}
         value={hostCount + guestCount}
