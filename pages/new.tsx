@@ -70,7 +70,7 @@ export default function New() {
         {/* Main Form Body */}
         <div className="mt-5 md:mt-0">
           <form noValidate onSubmit={handleSubmit(onSubmit)}>
-            <div className="overflow-hidden shadow sm:rounded-md">
+            <div className="overflow-hidden border-[1px] shadow sm:rounded-md">
               <div className="bg-white px-4 py-5 sm:p-6">
                 <div className="grid grid-cols-4 gap-6">
                   {/* input title */}

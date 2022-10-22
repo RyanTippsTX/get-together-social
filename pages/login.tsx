@@ -30,7 +30,7 @@ export default function Login() {
 
   const card = (
     <div className="flex w-full flex-col items-center border-opacity-50 px-4 pb-6">
-      <div className="card bg-base-100 m-4 w-full max-w-sm shadow">
+      <div className="card bg-base-100 m-4 w-full max-w-sm border-[1px] shadow">
         <form
           className="card-body"
           noValidate
