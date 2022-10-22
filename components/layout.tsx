@@ -42,7 +42,7 @@ export default function Layout({
       <main
         // className={`xs:min-h-[45rem] min-h-[35rem] ${}` + (eventPage ? 'bg-pink-400' : 'bg-purple-500')}
         className={`xs:min-h-[45rem] min-h-[35rem] ${
-          eventPage || homePage ? 'bg-white' : 'bg-zinc-100'
+          eventPage || homePage ? 'bg-white' : 'bg-zinc-50'
         }`}
       >
         <div className="container mx-auto">{appLoading ? <AppLoadingSplash /> : children}</div>
