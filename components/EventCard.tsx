@@ -61,7 +61,7 @@ export function EventCard({ event, setEventsStale }: { event: Event; setEventsSt
         {photo_url ? (
           <Image
             src={photo_url || defaultEventImg}
-            alt="Shoes"
+            alt="Event image not found"
             layout="fill"
             objectFit="cover"
             placeholder="blur"
@@ -230,7 +230,7 @@ export function EventCardCreate() {
       <figure className="relative h-full w-full">
         <Image
           src={defaultNewEventImg}
-          alt="Shoes"
+          alt="Event image not found"
           layout="fill"
           objectFit="cover"
           placeholder="blur"
