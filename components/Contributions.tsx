@@ -407,13 +407,9 @@ function NewContributionForm({ contributions_frozen }: { contributions_frozen: b
   );
 
   return (
-    <>
-      {!contributions_frozen && (
-        <div className="px-2">
-          {NewItemForm}
-          {isHost && NewRequestForm}
-        </div>
-      )}
-    </>
+    <div className="px-2">
+      {(isHost || (isGuest && !contributions_frozen)) && NewItemForm}
+      {isHost && NewRequestForm}
+    </div>
   );
 }

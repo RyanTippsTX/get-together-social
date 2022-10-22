@@ -1,6 +1,7 @@
 import supabase from '../lib/supabase';
 import { ProfileInputs, Inputs } from './forms.types';
 import { Event } from '../lib/queries.types';
+import { deleteEventFiles } from './storage';
 
 // ---------- HOST PROFILE ----------
 
@@ -143,14 +144,37 @@ export async function updateEvent({
   return { route, error };
 }
 
-export async function softDeleteEvent(event_id: string) {
-  // doesnt actually delete the data. Just marks the event "deleted" and makes it inaccessible to users. Useful for future analytics.
+// export async function softDeleteEvent(event_id: string) {
+//   // mark event as deleted
+//   // optionally purge photos and some related event data
+//   // save for analytics
+// }
+export async function safeDeleteEvent(event_id: string) {
+  // delete photos
+  // delete contributions
+  // delete guests
+  // finally, delete event
   // return await supabase.from('events').delete().match({ event_id });
-}
-export async function hardDeleteEvent(event_id: string) {
-  // Actually deletes event data
-  // Must delete associated data first (contributions, guests, etc)
-  // return await supabase.from('events').delete().match({ event_id });
+
+  await Promise.all([
+    // unclaim requests
+    supabase
+      .from('contributions')
+      .update({
+        claimed_comment: null,
+        contributor_id: null,
+      })
+      .match({ contributor_id: guest_id, requested: true }),
+
+    // delete contributions
+    supabase.from('contributions').delete().match({ contributor_id: guest_id, requested: false }),
+  ]).then((values) => {
+    console.log(values);
+  });
+
+  // then delete account
+  await supabase.from('guests').delete().match({ guest_id });
+  return;
 }
 
 export async function getEvents(user_id: string) {

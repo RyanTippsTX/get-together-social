@@ -108,3 +108,18 @@ export async function updateEventAvatar({
     })
     .match({ event_id });
 }
+
+// only use when deleting an event, as this would otherwise conflict with CDN cache invalidation
+export async function deleteEventFiles(event_id: string) {
+  // check what files exist, if any
+  const { data: list, error } = await supabase.storage.from('events').list(`avatars/${event_id}`);
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  // delte all
+  if (list?.length === 0 || !list) return;
+  const filesToRemove = list.map((f) => `avatars/${event_id}/${f.name}`);
+  return await supabase.storage.from('events').remove(filesToRemove);
+}
