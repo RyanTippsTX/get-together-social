@@ -9,9 +9,11 @@ const siteAuthor = 'Ryan Tipps';
 
 export default function Layout({
   children,
+  homePage,
   eventPage,
 }: {
   children: React.ReactNode | React.ReactNode[];
+  homePage?: boolean;
   eventPage?: boolean;
 }) {
   const { appLoading, setAppLoading } = useAppLoading();
@@ -36,7 +38,13 @@ export default function Layout({
       <header className="sticky top-0 z-40">
         <Navbar {...{ eventPage }} />
       </header>
-      <main className="xs:min-h-[45rem] min-h-[35rem] bg-white">
+      {/* <main className={'xs:min-h-[45rem] min-h-[35rem] bg-white'}> */}
+      <main
+        // className={`xs:min-h-[45rem] min-h-[35rem] ${}` + (eventPage ? 'bg-pink-400' : 'bg-purple-500')}
+        className={`xs:min-h-[45rem] min-h-[35rem] ${
+          eventPage || homePage ? 'bg-white' : 'bg-zinc-100'
+        }`}
+      >
         <div className="container mx-auto">{appLoading ? <AppLoadingSplash /> : children}</div>
         {/* {sessionLoading || profileLoading ? (
           <Loading />
