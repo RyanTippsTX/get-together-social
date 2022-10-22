@@ -5,16 +5,20 @@ import { updateHostDisplayName, softDeleteEvent } from '../../lib/queries';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { Event } from '../../lib/queries.types';
 import { useEffect } from 'react';
+import { useAppLoading } from '../../lib/appLoading';
 
 export function ModalConfrimDeleteEvent({
   event,
   isOpen,
   closeModal,
+  onSuccess,
 }: {
   event: Event;
   isOpen: boolean;
   closeModal: Function;
+  onSuccess: Function;
 }) {
+  const { appLoading, setAppLoading } = useAppLoading();
   const {
     register,
     handleSubmit,
@@ -43,6 +47,8 @@ export function ModalConfrimDeleteEvent({
           console.error(error);
         }
         closeModal();
+        onSuccess();
+        setAppLoading(true);
       })();
     }
   };

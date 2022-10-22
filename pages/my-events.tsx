@@ -13,9 +13,11 @@ import { useRouter } from 'next/router';
 import { ModalHostDisplayNameForm } from '../components/modals/ModalHostDisplayNameForm';
 import { ModalHostAvatarForm } from '../components/modals/ModalHostAvatarForm';
 import { MouseEventHandler } from 'react';
+import { useAppLoading } from '../lib/appLoading';
 
 export default function MyEvents() {
   const router = useRouter();
+  const { appLoading, setAppLoading } = useAppLoading();
   const { session, user, sessionStale, signOut, signInWithMagicLink, signInWithGoogle } = useAuth();
   const { profile, avatar_url, display_name, profileStale } = useProfile();
 
@@ -43,6 +45,7 @@ export default function MyEvents() {
         const { data, error } = await getEvents(user.id);
         setEvents(data as Events);
         setEventsStale(false);
+        setAppLoading(false);
       })();
     } else {
       setEventsStale(false);

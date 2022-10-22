@@ -61,6 +61,9 @@ export function EventCard({ event, setEventsStale }: { event: Event; setEventsSt
       <ModalConfrimDeleteEvent
         event={event}
         isOpen={confrimDeleteEventModalOpen}
+        onSuccess={() => {
+          setEventsStale(true);
+        }}
         closeModal={() => {
           setConfrimDeleteEventModalOpen(false);
         }}
