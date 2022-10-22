@@ -8,6 +8,7 @@ import { getEventViewCount, softDeleteEvent } from '../lib/queries';
 import { useEffect, useState } from 'react';
 import { formatDate } from '../lib/dates';
 import { ModalEventAvatarForm } from './modals/ModalEventAvatarForm';
+import { ModalConfrimDeleteEvent } from './modals/ModalConfirmDeleteEvent';
 
 export function EventCard({ event, setEventsStale }: { event: Event; setEventsStale: Function }) {
   ``;
@@ -31,6 +32,7 @@ export function EventCard({ event, setEventsStale }: { event: Event; setEventsSt
   } = event;
 
   const [eventAvatarModalOpen, setEventAvatarModalOpen] = useState<boolean>(false);
+  const [confrimDeleteEventModalOpen, setConfrimDeleteEventModalOpen] = useState<boolean>(false);
   const [viewCount, setViewCount] = useState<number | undefined>(undefined);
   useEffect(() => {
     (async () => {
@@ -54,6 +56,13 @@ export function EventCard({ event, setEventsStale }: { event: Event; setEventsSt
         isOpen={eventAvatarModalOpen}
         closeModal={() => {
           setEventAvatarModalOpen(false);
+        }}
+      />
+      <ModalConfrimDeleteEvent
+        event={event}
+        isOpen={confrimDeleteEventModalOpen}
+        closeModal={() => {
+          setConfrimDeleteEventModalOpen(false);
         }}
       />
       {/* Event image */}
@@ -210,7 +219,7 @@ export function EventCard({ event, setEventsStale }: { event: Event; setEventsSt
           {/* delete */}
           <button
             onClick={() => {
-              softDeleteEvent(event_id);
+              setConfrimDeleteEventModalOpen(true);
             }}
             className="btn btn-warning"
           >

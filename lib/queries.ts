@@ -152,9 +152,9 @@ export async function softDeleteEvent(event_id: string) {
   // purge photos / files
   const { error } = await deleteEventFiles(event_id);
   if (error) {
-    console.error(error);
+    // console.error(error);
     // return early if theres an issue (this prevents unused photos from secretly piling up)
-    return;
+    return { error };
   }
 
   // then, mark event as deleted
