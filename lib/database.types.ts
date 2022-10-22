@@ -1,29 +1,35 @@
-export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json }
-  | Json[];
+export type Json = string | number | boolean | null | { [key: string]: Json } | Json[];
 
 export interface Database {
   public: {
     Tables: {
-      hosts: {
+      contributions: {
         Row: {
-          host_id: string;
-          display_name: string | null;
-          avatar_url: string | null;
+          contribution_id: string;
+          created_at: string;
+          event_id: string;
+          description: string;
+          requested: boolean;
+          contributor_id: string | null;
+          claimed_comment: string | null;
         };
         Insert: {
-          host_id: string;
-          display_name?: string | null;
-          avatar_url?: string | null;
+          contribution_id?: string;
+          created_at?: string;
+          event_id: string;
+          description: string;
+          requested?: boolean;
+          contributor_id?: string | null;
+          claimed_comment?: string | null;
         };
         Update: {
-          host_id?: string;
-          display_name?: string | null;
-          avatar_url?: string | null;
+          contribution_id?: string;
+          created_at?: string;
+          event_id?: string;
+          description?: string;
+          requested?: boolean;
+          contributor_id?: string | null;
+          claimed_comment?: string | null;
         };
       };
       events: {
@@ -42,6 +48,7 @@ export interface Database {
           contributions_custom_title: string | null;
           url_code: number;
           url_string: string;
+          deleted_by_host: boolean | null;
         };
         Insert: {
           event_id?: string;
@@ -58,6 +65,7 @@ export interface Database {
           contributions_custom_title?: string | null;
           url_code: number;
           url_string: string;
+          deleted_by_host?: boolean | null;
         };
         Update: {
           event_id?: string;
@@ -74,26 +82,7 @@ export interface Database {
           contributions_custom_title?: string | null;
           url_code?: number;
           url_string?: string;
-        };
-      };
-      page_visits: {
-        Row: {
-          visit_id: number;
-          event_id: string;
-          visited_at: string;
-          user_is_host: boolean;
-        };
-        Insert: {
-          visit_id?: number;
-          event_id: string;
-          visited_at?: string;
-          user_is_host?: boolean;
-        };
-        Update: {
-          visit_id?: number;
-          event_id?: string;
-          visited_at?: string;
-          user_is_host?: boolean;
+          deleted_by_host?: boolean | null;
         };
       };
       guests: {
@@ -116,33 +105,41 @@ export interface Database {
           display_name?: string;
         };
       };
-      contributions: {
+      hosts: {
         Row: {
-          contribution_id: string;
-          created_at: string | null;
-          event_id: string;
-          description: string;
-          requested: boolean;
-          contributor_id: string | null;
-          claimed_comment: string | null;
+          host_id: string;
+          display_name: string | null;
+          avatar_url: string | null;
         };
         Insert: {
-          contribution_id?: string;
-          created_at?: string | null;
-          event_id: string;
-          description: string;
-          requested?: boolean;
-          contributor_id?: string | null;
-          claimed_comment?: string | null;
+          host_id: string;
+          display_name?: string | null;
+          avatar_url?: string | null;
         };
         Update: {
-          contribution_id?: string;
-          created_at?: string | null;
+          host_id?: string;
+          display_name?: string | null;
+          avatar_url?: string | null;
+        };
+      };
+      page_visits: {
+        Row: {
+          visit_id: number;
+          event_id: string;
+          visited_at: string;
+          user_is_host: boolean;
+        };
+        Insert: {
+          visit_id?: number;
+          event_id: string;
+          visited_at?: string;
+          user_is_host?: boolean;
+        };
+        Update: {
+          visit_id?: number;
           event_id?: string;
-          description?: string;
-          requested?: boolean;
-          contributor_id?: string | null;
-          claimed_comment?: string | null;
+          visited_at?: string;
+          user_is_host?: boolean;
         };
       };
       testing: {
@@ -171,4 +168,3 @@ export interface Database {
     };
   };
 }
-
