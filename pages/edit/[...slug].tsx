@@ -9,8 +9,10 @@ import { Inputs } from '../../lib/forms.types';
 
 export async function getServerSideProps(context: { params: { slug: string[] } }) {
   const { slug } = context.params;
+
+  if (slug.length === 0) return { notFound: true }; // redirect 404
   const [url_code, url_string_raw] = slug;
-  const url_string = url_string_raw.toLowerCase();
+  const url_string = url_string_raw?.toLowerCase();
 
   const { data: event, error } = await getEvent({ url_code });
   // dont bother fetching guest contributions on initial SSR
