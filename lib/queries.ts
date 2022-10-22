@@ -198,13 +198,17 @@ export async function getEvents(user_id: string) {
   return await supabase
     .from('events')
     .select('*, hosts (*)')
-    .eq('host_id', user_id)
+    .match({ host_id: user_id, deleted_by_host: false })
     .order('date', { ascending: true });
 }
 export async function getEvent(lookupKey: { url_code: string } | { event_id: string }) {
   if ('event_id' in lookupKey) {
     const { event_id } = lookupKey;
-    return await supabase.from('events').select('*, hosts (*)').match({ event_id }).single();
+    return await supabase
+      .from('events')
+      .select('*, hosts (*)')
+      .match({ event_id, deleted_by_host: false })
+      .single();
   }
 
   const { url_code } = lookupKey;
@@ -212,7 +216,7 @@ export async function getEvent(lookupKey: { url_code: string } | { event_id: str
     .from('events')
     .select('*, hosts (*)')
     // .match({ url_code, url_string })
-    .match({ url_code })
+    .match({ url_code, deleted_by_host: false })
     .single();
 }
 export async function getEventViewCount(event_id: string) {
