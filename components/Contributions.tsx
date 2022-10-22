@@ -201,7 +201,7 @@ function ContributionsTableRow({
             </button>
           </li>
         )}
-        {isHost && !contributor_id && (
+        {isHost && !contributor_id && !requested && (
           <li>
             <button
               onClick={() => {
