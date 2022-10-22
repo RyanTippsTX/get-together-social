@@ -21,7 +21,7 @@ export function Modal({
     >
       {/* card */}
       <div
-        className="card bg-base-100 w-96 shadow-lg"
+        className="card bg-base-100 w-96 shadow-lg hover:cursor-default"
         onClick={(e) => {
           e.stopPropagation();
           // console.log('clicked card');
