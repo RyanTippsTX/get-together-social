@@ -33,51 +33,52 @@ export function HostNavbarOptionsDropdown() {
         tabIndex={0}
         className="menu menu-compact dropdown-content rounded-box absolute top-full right-0 mt-3 min-w-max bg-white p-2 shadow"
       >
-        {/* <li>
+        <li>
           <Link href={'/dashboard'}>
             <a className="">Dashboard</a>
           </Link>
-        </li> */}
+        </li>
+        <li>
+          <Link href={'/new'}>
+            <a className="">New Event</a>
+          </Link>
+        </li>
         {/* <li>
           <button onClick={signOut as MouseEventHandler} className="">
             Sign Out
           </button>
         </li> */}
-        <li>
-          <button
-            onClick={() => {
-              // do stuff
-            }}
-            className=""
-          >
-            Log In as a Guest
-          </button>
-        </li>
-        {/* <li>
-          <button
-            onClick={() => {
-              router.push('/dashboard');
-            }}
-          >
-            Edit Event in Dashboard
-          </button>
-        </li> */}
-        <li>
-          <button
-            onClick={() => {
-              if (!event) return;
-              // Get URL and copy to clipboard
-              const eventUrl =
-                'https://gettogether.social/' + event.url_code + '/' + event.url_string;
-              navigator.clipboard.writeText(eventUrl);
-              // Alert the copied text
-              alert('Copied to clipboard: ' + eventUrl);
-            }}
-            // className="btn btn-primary flex"
-          >
-            Copy Link
-          </button>
-        </li>
+        {/* options for event page only */}
+        {event && (
+          <>
+            <li>
+              <button
+                onClick={() => {
+                  // do stuff
+                }}
+                className=""
+              >
+                Log In as a Guest
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => {
+                  if (!event) return;
+                  // Get URL and copy to clipboard
+                  const eventUrl =
+                    'https://gettogether.social/' + event.url_code + '/' + event.url_string;
+                  navigator.clipboard.writeText(eventUrl);
+                  // Alert the copied text
+                  alert('Copied to clipboard: ' + eventUrl);
+                }}
+                // className="btn btn-primary flex"
+              >
+                Copy Link
+              </button>
+            </li>
+          </>
+        )}
       </ul>
     </div>
   );

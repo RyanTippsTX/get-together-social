@@ -1,5 +1,5 @@
 import { Brand } from './Brand';
-import { HostNavbarOptionsDropdown, GuestNavbarOptionsDropdown } from './EventPageOptionsDropdowns';
+import { HostNavbarOptionsDropdown, GuestNavbarOptionsDropdown } from './NavbarOptionsDropdowns';
 import { AvatarDropdown, AvatarPlaceholder } from './Avatar';
 import { useAuth } from '../lib/auth';
 import { useProfile } from '../lib/profile';
@@ -96,9 +96,11 @@ export function Navbar({ eventPage }: { eventPage?: boolean }) {
     </div>
   ) : (
     // nav items for non-event-pages:
-    <div className="flex-none">
+    <div className="flex flex-none flex-shrink place-content-end items-center">
       {user && (
         <>
+          <HostNavbarOptionsDropdown />
+          <div className="px-1 font-medium tracking-tight">Host:</div>
           <AvatarDropdown
             profileLoading={profileLoading}
             displayName={profile?.display_name}
