@@ -31,7 +31,7 @@ export function HostNavbarOptionsDropdown() {
 
       <ul
         tabIndex={0}
-        className="menu menu-compact dropdown-content rounded-box absolute top-full right-0 mt-3 min-w-max bg-white p-2 shadow"
+        className="menu menu-compact dropdown-content rounded-box absolute top-full right-0 mt-3 min-w-max border-[1px] bg-white p-2 shadow"
       >
         <li>
           <Link href={'/my-events'}>
@@ -123,7 +123,7 @@ export function GuestNavbarOptionsDropdown() {
 
         <ul
           tabIndex={0}
-          className="menu menu-compact dropdown-content rounded-box absolute top-full right-0 mt-3 min-w-max bg-white p-2 shadow"
+          className="menu menu-compact dropdown-content rounded-box absolute top-full right-0 mt-3 min-w-max border-[1px] bg-white p-2 shadow"
         >
           <li>
             <button
