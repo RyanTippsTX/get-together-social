@@ -8,7 +8,7 @@ export default function Login() {
   const { session, user, signOut, signInWithMagicLink, signInWithGoogle } = useAuth();
 
   const router = useRouter();
-  if (user) router.push('/dashboard');
+  if (user) router.push('/my-events');
 
   const {
     register,

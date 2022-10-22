@@ -11,7 +11,7 @@ const sitePaths = new Map<string, string>([
 ]);
 const hostPaths = new Map<string, string>([
   ['Host Login', '/login'],
-  ['Dashboard', '/dashboard'],
+  ['My Events', '/my-events'],
   ['New Event', '/new'], // omit in productin
 ]);
 const legalPaths = new Map<string, string>([

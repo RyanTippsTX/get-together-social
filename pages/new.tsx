@@ -32,7 +32,7 @@ export default function New() {
         if (error) {
           alert('An error has occured');
           console.error(error);
-          router.push('/dashboard');
+          router.push('/my-events');
         } else {
           router.push(route);
         }

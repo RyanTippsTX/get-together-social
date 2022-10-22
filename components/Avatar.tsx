@@ -28,7 +28,7 @@ export function AvatarDropdown({
     <div
       className="dropdown dropdown-end flex"
       // onClick={() => {
-      //   router.push('/dashboard');
+      //   router.push('/my-events');
       // }}
     >
       {/* avatar */}
@@ -96,7 +96,7 @@ export function GuestAvatarDropdown({ displayName }: { displayName: string }) {
     <div
       className="dropdown dropdown-end flex"
       // onClick={() => {
-      //   router.push('/dashboard');
+      //   router.push('/my-events');
       // }}
     >
       {/* avatar */}
@@ -108,8 +108,8 @@ export function GuestAvatarDropdown({ displayName }: { displayName: string }) {
         className="menu menu-compact dropdown-content rounded-box absolute top-full right-0 mt-3 min-w-max bg-white p-2 shadow"
       >
         <li>
-          <Link href={'/dashboard'}>
-            <a className="">Dashboard</a>
+          <Link href={'/my-events'}>
+            <a className="">My Events</a>
           </Link>
         </li>
         <li>

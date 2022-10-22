@@ -16,9 +16,9 @@ export default function Welcome() {
   const { session, user, sessionStale, signOut, signInWithMagicLink, signInWithGoogle } = useAuth();
   const { profile, loading: profileLoading, setProfileStale } = useProfile();
 
-  // route to dashboard if profile is already created
+  // route to My Events if profile is already created
   if (user) {
-    router.push('/dashboard');
+    router.push('/my-events');
   }
 
   const {
@@ -43,7 +43,7 @@ export default function Welcome() {
           router.push('/');
         } else {
           setProfileStale();
-          router.push('/dashboard');
+          router.push('/my-events');
         }
       })();
     }

@@ -51,7 +51,7 @@ export function AuthProvider({ ...props }) {
     // setSessionLoading(false);
     if (error) {
       console.error(error);
-      router.push('/dashboard');
+      router.push('/my-events');
     } else {
       router.push('/');
     }
@@ -68,14 +68,14 @@ export function AuthProvider({ ...props }) {
       router.push('/');
     } else {
       // console.log(data);
-      router.push('/dashboard');
+      router.push('/my-events');
     }
   };
 
   const signInWithMagicLink = async ({ email }: { email: string }) => {
     const { data, error } = await supabase.auth.signInWithOtp({
       email,
-      options: { emailRedirectTo: '/dashboard', shouldCreateUser: true },
+      options: { emailRedirectTo: '/my-events', shouldCreateUser: true },
     });
     if (error) {
       console.error('signin result error:', error);

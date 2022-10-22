@@ -34,8 +34,8 @@ export function HostNavbarOptionsDropdown() {
         className="menu menu-compact dropdown-content rounded-box absolute top-full right-0 mt-3 min-w-max bg-white p-2 shadow"
       >
         <li>
-          <Link href={'/dashboard'}>
-            <a className="">Dashboard</a>
+          <Link href={'/my-events'}>
+            <a className="">My Events</a>
           </Link>
         </li>
         <li>

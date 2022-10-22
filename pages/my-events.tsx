@@ -14,7 +14,7 @@ import { ModalHostDisplayNameForm } from '../components/modals/ModalHostDisplayN
 import { ModalHostAvatarForm } from '../components/modals/ModalHostAvatarForm';
 import { MouseEventHandler } from 'react';
 
-export default function Dashboard() {
+export default function MyEvents() {
   const router = useRouter();
   const { session, user, sessionStale, signOut, signInWithMagicLink, signInWithGoogle } = useAuth();
   const { profile, avatar_url, display_name, profileStale } = useProfile();
@@ -76,7 +76,7 @@ export default function Dashboard() {
         }}
       />
       <div className="px-2 py-4 text-zinc-800">
-        <h1 className="pb-2 text-4xl font-bold tracking-tight">Host Dashboard</h1>
+        <h1 className="pb-2 text-4xl font-bold tracking-tight">My Events</h1>
 
         {!sessionStale && user && !profileStale && profile && (
           <div className="flex flex-wrap place-content-between items-center gap-4 ">
