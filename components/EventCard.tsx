@@ -4,12 +4,13 @@ import { Event } from '../lib/queries.types';
 import defaultEventImg from '../public/party.jpeg';
 import defaultNewEventImg from '../public/party.jpeg';
 import { useRouter } from 'next/router';
-import { getEventViewCount } from '../lib/queries';
+import { getEventViewCount, softDeleteEvent } from '../lib/queries';
 import { useEffect, useState } from 'react';
 import { formatDate } from '../lib/dates';
 import { ModalEventAvatarForm } from './modals/ModalEventAvatarForm';
 
 export function EventCard({ event, setEventsStale }: { event: Event; setEventsStale: Function }) {
+  ``;
   const router = useRouter();
   const {
     event_id,
@@ -55,6 +56,7 @@ export function EventCard({ event, setEventsStale }: { event: Event; setEventsSt
           setEventAvatarModalOpen(false);
         }}
       />
+      {/* Event image */}
       <figure className="relative h-48 w-full">
         {photo_url ? (
           <Image
@@ -84,10 +86,13 @@ export function EventCard({ event, setEventsStale }: { event: Event; setEventsSt
           </div>
         )}
       </figure>
+      {/* card body */}
       <div className="card-body tracking-tight">
         <div>
+          {/* title */}
           <h2 className="card-title truncate text-ellipsis">{title}</h2>
 
+          {/* date, view count */}
           <div className="flex gap-4 text-zinc-500">
             <div className="flex items-center gap-1  ">
               <svg
@@ -129,7 +134,11 @@ export function EventCard({ event, setEventsStale }: { event: Event; setEventsSt
             </div>
           </div>
         </div>
+
+        {/* description */}
         <p className="line-clamp-2 ">{description}</p>
+
+        {/* buttons */}
         <div
           className="card-actions justify-end"
           onClick={(e) => {
@@ -137,6 +146,7 @@ export function EventCard({ event, setEventsStale }: { event: Event; setEventsSt
             e.stopPropagation();
           }}
         >
+          {/* copy link */}
           <button
             onClick={() => {
               // Get URL and copy to clipboard
@@ -165,6 +175,8 @@ export function EventCard({ event, setEventsStale }: { event: Event; setEventsSt
             </div>
             Copy Link
           </button>
+
+          {/* edit content */}
           <button
             onClick={() => {
               router.push('/edit/' + url_code + '/' + url_string);
@@ -173,6 +185,8 @@ export function EventCard({ event, setEventsStale }: { event: Event; setEventsSt
           >
             Edit
           </button>
+
+          {/* view */}
           {/* <button
             onClick={() => {
               router.push('/' + url_code + '/' + url_string);
@@ -181,6 +195,8 @@ export function EventCard({ event, setEventsStale }: { event: Event; setEventsSt
           >
             View
           </button> */}
+
+          {/* upload image */}
           <button
             onClick={() => {
               // open modal
@@ -190,7 +206,16 @@ export function EventCard({ event, setEventsStale }: { event: Event; setEventsSt
           >
             Photo
           </button>
-          {/* <button className="btn btn-warning">Delete</button> */}
+
+          {/* delete */}
+          <button
+            onClick={() => {
+              softDeleteEvent(event_id);
+            }}
+            className="btn btn-warning"
+          >
+            Delete
+          </button>
         </div>
       </div>
     </div>

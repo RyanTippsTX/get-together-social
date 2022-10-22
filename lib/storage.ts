@@ -115,11 +115,13 @@ export async function deleteEventFiles(event_id: string) {
   const { data: list, error } = await supabase.storage.from('events').list(`avatars/${event_id}`);
   if (error) {
     console.error(error);
-    return;
+    return { error };
   }
 
+  console.log('list:', list);
+
   // delte all
-  if (list?.length === 0 || !list) return;
+  if (list?.length === 0 || !list) return { error: null, data: 'no files to delete' };
   const filesToRemove = list.map((f) => `avatars/${event_id}/${f.name}`);
   return await supabase.storage.from('events').remove(filesToRemove);
 }

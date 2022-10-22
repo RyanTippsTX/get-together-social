@@ -144,38 +144,55 @@ export async function updateEvent({
   return { route, error };
 }
 
-// export async function softDeleteEvent(event_id: string) {
-//   // mark event as deleted
-//   // optionally purge photos and some related event data
-//   // save for analytics
-// }
-export async function safeDeleteEvent(event_id: string) {
-  // delete photos
-  // delete contributions
-  // delete guests
-  // finally, delete event
-  // return await supabase.from('events').delete().match({ event_id });
+export async function softDeleteEvent(event_id: string) {
+  // saves event data for analytics
+  // also prevents links from being unintentionally recycled
+  // softDelteEvent is NOT to be reversable by the user
 
-  await Promise.all([
-    // unclaim requests
-    supabase
-      .from('contributions')
-      .update({
-        claimed_comment: null,
-        contributor_id: null,
-      })
-      .match({ contributor_id: guest_id, requested: true }),
+  // purge photos / files
+  const { error } = await deleteEventFiles(event_id);
+  if (error) {
+    console.error(error);
+    // return early if theres an issue (this prevents unused photos from secretly piling up)
+    return;
+  }
 
-    // delete contributions
-    supabase.from('contributions').delete().match({ contributor_id: guest_id, requested: false }),
-  ]).then((values) => {
-    console.log(values);
-  });
-
-  // then delete account
-  await supabase.from('guests').delete().match({ guest_id });
-  return;
+  // then, mark event as deleted
+  return await supabase
+    .from('events')
+    .update({
+      deleted_by_host: true,
+    })
+    .match({ event_id });
 }
+
+// export async function hardDeleteEvent(event_id: string) {
+//   // STOP !!!!
+//   // Dont do this.
+//   // you're throwing away good data.
+
+//   const res = [
+//     // delete contributions
+//     await supabase.from('contributions').delete().match({ event_id }),
+//     // then delete guests
+//     await supabase.from('guests').delete().match({ event_id }),
+
+//     // delete guests
+//     await supabase.from('guests').delete().match({ event_id }),
+
+//     // delete page logs
+//     await supabase.from('page_visits').delete().match({ event_id }),
+
+//     // delete photos
+//     await deleteEventFiles(event_id),
+
+//     // finally, delete event
+//     await supabase.from('events').delete().match({ event_id }),
+//   ];
+//   console.log('deletion responses: ', res);
+
+//   return;
+// }
 
 export async function getEvents(user_id: string) {
   return await supabase
