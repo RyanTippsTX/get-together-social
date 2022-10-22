@@ -47,7 +47,6 @@ export function ModalConfrimDeleteEvent({
     }
   };
 
-  console.log('ERRORS', errors.confirm_delete);
   return (
     <Modal {...{ isOpen }} {...{ closeModal }}>
       {/* <p>edit your display name !!</p> */}
