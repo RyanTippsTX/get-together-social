@@ -149,7 +149,8 @@ export function EventCard({ event, setEventsStale }: { event: Event; setEventsSt
 
         {/* buttons */}
         <div
-          className="card-actions justify-end"
+          // className="card-actions justify-end"
+          className="grid grid-cols-2 gap-2"
           onClick={(e) => {
             // prevent all child buttons from bubbling up to the card's onClick
             e.stopPropagation();
@@ -164,7 +165,7 @@ export function EventCard({ event, setEventsStale }: { event: Event; setEventsSt
               // Alert the copied text
               alert('Copied to clipboard: ' + eventUrl);
             }}
-            className="btn btn-primary flex"
+            className="btn btn-sm flex"
           >
             <div className=" pr-1">
               <svg
@@ -190,7 +191,7 @@ export function EventCard({ event, setEventsStale }: { event: Event; setEventsSt
             onClick={() => {
               router.push('/edit/' + url_code + '/' + url_string);
             }}
-            className="btn btn-primary"
+            className="btn btn-sm"
           >
             Edit
           </button>
@@ -211,7 +212,7 @@ export function EventCard({ event, setEventsStale }: { event: Event; setEventsSt
               // open modal
               setEventAvatarModalOpen(true);
             }}
-            className="btn btn-primary"
+            className="btn btn-sm"
           >
             Photo
           </button>
@@ -221,7 +222,7 @@ export function EventCard({ event, setEventsStale }: { event: Event; setEventsSt
             onClick={() => {
               setConfrimDeleteEventModalOpen(true);
             }}
-            className="btn btn-warning"
+            className="btn btn-sm"
           >
             Delete
           </button>
