@@ -32,11 +32,14 @@ export function Navbar({ eventPage }: { eventPage?: boolean }) {
 
   const navRight = eventPage ? (
     // nav items for event-page:
-    <div className="flex flex-none flex-shrink place-content-end items-center">
+    <div className="flex flex-none flex-shrink place-content-end items-center gap-2">
       {isHost && (
         <>
           <HostNavbarOptionsDropdown />
-          <div className="px-1 font-medium tracking-tight">Host:</div>
+          <Link href={'/my-events'}>
+            <a className="font-semibold">My Events</a>
+          </Link>
+          {/* <div className="px-1 font-medium tracking-tight">Host:</div> */}
           <AvatarDropdown
             profileLoading={profileLoading}
             displayName={profile?.display_name}
@@ -96,11 +99,13 @@ export function Navbar({ eventPage }: { eventPage?: boolean }) {
     </div>
   ) : (
     // nav items for non-event-pages:
-    <div className="flex flex-none flex-shrink place-content-end items-center">
+    <div className="flex flex-none flex-shrink place-content-end items-center gap-3">
       {user && (
         <>
-          <HostNavbarOptionsDropdown />
-          <div className="px-1 font-medium tracking-tight">Host:</div>
+          <Link href={'/my-events'}>
+            <a className="font-semibold tracking-tight">My Events</a>
+          </Link>
+          {/* <div className="px-1 font-medium tracking-tight">Host:</div> */}
           <AvatarDropdown
             profileLoading={profileLoading}
             displayName={profile?.display_name}
@@ -112,7 +117,7 @@ export function Navbar({ eventPage }: { eventPage?: boolean }) {
       {!user && (
         <Link href={'/login'}>
           <a className="">
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-2">
               <div className="font-medium">Host Login</div>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
