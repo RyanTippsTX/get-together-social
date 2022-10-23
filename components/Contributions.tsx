@@ -186,7 +186,7 @@ function ContributionsTableRow({
       {/* dropdown */}
       <ul
         tabIndex={0}
-        className="menu menu-compact dropdown-content rounded-box absolute top-full right-0 mt-3 w-auto min-w-max bg-white p-2 shadow"
+        className="menu menu-compact dropdown-content rounded-box absolute top-full right-0 mt-3 w-auto min-w-max border-[1px] bg-white p-2 shadow"
       >
         {/* Host options */}
         {isHost && (
