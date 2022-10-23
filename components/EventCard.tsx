@@ -9,9 +9,11 @@ import { useEffect, useState } from 'react';
 import { formatDate } from '../lib/dates';
 import { ModalEventAvatarForm } from './modals/ModalEventAvatarForm';
 import { ModalConfrimDeleteEvent } from './modals/ModalConfirmDeleteEvent';
+import { useAuth } from '../lib/auth';
+import { useEventState } from '../lib/eventState';
+import Link from 'next/link';
 
 export function EventCard({ event, setEventsStale }: { event: Event; setEventsStale: Function }) {
-  ``;
   const router = useRouter();
   const {
     event_id,
@@ -41,9 +43,11 @@ export function EventCard({ event, setEventsStale }: { event: Event; setEventsSt
     })();
   }, [event_id]);
 
+  const eventUrl = 'https://gettogether.social/' + url_code + '/' + url_string;
+
   return (
     <div
-      className="card card-compact bg-base-100 h-96 w-80 flex-none shadow-xl hover:cursor-pointer"
+      className="card card-compact bg-base-100 h-96 w-[22rem] flex-none shadow-xl hover:cursor-pointer"
       onClick={(e) => {
         e.stopPropagation();
         // console.log('clicked event card');
@@ -98,139 +102,188 @@ export function EventCard({ event, setEventsStale }: { event: Event; setEventsSt
           </div>
         )}
       </figure>
+
       {/* card body */}
-      <div className="card-body tracking-tight">
-        <div>
-          {/* title */}
-          <h2 className="card-title truncate text-ellipsis">{title}</h2>
+      <div className="card-body gap-1 tracking-tight">
+        {/* title */}
+        <h2 className="truncate text-xl font-semibold">{title}</h2>
 
-          {/* date, view count */}
-          <div className="flex gap-4 text-zinc-500">
-            <div className="flex items-center gap-1  ">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={2}
-                className="inline-block h-4 w-4 stroke-current"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"
-                />
-              </svg>
-              <div className="">{formatDate(date)}</div>
-            </div>
-            <div className="flex items-center gap-1 ">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={2}
-                className="inline-block h-4 w-4 stroke-current"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-              </svg>
+        {/* date, view count */}
+        <div className="flex gap-4 text-zinc-500">
+          <div className="flex items-center gap-1  ">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+              className="inline-block h-4 w-4 stroke-current"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"
+              />
+            </svg>
+            <div className="">{formatDate(date)}</div>
+          </div>
+          <div className="flex items-center gap-1 ">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+              className="inline-block h-4 w-4 stroke-current"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"
+              />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+              />
+            </svg>
 
-              <div className="">{viewCount} Views</div>
+            <div className="">{viewCount} Views</div>
+            <div
+              className="text-dark flex-grow cursor-auto"
+              onClick={(e) => {
+                // prevent all child buttons from bubbling up to the card's onClick
+                e.stopPropagation();
+              }}
+            >
+              {/* <EventCardOptionsDropdown /> */}
             </div>
           </div>
         </div>
-
         {/* description */}
-        <p className="line-clamp-2 ">{description}</p>
+        <p className="line-clamp-2 tracking-tight text-zinc-600">{description}</p>
 
-        {/* buttons */}
+        {/* copy url button */}
         <div
-          // className="card-actions justify-end"
-          className="grid grid-cols-2 gap-2"
           onClick={(e) => {
             // prevent all child buttons from bubbling up to the card's onClick
             e.stopPropagation();
           }}
+          className="hover:cursor-auto"
         >
-          {/* copy link */}
-          <button
-            onClick={() => {
-              // Get URL and copy to clipboard
-              const eventUrl = 'https://gettogether.social/' + url_code + '/' + url_string;
-              navigator.clipboard.writeText(eventUrl);
-              // Alert the copied text
-              alert('Copied to clipboard: ' + eventUrl);
-            }}
-            className="btn btn-sm flex"
-          >
-            <div className=" pr-1">
+          <p className="mb-1 font-medium">Sharable URL</p>
+          <label className="input-group input-group-xs">
+            <input
+              type="text"
+              formNoValidate
+              autoComplete="off"
+              readOnly
+              placeholder="Type here"
+              className="input input-bordered input-sm min-w-0x w-full text-ellipsis tracking-tight"
+              value={eventUrl}
+            />
+            <div
+              className="btn btn-sm gap-1"
+              onClick={() => {
+                // Get URL and copy to clipboard
+                navigator.clipboard.writeText(eventUrl);
+                // Alert the copied text
+                alert('Copied to clipboard: ' + eventUrl);
+              }}
+            >
+              Copy
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
                 strokeWidth={2}
-                stroke="currentColor"
-                className="h-5 w-5"
+                className="inline-block h-4 w-4 stroke-current"
               >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"
+                  d="M11.35 3.836c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m8.9-4.414c.376.023.75.05 1.124.08 1.131.094 1.976 1.057 1.976 2.192V16.5A2.25 2.25 0 0118 18.75h-2.25m-7.5-10.5H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V18.75m-7.5-10.5h6.375c.621 0 1.125.504 1.125 1.125v9.375m-8.25-3l1.5 1.5 3-3.75"
                 />
               </svg>
             </div>
-            Copy Link
-          </button>
-
-          {/* edit content */}
-          <button
-            onClick={() => {
-              router.push('/edit/' + url_code + '/' + url_string);
-            }}
-            className="btn btn-sm"
-          >
-            Edit
-          </button>
-
-          {/* view */}
-          {/* <button
-            onClick={() => {
-              router.push('/' + url_code + '/' + url_string);
-            }}
-            className="btn btn-primary"
-          >
-            View
-          </button> */}
-
-          {/* upload image */}
-          <button
-            onClick={() => {
-              // open modal
-              setEventAvatarModalOpen(true);
-            }}
-            className="btn btn-sm"
-          >
-            Photo
-          </button>
-
-          {/* delete */}
-          <button
-            onClick={() => {
-              setConfrimDeleteEventModalOpen(true);
-            }}
-            className="btn btn-sm"
-          >
-            Delete
-          </button>
+          </label>
         </div>
       </div>
+    </div>
+  );
+}
+
+export function EventCardOptionsDropdown() {
+  const router = useRouter();
+  const { signOut } = useAuth();
+  const { event, setEvent } = useEventState();
+  return (
+    <div className="dropdown dropdown-end flex">
+      <div tabIndex={0} className="btn btn-sm btn-square btn-ghost flex flex-col">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          className="inline-block h-5 w-5 stroke-current"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
+          ></path>
+        </svg>
+      </div>
+
+      <ul
+        tabIndex={0}
+        className="menu menu-compact dropdown-content rounded-box absolute top-full right-0 mt-3 min-w-max border-[1px] bg-white p-2 shadow"
+      >
+        <li>
+          <Link href={'/my-events'}>
+            <a className="">My Events</a>
+          </Link>
+        </li>
+        <li>
+          <Link href={'/new'}>
+            <a className="">New Event</a>
+          </Link>
+        </li>
+        {/* <li>
+          <button onClick={signOut as MouseEventHandler} className="">
+            Sign Out
+          </button>
+        </li> */}
+        {/* options for event page only */}
+        {event && (
+          <>
+            <li>
+              <button
+                onClick={() => {
+                  // do stuff
+                }}
+                className=""
+              >
+                Log In as a Guest
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => {
+                  if (!event) return;
+                  // Get URL and copy to clipboard
+                  const eventUrl =
+                    'https://gettogether.social/' + event.url_code + '/' + event.url_string;
+                  navigator.clipboard.writeText(eventUrl);
+                  // Alert the copied text
+                  alert('Copied to clipboard: ' + eventUrl);
+                }}
+                // className="btn btn-primary flex"
+              >
+                Copy Link
+              </button>
+            </li>
+          </>
+        )}
+      </ul>
     </div>
   );
 }
@@ -239,7 +292,7 @@ export function EventCardCreate() {
   const router = useRouter();
   return (
     // <div className="card card-compact bg-base-100 h-96 w-80 flex-none shadow-xl">
-    <div className="card card-compact image-full bg-base-100 h-96 w-80 flex-none shadow-xl">
+    <div className="card card-compact image-full bg-base-100 h-96 w-[22rem] flex-none shadow-xl">
       <figure className="relative h-full w-full">
         <Image
           src={defaultNewEventImg}
