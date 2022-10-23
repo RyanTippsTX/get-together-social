@@ -189,7 +189,7 @@ export function HostNavbarOptionsDropdown() {
               }}
               className=""
             >
-              Edit Event Photo
+              Upload a Cover Photo
             </button>
           </li>
 
