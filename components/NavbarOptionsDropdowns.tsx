@@ -121,7 +121,7 @@ export function HostNavbarOptionsDropdown() {
         isOpen={confrimDeleteEventModalOpen}
         onSuccess={() => {
           // setEventsStale(true);
-          // router.push();
+          router.push('/my-events');
         }}
         closeModal={() => {
           setConfrimDeleteEventModalOpen(false);
