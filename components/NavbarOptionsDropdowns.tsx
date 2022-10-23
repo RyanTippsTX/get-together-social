@@ -6,6 +6,9 @@ import { useEventState } from '../lib/eventState';
 import { useGuestAuth } from '../lib/guestAuth';
 import { ModalGuestDisplayNameForm } from './modals/ModalGuestDisplayNameForm';
 import { safeDeleteGuestAndContributions } from '../lib/queries';
+import { ModalEventAvatarForm } from './modals/ModalEventAvatarForm';
+import { ModalConfrimDeleteEvent } from './modals/ModalConfirmDeleteEvent';
+import { ModalGuestLogin } from './modals/ModalGuestLogin';
 
 const ellipsisHorizontal = (
   <svg
@@ -87,63 +90,121 @@ export function HostNavbarOptionsDropdown() {
   const router = useRouter();
   const { signOut } = useAuth();
   const { event, setEvent } = useEventState();
+
+  const [guestLoginModalOpen, setGuestLoginModalOpen] = useState<boolean>(false);
+  const [eventAvatarModalOpen, setEventAvatarModalOpen] = useState<boolean>(false);
+  const [confrimDeleteEventModalOpen, setConfrimDeleteEventModalOpen] = useState<boolean>(false);
+  const modalContainer = event && (
+    <>
+      <ModalGuestLogin
+        isOpen={guestLoginModalOpen}
+        closeModal={() => {
+          setGuestLoginModalOpen(false);
+        }}
+        onSuccess={() => {
+          setGuestLoginModalOpen(false);
+        }}
+      />
+      <ModalEventAvatarForm
+        event={event}
+        onSuccess={() => {
+          // setEventsStale(true);
+          // router.push();
+        }}
+        isOpen={eventAvatarModalOpen}
+        closeModal={() => {
+          setEventAvatarModalOpen(false);
+        }}
+      />
+      <ModalConfrimDeleteEvent
+        event={event}
+        isOpen={confrimDeleteEventModalOpen}
+        onSuccess={() => {
+          // setEventsStale(true);
+          // router.push();
+        }}
+        closeModal={() => {
+          setConfrimDeleteEventModalOpen(false);
+        }}
+      />
+    </>
+  );
+
   return (
     <div className="dropdown dropdown-end flex">
       <div tabIndex={0} className="btn btn-square btn-ghost flex flex-col">
         {ellipsisHorizontal}
       </div>
+      {modalContainer}
+      {event && (
+        <ul
+          tabIndex={0}
+          className="menu menu-compact dropdown-content rounded-box absolute top-full right-0 mt-3 min-w-max border-[1px] bg-white p-2 shadow"
+        >
+          <li>
+            <button
+              onClick={() => {
+                setGuestLoginModalOpen(true);
+              }}
+              className=""
+            >
+              Log In as a Guest
+            </button>
+          </li>
+          <li>
+            <button
+              onClick={() => {
+                if (!event) return;
+                // Get URL and copy to clipboard
+                const eventUrl =
+                  'https://gettogether.social/' + event.url_code + '/' + event.url_string;
+                navigator.clipboard.writeText(eventUrl);
+                // Alert the copied text
+                alert('Copied to clipboard: ' + eventUrl);
+              }}
+              // className="btn btn-primary flex"
+            >
+              Copy URL Link
+            </button>
+          </li>
 
-      <ul
-        tabIndex={0}
-        className="menu menu-compact dropdown-content rounded-box absolute top-full right-0 mt-3 min-w-max border-[1px] bg-white p-2 shadow"
-      >
-        {/* <li>
-          <Link href={'/my-events'}>
-            <a className="">My Events</a>
-          </Link>
-        </li> */}
-        {/* <li>
-          <Link href={'/new'}>
-            <a className="">New Event</a>
-          </Link>
-        </li> */}
-        {/* <li>
-          <button onClick={signOut as MouseEventHandler} className="">
-            Sign Out
-          </button>
-        </li> */}
-        {/* options for event page only */}
-        {event && (
-          <>
-            <li>
-              <button
-                onClick={() => {
-                  // do stuff
-                }}
-                className=""
-              >
-                Log In as a Guest
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => {
-                  if (!event) return;
-                  // Get URL and copy to clipboard
-                  const eventUrl =
-                    'https://gettogether.social/' + event.url_code + '/' + event.url_string;
-                  navigator.clipboard.writeText(eventUrl);
-                  // Alert the copied text
-                  alert('Copied to clipboard: ' + eventUrl);
-                }}
-                // className="btn btn-primary flex"
-              >
-                Copy Link
-              </button>
-            </li>
-          </>
-        )}
-      </ul>
+          {/* edit content */}
+          <li>
+            <button
+              onClick={() => {
+                router.push('/edit/' + event.url_code + '/' + event.url_string);
+              }}
+              className=""
+            >
+              Edit Event
+            </button>
+          </li>
+
+          {/* upload image */}
+          <li>
+            <button
+              onClick={() => {
+                // open modal
+                setEventAvatarModalOpen(true);
+              }}
+              className=""
+            >
+              Edit Event Photo
+            </button>
+          </li>
+
+          <li>
+            <button
+              onClick={() => {
+                setConfrimDeleteEventModalOpen(true);
+              }}
+              className=""
+            >
+              Delete Event
+            </button>
+          </li>
+        </ul>
+      )}
     </div>
   );
 }

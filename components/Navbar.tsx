@@ -99,11 +99,11 @@ export function Navbar({ eventPage }: { eventPage?: boolean }) {
     </div>
   ) : (
     // nav items for non-event-pages:
-    <div className="flex flex-none flex-shrink place-content-end items-center gap-3">
+    <div className="flex flex-none flex-shrink place-content-end items-center gap-2">
       {user && (
         <>
           <Link href={'/my-events'}>
-            <a className="font-semibold tracking-tight">My Events</a>
+            <a className="font-semibold">My Events</a>
           </Link>
           {/* <div className="px-1 font-medium tracking-tight">Host:</div> */}
           <AvatarDropdown

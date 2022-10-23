@@ -26,12 +26,12 @@ export function ModalEventAvatarForm({
     url_code,
     url_string,
   },
-  setEventsStale,
+  onSuccess,
   isOpen,
   closeModal,
 }: {
   event: Event;
-  setEventsStale: Function;
+  onSuccess: Function;
   isOpen: boolean;
   closeModal: Function;
 }) {
@@ -160,7 +160,7 @@ export function ModalEventAvatarForm({
               (async () => {
                 await updateEventAvatar({ event_id, avatarFile });
                 setAppLoading(false);
-                setEventsStale(true);
+                onSuccess();
               })();
             }}
             className="btn btn-primary"

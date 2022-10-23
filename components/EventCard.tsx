@@ -33,8 +33,31 @@ export function EventCard({ event, setEventsStale }: { event: Event; setEventsSt
     hosts: { avatar_url, display_name },
   } = event;
 
-  const [eventAvatarModalOpen, setEventAvatarModalOpen] = useState<boolean>(false);
-  const [confrimDeleteEventModalOpen, setConfrimDeleteEventModalOpen] = useState<boolean>(false);
+  // const [eventAvatarModalOpen, setEventAvatarModalOpen] = useState<boolean>(false);
+  // const [confrimDeleteEventModalOpen, setConfrimDeleteEventModalOpen] = useState<boolean>(false);
+  // const modalContainer = (
+  //   <>
+  //     <ModalEventAvatarForm
+  //       event={event}
+  //       setEventsStale={setEventsStale}
+  //       isOpen={eventAvatarModalOpen}
+  //       closeModal={() => {
+  //         setEventAvatarModalOpen(false);
+  //       }}
+  //     />
+  //     <ModalConfrimDeleteEvent
+  //       event={event}
+  //       isOpen={confrimDeleteEventModalOpen}
+  //       onSuccess={() => {
+  //         setEventsStale(true);
+  //       }}
+  //       closeModal={() => {
+  //         setConfrimDeleteEventModalOpen(false);
+  //       }}
+  //     />
+  //   </>
+  // );
+
   const [viewCount, setViewCount] = useState<number | undefined>(undefined);
   useEffect(() => {
     (async () => {
@@ -45,6 +68,76 @@ export function EventCard({ event, setEventsStale }: { event: Event; setEventsSt
 
   const eventUrl = 'https://gettogether.social/' + url_code + '/' + url_string;
 
+  // const buttons = (
+  //   <div
+  //     className="card-actions justify-end"
+  //     onClick={(e) => {
+  //       // prevent all child buttons from bubbling up to the card's onClick
+  //       e.stopPropagation();
+  //     }}
+  //   >
+  //     {/* copy link */}
+  //     <button
+  //       onClick={() => {
+  //         // Get URL and copy to clipboard
+  //         const eventUrl = 'https://gettogether.social/' + url_code + '/' + url_string;
+  //         navigator.clipboard.writeText(eventUrl);
+  //         // Alert the copied text
+  //         alert('Copied to clipboard: ' + eventUrl);
+  //       }}
+  //       className="btn btn-primary flex"
+  //     >
+  //       <div className=" pr-1">
+  //         <svg
+  //           xmlns="http://www.w3.org/2000/svg"
+  //           fill="none"
+  //           viewBox="0 0 24 24"
+  //           strokeWidth={2}
+  //           stroke="currentColor"
+  //           className="h-5 w-5"
+  //         >
+  //           <path
+  //             strokeLinecap="round"
+  //             strokeLinejoin="round"
+  //             d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"
+  //           />
+  //         </svg>
+  //       </div>
+  //       Copy Link
+  //     </button>
+
+  //     {/* edit content */}
+  //     <button
+  //       onClick={() => {
+  //         router.push('/edit/' + url_code + '/' + url_string);
+  //       }}
+  //       className="btn btn-primary"
+  //     >
+  //       Edit
+  //     </button>
+
+  //     {/* upload image */}
+  //     <button
+  //       onClick={() => {
+  //         // open modal
+  //         setEventAvatarModalOpen(true);
+  //       }}
+  //       className="btn btn-primary"
+  //     >
+  //       Photo
+  //     </button>
+
+  //     <button
+  //       onClick={() => {
+  //         setConfrimDeleteEventModalOpen(true);
+  //       }}
+  //       className="btn btn-warning"
+  //     >
+  //       Delete
+  //     </button>
+  //   </div>
+  // );
+
   return (
     <div
       className="card card-compact bg-base-100 h-96 w-[22rem] flex-none shadow-xl hover:cursor-pointer"
@@ -54,24 +147,7 @@ export function EventCard({ event, setEventsStale }: { event: Event; setEventsSt
         router.push('/' + url_code + '/' + url_string);
       }}
     >
-      <ModalEventAvatarForm
-        event={event}
-        setEventsStale={setEventsStale}
-        isOpen={eventAvatarModalOpen}
-        closeModal={() => {
-          setEventAvatarModalOpen(false);
-        }}
-      />
-      <ModalConfrimDeleteEvent
-        event={event}
-        isOpen={confrimDeleteEventModalOpen}
-        onSuccess={() => {
-          setEventsStale(true);
-        }}
-        closeModal={() => {
-          setConfrimDeleteEventModalOpen(false);
-        }}
-      />
+      {/* {modalContainer} */}
       {/* Event image */}
       <figure className="relative h-48 w-full">
         {photo_url ? (
