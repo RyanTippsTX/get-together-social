@@ -18,11 +18,11 @@ function Hero() {
       <div className="hero-content text-center">
         {/* <img src="https://placeimg.com/260/400/arch" className="max-w-sm rounded-lg shadow-2xl" /> */}
 
-        <div className="max-w-lg">
-          <h1 className="text-[8rem] font-bold">🥳</h1>
-          <h1 className="xs:text-5xl text-4xl font-bold tracking-tight">{siteTitle}</h1>
-          <h2 className="xs:text-3xl py-6 text-2xl font-semibold italic tracking-tight">
-            Create a sharable landing page <br /> for your next{''}
+        <div className="max-w-lg ">
+          <h1 className="text-[6rem] leading-none">🥳</h1>
+          {/* <h1 className="xs:text-5xl text-4xl font-bold tracking-tight">{siteTitle}</h1> */}
+          <h2 className="xs:text-5xl pb-4 text-4xl font-bold italic tracking-tight text-zinc-800">
+            Host your next{''} <br />
             <TextShuffle
               phrases={[
                 'get-together',
@@ -37,7 +37,10 @@ function Hero() {
               ]}
             />
           </h2>
-          {/* <p className="py-6"></p> */}
+          <p className="max-w-sm py-0 pb-4 text-base text-gray-500">
+            Stop the annoying group texts and endless back-and-forth! GetTogether.social is the
+            hassle-free way to organize social events.
+          </p>
           <div className="space-x-4">
             <button
               className="btn btn-primary"
@@ -71,9 +74,9 @@ function TextShuffle({ phrases }: { phrases: string[] }) {
 
   return (
     <span key={index} className="relative">
-      <span className="relative"> ________________</span>
+      <span className="invisible relative"> ___________________</span>
       <span
-        className="animate-drop absolute -inset-1 block font-bold text-fuchsia-600"
+        className="animate-drop absolute inset-2 block whitespace-nowrap font-extrabold text-fuchsia-600"
         // className="absolute -inset-1 block font-bold text-fuchsia-600"
         // className="absolute -inset-1 block -skew-x-2 -skew-y-2 font-bold text-fuchsia-600"
         aria-hidden="true"
