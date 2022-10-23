@@ -53,7 +53,7 @@ function Hero() {
                 router.push('/1234567/Dunder-Mifflin-Christmas-Party');
               }}
             >
-              See Demo
+              Live Demo
             </button>
           </div>
         </div>

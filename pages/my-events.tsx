@@ -64,12 +64,13 @@ export default function MyEvents() {
 
   return (
     <Layout>
-      <div className="px-2 py-4 text-zinc-800">
-        <h1 className="pb-2 text-4xl font-bold tracking-tight">My Events</h1>
+      <div className="px-2 pb-4 pt-10 text-zinc-700">
+        {/* <h1 className="pb-2 text-4xl font-bold tracking-tight">My Events</h1> */}
+        <h1 className=" text-center text-5xl font-bold tracking-tight">{`My Events`}</h1>
 
         {events && (
-          <div className="mb-4 py-4 ">
-            <h1 className="pb-4 text-3xl font-bold tracking-tight">Your Events:</h1>
+          <div className="mb-4 py-6 ">
+            {/* <h1 className="pb-4 text-3xl font-bold tracking-tight">Your Events:</h1> */}
             <div className="flex flex-wrap place-content-center gap-6">
               {events.map((event: Event) => (
                 <EventCard key={event.event_id} {...{ event }} setEventsStale={setEventsStale} />

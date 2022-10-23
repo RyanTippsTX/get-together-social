@@ -66,7 +66,7 @@ export default function Stats(props: Stats) {
         </h1>
         <h2 className="text-center text-xl  tracking-tight text-zinc-700 ">
           {/* GetTogether.social launched on September X, 2022 */}
-          GetTogether.social is in pre-launch.
+          GetTogether.social is still in development.
           <br /> Beta testers are welcome!
         </h2>
         <StatCardCombo stats={props} />
