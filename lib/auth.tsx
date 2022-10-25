@@ -62,9 +62,9 @@ export function AuthProvider({ ...props }) {
     (async () => {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
-        // options: {
-        //   redirectTo: 'https://gettogether.social/my-events',
-        // },
+        options: {
+          redirectTo: 'https://gettogether.social/login',
+        },
       });
       setSessionStale(false);
       if (error) {
