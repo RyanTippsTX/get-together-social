@@ -16,8 +16,6 @@ export default function Login() {
     formState: { errors },
   } = useForm();
 
-  console.log(errors);
-
   const heading = (
     <div className="py-4">
       <h2 className="mt-6 text-center text-5xl font-bold tracking-tight text-gray-900">🥳</h2>
@@ -76,15 +74,28 @@ export default function Login() {
 
         <div className="divider my-0 mx-8 text-zinc-400">OR</div>
 
-        <form className="card-body" onSubmit={signInWithGoogle as FormEventHandler}>
+        <div
+          className="card-body"
+          onSubmit={() => {
+            signInWithGoogle();
+          }}
+          // onSubmit={() => {
+          //   return signInWithGoogle();
+          // }}
+        >
           <h2 className="card-title">{'Sign In with Google'}</h2>
           <p>{'Requires a Google account.'}</p>
           <div className="card-actions justify-center">
-            <button className="btn btn-primary w-full" type="submit">
+            <button
+              className="btn btn-primary w-full"
+              onClick={() => {
+                signInWithGoogle();
+              }}
+            >
               Sign In With Google
             </button>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );

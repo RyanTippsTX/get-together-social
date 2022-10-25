@@ -57,21 +57,25 @@ export function AuthProvider({ ...props }) {
     }
   };
 
-  const signInWithGoogle = async () => {
+  const signInWithGoogle = () => {
     setSessionStale(true);
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-    });
-    setSessionStale(false);
-    if (error) {
-      console.error(error);
-      router.push('/');
-    } else {
-      // console.log(data);
-      router.push('/my-events');
-    }
+    (async () => {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        // options: {
+        //   redirectTo: 'https://gettogether.social/my-events',
+        // },
+      });
+      setSessionStale(false);
+      if (error) {
+        console.error(error);
+        router.push('/');
+      } else {
+        // console.log('response:', data);
+        router.push('/my-events');
+      }
+    })();
   };
-
   const signInWithMagicLink = async ({ email }: { email: string }) => {
     const { data, error } = await supabase.auth.signInWithOtp({
       email,
