@@ -5,35 +5,47 @@ import { useAppLoading } from '../lib/appLoading';
 import { AppLoadingIndicator, AppLoadingSplash } from './AppLoading';
 
 export const siteTitle = 'GetTogether.social';
-const siteAuthor = 'Ryan Tipps';
+const description = 'Host your next party or private event with GetTogether.social';
+const siteUrl = 'https://gettogether.social';
+const favicon =
+  'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🥳</text></svg>';
 
 export default function Layout({
   children,
   homePage,
   eventPage,
+  metaTags,
 }: {
   children: React.ReactNode | React.ReactNode[];
   homePage?: boolean;
   eventPage?: boolean;
+  metaTags?: {
+    pageTitle?: string;
+    pageDescription?: string;
+    photoUrl?: string;
+    pageUrl?: string;
+  };
 }) {
   const { appLoading, setAppLoading } = useAppLoading();
+
   return (
     <>
       <Head>
-        <title>GetTogether.social</title>
-        <meta
-          name="description"
-          content="Create a sharable landing page for you next party or private event with GetTogether.social"
-        />
-        <meta name="author" content={siteAuthor} />
-        <meta name="og:title" content={siteTitle} />
-        {/* <meta name="twitter:card" content="summary_large_image" /> */}
+        <title>{metaTags?.pageTitle || siteTitle}</title>
+        <meta name="description" content={metaTags?.pageDescription || description} />
+        {/* Open Graph protocol: https://ogp.me/#types */}
+        <meta name="og:title" content={metaTags?.pageTitle || siteTitle} />
+        <meta name="og:type" content="website" />
+        <meta name="og:image" content={metaTags?.photoUrl || favicon} />
+        <meta name="og:url" content={metaTags?.pageUrl || siteUrl} />
+
+        <meta name="og:description" content={metaTags?.pageDescription || description} />
+        <meta name="og:site_name" content={siteTitle} />
+
         {/* <link rel="icon" href="/favicon.ico" /> */}
         {/* Trick to use an emoji as favicon: */}
-        <link
-          rel="icon"
-          href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🥳</text></svg>"
-        />
+        <link rel="icon" href={favicon} />
+        <link rel="apple-touch-icon" href={favicon} />
       </Head>
       <header className="sticky top-0 z-40">
         <Navbar {...{ eventPage }} />

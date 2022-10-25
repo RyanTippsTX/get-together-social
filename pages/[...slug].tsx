@@ -337,8 +337,17 @@ export default function EventPage({ initialEvent }: { initialEvent: Event }) {
     </div>
   );
 
+  const eventUrl = 'https://gettogether.social/' + event?.url_code + '/' + event?.url_string;
   return (
-    <Layout eventPage>
+    <Layout
+      eventPage
+      metaTags={{
+        pageTitle: title,
+        pageDescription: description,
+        photoUrl: photo_url || undefined,
+        pageUrl: eventUrl,
+      }}
+    >
       <div className="pb-4 sm:mx-6">
         {photo_url && image}
         {content}
