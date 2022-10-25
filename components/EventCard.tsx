@@ -62,7 +62,7 @@ export function EventCard({ event, setEventsStale }: { event: Event; setEventsSt
   useEffect(() => {
     (async () => {
       const { count, error } = await getEventViewCount(event_id);
-      setViewCount(count);
+      count && setViewCount(count);
     })();
   }, [event_id]);
 
