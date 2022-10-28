@@ -28,6 +28,7 @@ export async function getServerSideProps() {
     number of interacticve users (hosts + guests) (excludes read-only guests that never log in)
     number of events hosted
     total event page visits
+  Note - this includes data from all events, including past / soft deleted.
   */
   const [
     { count: hostCount },
