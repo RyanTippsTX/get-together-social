@@ -55,6 +55,31 @@ export async function updateHostAvatar({
     .match({ host_id });
 }
 
+export async function deleteHostAvatar(host_id: string) {
+  // only use this method when deleteing the account, otherwise use updateHostAvatar with null file
+
+  // delete the object reference in profile (if there was one)
+  await supabase
+    .from('hosts')
+    .update({
+      avatar_url: null,
+    })
+    .match({ host_id });
+
+  // get list of file(s)
+  const { data: list, error } = await supabase.storage.from('hosts').list(`avatars/${host_id}`);
+  if (error) {
+    console.error(error);
+    return { error };
+  }
+  // console.log('list:', list);
+
+  // delte all
+  if (list?.length === 0 || !list) return { error: null, data: 'no files to delete' };
+  const filesToRemove = list.map((f) => `avatars/${host_id}/${f.name}`);
+  return await supabase.storage.from('hosts').remove(filesToRemove);
+}
+
 export async function updateEventAvatar({
   event_id,
   avatarFile,
@@ -118,7 +143,7 @@ export async function deleteEventFiles(event_id: string) {
     return { error };
   }
 
-  console.log('list:', list);
+  // console.log('list:', list);
 
   // delte all
   if (list?.length === 0 || !list) return { error: null, data: 'no files to delete' };
