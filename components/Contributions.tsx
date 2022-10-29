@@ -15,6 +15,8 @@ import {
   convertHostContributionToRequest,
   deleteContribution,
 } from '../lib/queries';
+import { ModalGuestLogin } from './modals/ModalGuestLogin';
+import { useState } from 'react';
 
 // component assumes that contributions are enabled if its being called to render
 export function ContributionsComponent({
@@ -119,6 +121,9 @@ function ContributionsTableRow({
   const { guest, setGuest, guestList, setGuestList } = useGuestAuth();
   const { event, setEvent } = useEventState();
 
+  // modal states - move to context and add renderings there if possible
+  const [guestLoginModalOpen, setGuestLoginModalOpen] = useState<boolean>(false);
+
   // user authorization status for actions:
   const isHost = user && user.id === event?.host_id;
   const isGuest = guest && !isHost; // let host account take precedence in event of a shared device
@@ -156,6 +161,9 @@ function ContributionsTableRow({
               contribution_id,
             });
           })();
+        }
+        if (isSpectator) {
+          setGuestLoginModalOpen(true);
         }
       }}
     >
@@ -276,6 +284,20 @@ function ContributionsTableRow({
       {descriptionDisplay}
       {contributorDisplay}
       {actions}
+      {isSpectator && (
+        <>
+          <ModalGuestLogin
+            isOpen={guestLoginModalOpen}
+            closeModal={() => {
+              setGuestLoginModalOpen(false);
+            }}
+            onSuccess={() => {
+              // log in the guest
+              setGuestLoginModalOpen(false);
+            }}
+          />
+        </>
+      )}
     </div>
   );
 }
@@ -285,6 +307,9 @@ function NewContributionForm({ contributions_frozen }: { contributions_frozen: b
   const { profile, loading: profileLoading } = useProfile();
   const { guest, setGuest, guestList, setGuestList } = useGuestAuth();
   const { event, setEvent } = useEventState();
+
+  // modal states - move to context and add renderings there if possible
+  const [guestLoginModalOpen, setGuestLoginModalOpen] = useState<boolean>(false);
 
   const { event_id } = event! || {}; // safe to assume event exists if this page is rendering
   const { guest_id } = guest! || {}; // kinda dangerous, but value is only consumed by functions available when there is a guest user
@@ -323,10 +348,16 @@ function NewContributionForm({ contributions_frozen }: { contributions_frozen: b
           className=" flex w-full gap-2"
           noValidate
           autoComplete="off"
+          onSelect={() => {
+            if (isSpectator) {
+              setGuestLoginModalOpen(true);
+            }
+          }}
           onSubmit={handleSubmit(({ description }) => {
             // console.log('New Item submission data:', data);
             if (isSpectator) {
               // promt guest login
+              setGuestLoginModalOpen(true);
               return; // for now
             }
             reset();
@@ -408,8 +439,22 @@ function NewContributionForm({ contributions_frozen }: { contributions_frozen: b
 
   return (
     <div className="px-2">
-      {(isHost || (isGuest && !contributions_frozen)) && NewItemForm}
+      {(isHost || !contributions_frozen) && NewItemForm}
       {isHost && NewRequestForm}
+      {isSpectator && (
+        <>
+          <ModalGuestLogin
+            isOpen={guestLoginModalOpen}
+            closeModal={() => {
+              setGuestLoginModalOpen(false);
+            }}
+            onSuccess={() => {
+              // log in the guest
+              setGuestLoginModalOpen(false);
+            }}
+          />
+        </>
+      )}
     </div>
   );
 }
