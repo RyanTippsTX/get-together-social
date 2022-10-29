@@ -4,12 +4,22 @@ import { useAuth } from '../lib/auth';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { createEvent } from '../lib/queries';
 import { Inputs } from '../lib/forms.types';
+import { useEffect } from 'react';
+import { useProfile } from '../lib/profile';
 
 export default function New() {
   const router = useRouter();
   const { session, sessionStale, user } = useAuth();
+  const { profile, avatar_url, display_name, profileStale } = useProfile();
 
   if (!user && !sessionStale) router.push('/login');
+
+  // route to Welcome if profile is not yet created
+  useEffect(() => {
+    if (user && !sessionStale && !profile && !profileStale) {
+      router.push('/welcome');
+    }
+  });
 
   const {
     register,

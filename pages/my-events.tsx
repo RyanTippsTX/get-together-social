@@ -62,6 +62,13 @@ export default function MyEvents() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionStale]);
 
+  // route to Welcome if profile is not yet created
+  useEffect(() => {
+    if (user && !sessionStale && !profile && !profileStale) {
+      router.push('/welcome');
+    }
+  });
+
   return (
     <Layout>
       <div className="px-2 pb-4 pt-10 text-zinc-700">

@@ -79,7 +79,10 @@ export function AuthProvider({ ...props }) {
   const signInWithMagicLink = async ({ email }: { email: string }) => {
     const { data, error } = await supabase.auth.signInWithOtp({
       email,
-      options: { emailRedirectTo: '/my-events', shouldCreateUser: true },
+      options: {
+        emailRedirectTo: process.env.NEXT_PUBLIC_BACKEND_URL + '/my-events',
+        shouldCreateUser: true,
+      },
     });
     if (error) {
       console.error('signin result error:', error);

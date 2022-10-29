@@ -17,7 +17,7 @@ export default function Welcome() {
   const { profile, loading: profileLoading, setProfileStale } = useProfile();
 
   // route to My Events if profile is already created
-  if (user) {
+  if (profile) {
     router.push('/my-events');
   }
 
@@ -42,8 +42,7 @@ export default function Welcome() {
           signOut();
           router.push('/');
         } else {
-          setProfileStale();
-          router.push('/my-events');
+          setProfileStale(true);
         }
       })();
     }
