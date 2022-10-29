@@ -283,7 +283,7 @@ function ContributionsTableRow({
     <div className="min-h-12 flex flex-nowrap items-center gap-2 border-t-[1px] border-zinc-200 bg-zinc-50 bg-opacity-30 py-1 px-2 sm:mx-2 ">
       {descriptionDisplay}
       {contributorDisplay}
-      {actions}
+      {isSpectator || actions}
       {isSpectator && (
         <>
           <ModalGuestLogin
