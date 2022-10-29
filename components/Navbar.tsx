@@ -103,7 +103,7 @@ export function Navbar({ eventPage }: { eventPage?: boolean }) {
       {user && (
         <>
           <Link href={'/my-events'}>
-            <a className="font-semibold">My Events</a>
+            <a className="font-semibold tracking-tight">My Events</a>
           </Link>
           {/* <div className="px-1 font-medium tracking-tight">Host:</div> */}
           <AvatarDropdown
