@@ -64,10 +64,10 @@ export default function Welcome() {
     <div className="pt-10 pb-10 sm:my-0">
       <div className="flex w-full flex-col items-center border-opacity-50 px-4 pb-6">
         {/* Main Form Body */}
-        <div className="mt-5 w-full max-w-sm md:mt-0">
+        <div className="mt-5 w-full max-w-sm md:mt-0 ">
           <form noValidate onSubmit={handleSubmit(onSubmit)}>
-            <div className="overflow-hidden shadow sm:rounded-md">
-              <div className="card-body bg-white px-4 py-5 sm:p-6">
+            <div className="overflow-hidden border-[1px] shadow sm:rounded-md">
+              <div className="card-body bg-white px-4 py-5 sm:p-6 ">
                 <h2 className="card-title">Enter a Display Name to Continue</h2>
                 <p></p>
 
