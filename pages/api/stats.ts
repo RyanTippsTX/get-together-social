@@ -9,10 +9,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       { count: eventCount },
       { count: visitCount },
     ] = await Promise.all([
-      supabase.from('hosts').select('*', { count: 'estimated', head: true }),
-      supabase.from('guests').select('*', { count: 'estimated', head: true }),
-      supabase.from('events').select('*', { count: 'estimated', head: true }),
-      supabase.from('page_visits').select('*', { count: 'estimated', head: true }),
+      supabase.from('hosts').select('*', { count: 'exact', head: true }),
+      supabase.from('guests').select('*', { count: 'exact', head: true }),
+      supabase.from('events').select('*', { count: 'exact', head: true }),
+      supabase.from('page_visits').select('*', { count: 'exact', head: true }),
     ]);
 
     res.status(200).json({
