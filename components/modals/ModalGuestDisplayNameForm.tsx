@@ -70,7 +70,7 @@ export function ModalGuestDisplayNameForm({
           {/* <pre>{JSON.stringify(returningGuestUser, null, 2)}</pre> */}
           <p>
             Your Display Name is your guest log-in username and is shown with any contributions you
-            make in the {event?.contributions_custom_title || 'Guest Contribtutons'}.
+            make in the {event?.contributions_custom_title || 'Guest Contributions'}.
           </p>
 
           {/* input title */}

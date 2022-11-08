@@ -83,7 +83,7 @@ export function ModalGuestLogin({
           <h2 className="card-title">Guest Login</h2>
           <p>
             Log in with your name to participate in the{' '}
-            {event?.contributions_custom_title || 'Guest Contribtutons'}. No password is required.
+            {event?.contributions_custom_title || 'Guest Contributions'}. No password is required.
           </p>
           <p>Names are suggested for returning users. New users must type in their name.</p>
 

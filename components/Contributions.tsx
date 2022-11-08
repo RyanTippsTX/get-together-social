@@ -44,7 +44,7 @@ export function ContributionsComponent({
       <div className="w-full py-2">
         <div className="mx-2 flex items-center gap-1 pb-1">
           <div className="text-dark  text-xl font-bold">
-            {contributions_custom_title || 'Contribtutons'}
+            {contributions_custom_title || 'Contributions'}
           </div>
           {isSpectator && <Tooltip message="Log in as a Guest to participate" />}
         </div>
