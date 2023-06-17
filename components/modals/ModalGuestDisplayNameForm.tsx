@@ -100,7 +100,7 @@ export function ModalGuestDisplayNameForm({
 
           <FormError message={errors.display_name?.message as string} />
           <p className="mt-2 text-sm text-gray-500">
-            We reccommend using your full name, or any nickname that uniquely identifies you from
+            We recommend using your full name, or any nickname that uniquely identifies you from
             other guests. 🥸
           </p>
 

@@ -114,7 +114,7 @@ export function ModalHostAvatarForm({
         </FileUploader>
 
         {/* <p className="mt-2 text-sm text-gray-500">
-          We reccommend using your full name, or whatever nickname you go by. 🥸
+          We recommend using your full name, or whatever nickname you go by. 🥸
         </p> */}
 
         {/* action buttons */}
