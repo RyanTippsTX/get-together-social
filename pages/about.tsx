@@ -6,7 +6,7 @@ export default function About() {
       <div className="xs:min-h-[45rem] mx-auto flex min-h-[35rem] max-w-lg flex-col  gap-6 pt-10">
         <h1 className=" text-center text-5xl font-bold tracking-tight text-zinc-700 ">{'About'}</h1>
         <h2 className=" text-justify text-xl  tracking-tight text-zinc-700 ">
-          Hi, I'm Ryan Tipps, developer and creator of{' '}
+          {"Hi, I'm Ryan Tipps, developer and creator of "}
           <span className="font-semibold">GetTogether.social</span>, a web application built with
           Next.js, Supabase, & Tailwind. Check out the source code on{' '}
           <a
