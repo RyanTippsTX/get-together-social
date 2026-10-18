@@ -1,69 +1,48 @@
 import Link from 'next/link';
 import { Brand } from './Brand';
-
-// list paths you want to show up in the Site Map in the site-wide footer
-// currently, some paths included in SiteMap for dev convience only
-const sitePaths = new Map<string, string>([
-  ['Home', '/'],
-  ['Demo', '/1234567/Dunder-Mifflin-Christmas-Party'], // omit in production
-  ['About', '/about'],
-  ['Statistics', '/stats'],
-]);
-const hostPaths = new Map<string, string>([
-  ['Host Login', '/login'],
-  ['My Events', '/my-events'],
-  ['New Event', '/new'], // omit in productin
-]);
-const legalPaths = new Map<string, string>([
-  ['Terms of use', '/legal/'],
-  ['Privacy policy', '/legal/'],
-  ['Cookie policy', '/legal/'],
-]);
-
-const Links = ({ routes }: { routes: Map<string, string> }) => {
-  const navElements: React.ReactElement[] = [];
-  routes.forEach((path, title) => {
-    navElements.push(
-      <div key={title}>
-        <Link href={path}>
-          <a className="link link-hover">{title}</a>
-        </Link>
-      </div>
-    );
-  });
-  return <>{navElements}</>;
-};
-
-const company = (
-  <div className="place-items-center sm:place-items-start">
-    <Brand />
-    <p>Copyright © 2025 - All rights reserved</p>
-  </div>
-);
-
 export function Footer() {
   return (
-    <div className="bg-dark text-zinc-300">
-      <div className="container mx-auto">
-        <div className=" flex flex-col-reverse gap-10 py-10 px-6 sm:flex-row ">
-          <div className="footer place-items-center sm:place-items-start ">{company}</div>
-
-          <div className="grid min-w-max  grid-cols-3 place-content-between gap-4  text-sm leading-7 sm:place-content-center">
-            <div className="min-w-max">
-              <span className="footer-title">Site</span>
-              <Links routes={sitePaths} />
-            </div>
-            <div className="min-w-max">
-              <span className="footer-title">Hosts</span>
-              <Links routes={hostPaths} />
-            </div>
-            <div className="min-w-max">
-              <span className="footer-title">Legal</span>
-              <Links routes={legalPaths} />
-            </div>
-          </div>
+    <footer className="border-ink/15 bg-cream mt-12 border-t">
+      <div className="site-width grid gap-10 py-10 md:grid-cols-[1fr_auto] md:py-12">
+        <div>
+          <Brand />
+          <p className="text-muted mt-3 text-sm">A little planning. A lot of good company.</p>
+          <p className="text-muted mt-5 text-xs">© {new Date().getFullYear()} GetTogether.social</p>
+        </div>
+        <div className="grid grid-cols-3 gap-5 text-sm sm:gap-14">
+          {[
+            [
+              'Explore',
+              ['Home', '/'],
+              ['Live demo', '/1234567/Dunder-Mifflin-Christmas-Party'],
+              ['About', '/about'],
+              ['Statistics', '/stats'],
+            ],
+            [
+              'Hosting',
+              ['Host login', '/login'],
+              ['My events', '/my-events'],
+              ['New event', '/new'],
+            ],
+            ['The details', ['Terms', '/legal'], ['Privacy', '/legal'], ['Cookies', '/legal']],
+          ].map(([heading, ...links]) => (
+            <nav key={heading as string} aria-label={heading as string}>
+              <h2 className="text-muted mb-3 font-sans text-xs font-bold uppercase tracking-wider">
+                {heading}
+              </h2>
+              <ul className="space-y-2">
+                {(links as string[][]).map(([label, href]) => (
+                  <li key={label}>
+                    <Link className="link-hover" href={href}>
+                      {label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          ))}
         </div>
       </div>
-    </div>
+    </footer>
   );
 }

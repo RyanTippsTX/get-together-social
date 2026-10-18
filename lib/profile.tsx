@@ -1,90 +1,79 @@
-import { createContext, useContext, useEffect, useState, FormEvent } from 'react';
+import { createContext, useContext, useEffect, useState, Dispatch, SetStateAction } from 'react';
 import supabase from './supabase';
 import { Database } from './database.types';
 import { useAuth } from './auth';
-import { useRouter } from 'next/router';
 
 type Profile = Database['public']['Tables']['hosts']['Row'];
-
 interface ProfileContextInterface {
   profile: Profile | null | undefined;
-  // undefined - user is authenticated but does not have profile data
-  // null - no user
   avatar_url: string | null | undefined;
   display_name: string | null | undefined;
   profileStale: boolean;
-  setProfileStale: Function;
+  loading: boolean;
+  error: string;
+  retry: () => void;
+  setProfileStale: Dispatch<SetStateAction<boolean>>;
 }
 export const ProfileContext = createContext<ProfileContextInterface | null>(null);
-
 export function ProfileProvider({ ...props }) {
-  const router = useRouter();
-  const { session, user, sessionStale } = useAuth();
+  const { user, sessionStale } = useAuth();
   const [profile, setProfile] = useState<Profile | null | undefined>(null);
-  const [profileStale, setProfileStale] = useState<boolean>(false); // "stale" with respect to the provided user/session, regardless if that user/session is marked stale
-
-  // route first-time sign-ups to Welcome page to create their profile
+  const [loadedUserId, setLoadedUserId] = useState<string | null>(null);
+  const [stale, setProfileStale] = useState(false);
+  const [error, setError] = useState('');
+  const [attempt, setAttempt] = useState(0);
+  const userId = user?.id;
   useEffect(() => {
-    if (user && !profile && !profileStale) {
-      router.push('/welcome');
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // on any change in session/user:
-  // if no user, clear profile data
-  // if new user, mark profile stale
-  useEffect(() => {
-    if (!user) {
+    if (!userId) {
+      setError('');
       setProfile(null);
+      setLoadedUserId(null);
       setProfileStale(false);
-    } else {
-      setProfileStale(true);
+      return;
     }
-    // console.log('user is', user);
-  }, [user]);
-
-  // if profile stale, fetch profile data (stale implies there IS a user)
-  useEffect(() => {
-    if (profileStale && user) {
-      (async () => {
-        const { data, error } = await supabase
-          .from('hosts')
-          .select('*')
-          .eq('host_id', user.id)
-          .single();
-        // console.log('fetched profile:', data);
-        // if (error) console.log('profile error', error);
-        setProfile(data);
+    if (!stale && loadedUserId === userId) return;
+    let active = true;
+    setError('');
+    void supabase
+      .from('hosts')
+      .select('*')
+      .eq('host_id', userId)
+      .maybeSingle()
+      .then(({ data, error }) => {
+        if (!active) return;
+        // An unavailable profile is not evidence that this is a new user.
+        if (error) {
+          setError('We couldn’t load your profile. Please try again.');
+          return;
+        }
+        setProfile(data || undefined);
+        setLoadedUserId(userId);
         setProfileStale(false);
-      })();
-    }
-  }, [profileStale, user]);
-
-  // console.log('session is:', session);
-  // console.log('user is:', user);
-  // console.log('profile is:', profile);
-
+      });
+    return () => {
+      active = false;
+    };
+  }, [userId, stale, loadedUserId, attempt]);
+  const profileStale = sessionStale || (!!userId && (loadedUserId !== userId || stale));
+  const currentProfile = userId && loadedUserId === userId ? profile : null;
   return (
     <ProfileContext.Provider
       value={{
-        // provides profile state & profile mutation functions
-        profile,
-        avatar_url: profile?.avatar_url,
-        display_name: profile?.display_name,
+        profile: currentProfile,
+        avatar_url: currentProfile?.avatar_url,
+        display_name: currentProfile?.display_name,
         profileStale,
+        loading: profileStale,
+        error,
+        retry: () => setAttempt((value) => value + 1),
         setProfileStale,
       }}
       {...props}
     />
   );
 }
-
-// hook for using app-wide Profile state & Profile mutation functions
 export function useProfile() {
-  const context: any = useContext(ProfileContext);
-  if (context === undefined) {
-    throw new Error('useProfile must be used within an ProfileProvider');
-  }
+  const context = useContext(ProfileContext);
+  if (!context) throw new Error('useProfile must be used within a ProfileProvider');
   return context;
 }

@@ -1,3 +1,5 @@
+import '@fontsource-variable/dm-sans';
+import '@fontsource-variable/nunito-sans';
 import '../styles/globals.css';
 import type { AppProps } from 'next/app';
 import { AppLoadingProvider } from '../lib/appLoading';

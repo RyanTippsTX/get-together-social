@@ -1,92 +1,71 @@
-import { getInitials } from '../lib/initials';
-import { EditImageIcon } from '../components/EditImageIcon';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 import Layout from '../components/layout';
-import supabase from '../lib/supabase';
-import Image from 'next/image';
+import { EventCard, EventCardCreate } from '../components/EventCard';
+import { AppLoadingIndicator } from '../components/AppLoading';
+import { Icon } from '../components/Icons';
+import { getEvents } from '../lib/queries';
+import { Events } from '../lib/queries.types';
 import { useAuth } from '../lib/auth';
 import { useProfile } from '../lib/profile';
-import { getEvents } from '../lib/queries';
-import { Event, Events } from '../lib/queries.types';
-import { EventCard, EventCardCreate } from '../components/EventCard';
-import { useRouter } from 'next/router';
-import { ModalHostDisplayNameForm } from '../components/modals/ModalHostDisplayNameForm';
-import { ModalHostAvatarForm } from '../components/modals/ModalHostAvatarForm';
-import { MouseEventHandler } from 'react';
-import { useAppLoading } from '../lib/appLoading';
 
 export default function MyEvents() {
   const router = useRouter();
-  const { appLoading, setAppLoading } = useAppLoading();
-  const { session, user, sessionStale, signOut, signInWithMagicLink, signInWithGoogle } = useAuth();
-  const { profile, avatar_url, display_name, profileStale } = useProfile();
-
-  const [events, setEvents] = useState<Events | undefined>(undefined);
-  const [eventsStale, setEventsStale] = useState(true);
-
-  // fetch events initially
+  const { user, sessionStale } = useAuth();
+  const { profile, profileStale } = useProfile();
+  const [events, setEvents] = useState<Events | null>(null);
+  const [error, setError] = useState('');
+  const [retry, setRetry] = useState(0);
   useEffect(() => {
-    if (user) {
-      (async () => {
-        const { data, error } = await getEvents(user.id);
-        setEvents(data as Events);
-        setEventsStale(false);
-      })();
-    } else {
-      setEvents(undefined);
-      setEventsStale(false);
-    }
-  }, [user]);
-
-  // fetch events when stale
+    if (!sessionStale && !user) void router.replace('/login');
+    else if (user && !profileStale && !profile) void router.replace('/welcome');
+  }, [user, sessionStale, profile, profileStale, router]);
   useEffect(() => {
-    if (eventsStale && user) {
-      (async () => {
-        const { data, error } = await getEvents(user.id);
-        setEvents(data as Events);
-        setEventsStale(false);
-        setAppLoading(false);
-      })();
-    } else {
-      setEventsStale(false);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [eventsStale]);
-
-  // route to log-in page if not logged in
-  // (this is inside a useEffect hook so that it does not take precence over the routing when signing out)
-  useEffect(() => {
-    if (!sessionStale && !user) {
-      router.push('/login');
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessionStale]);
-
-  // route to Welcome if profile is not yet created
-  useEffect(() => {
-    if (user && !sessionStale && !profile && !profileStale) {
-      router.push('/welcome');
-    }
-  });
-
+    if (!user) return;
+    let active = true;
+    setError('');
+    void getEvents(user.id).then(({ data, error }) => {
+      if (!active) return;
+      if (error) setError('We couldn’t load your events.');
+      else setEvents(data as Events);
+    });
+    return () => {
+      active = false;
+    };
+  }, [user, retry]);
   return (
-    <Layout>
-      <div className="px-2 pb-4 pt-10 text-zinc-700">
-        {/* <h1 className="pb-2 text-4xl font-bold tracking-tight">My Events</h1> */}
-        <h1 className=" text-center text-5xl font-bold tracking-tight">{`My Events`}</h1>
-
-        {events && (
-          <div className="mb-4 py-6 ">
-            {/* <h1 className="pb-4 text-3xl font-bold tracking-tight">Your Events:</h1> */}
-            <div className="flex flex-wrap place-content-center gap-6">
-              {events.map((event: Event) => (
-                <EventCard key={event.event_id} {...{ event }} setEventsStale={setEventsStale} />
-              ))}
-              <EventCardCreate />
-            </div>
-          </div>
-        )}
+    <Layout metaTags={{ pageTitle: 'My events · GetTogether.social' }}>
+      <div className="page-heading flex flex-wrap items-end justify-between gap-5">
+        <div>
+          <p className="eyebrow">Good times, all in one place</p>
+          <h1 className="page-title">Your get-togethers.</h1>
+          <p className="subheading">
+            A little planning today. Something to look forward to tomorrow.
+          </p>
+        </div>
+        <Link href="/new" className="btn">
+          <Icon name="plus" />
+          New event
+        </Link>
       </div>
+      {error ? (
+        <div role="alert" className="card p-6">
+          {error}
+          <button className="btn ml-3" onClick={() => setRetry((n) => n + 1)}>
+            Try again
+          </button>
+        </div>
+      ) : events ? (
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {events.map((event) => (
+            <EventCard key={event.event_id} event={event} />
+          ))}
+          <EventCardCreate />
+        </div>
+      ) : (
+        <AppLoadingIndicator />
+      )}
     </Layout>
   );
 }
