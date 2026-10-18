@@ -1,0 +1,7 @@
+{
+  "name": "gettogether-rls-tests",
+  "private": true,
+  "type": "module",
+  "scripts": { "test": "node rls.test.mjs" },
+  "devDependencies": { "@electric-sql/pglite": "0.3.14" }
+}
