@@ -14,7 +14,7 @@ export function Footer() {
             [
               'Explore',
               ['Home', '/'],
-              ['Live demo', '/1234567/Dunder-Mifflin-Christmas-Party'],
+              ['Live demo', '/20270214/super-bowl-sunday'],
               ['About', '/about'],
               ['Statistics', '/stats'],
             ],

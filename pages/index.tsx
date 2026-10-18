@@ -23,7 +23,7 @@ export default function Home() {
             <Link href="/login" className="btn">
               Plan a get-together <Icon name="arrow" />
             </Link>
-            <Link href="/1234567/Dunder-Mifflin-Christmas-Party" className="btn btn-outline">
+            <Link href="/20270214/super-bowl-sunday" className="btn btn-outline">
               Take a look around
             </Link>
           </div>
