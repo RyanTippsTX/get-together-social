@@ -1,109 +1,118 @@
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { useAuth } from '../lib/auth';
 import { useForm } from 'react-hook-form';
 import Layout from '../components/layout';
-import { FormEventHandler } from 'react';
+import { Flourish, Icon } from '../components/Icons';
+import { useAuth } from '../lib/auth';
 
 export default function Login() {
-  const { session, user, signOut, signInWithMagicLink, signInWithGoogle } = useAuth();
-
+  const { user, signInWithMagicLink, signInWithGoogle } = useAuth();
   const router = useRouter();
-  if (user) router.push('/my-events');
-
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
+  const [googleBusy, setGoogleBusy] = useState(false);
   const {
     register,
     handleSubmit,
-    formState: { errors },
-  } = useForm();
-
-  const heading = (
-    <div className="py-4">
-      <h2 className="mt-6 text-center text-5xl font-bold tracking-tight text-gray-900">🥳</h2>
-      <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
-        Sign in to your account
-      </h2>
-      <p className="mt-2 text-center text-sm text-gray-600">Initial Sign up is not requied.</p>
-    </div>
-  );
-
-  const card = (
-    <div className="flex w-full flex-col items-center border-opacity-50 px-4 pb-6">
-      <div className="card bg-base-100 m-4 w-full max-w-sm border-[1px] shadow">
-        <form
-          className="card-body"
-          noValidate
-          onSubmit={handleSubmit((data) => {
-            console.log('Form submission data:', data);
-            signInWithMagicLink(data);
-          })}
-        >
-          <h2 className="card-title">{'Sign in with an Email Link'}</h2>
-          <p>{'No password required.'}</p>
-
-          <div className="form-control w-full">
-            <label className="label" htmlFor="email">
-              <span className="label-text">Your Email</span>
+    formState: { errors, isSubmitting },
+  } = useForm<{ email: string }>();
+  useEffect(() => {
+    if (user) void router.replace('/my-events');
+  }, [user, router]);
+  return (
+    <Layout metaTags={{ pageTitle: 'Host login · GetTogether.social' }}>
+      <div className="mx-auto grid max-w-4xl items-center gap-10 py-4 md:grid-cols-2 md:gap-16 md:py-14">
+        <div>
+          <p className="eyebrow">Pull up a chair</p>
+          <Flourish />
+          <h1 className="page-title">
+            Good company
+            <br />
+            starts with you.
+          </h1>
+          <p className="subheading">
+            Sign in to plan your next get-together, manage your events, and bring your people
+            together.
+          </p>
+          <p className="text-muted mt-6 text-sm">
+            First time here? We’ll get you set up as you sign in.
+          </p>
+        </div>
+        <div className="card p-6 sm:p-8">
+          <h2 className="text-2xl">Welcome, host.</h2>
+          <p className="text-muted mt-2 text-sm">One less password to remember.</p>
+          <button
+            type="button"
+            disabled={googleBusy}
+            className="btn btn-outline mt-6 w-full"
+            onClick={async () => {
+              setGoogleBusy(true);
+              setError('');
+              try {
+                await signInWithGoogle();
+              } catch {
+                setError('Google sign-in couldn’t start. Please try again.');
+                setGoogleBusy(false);
+              }
+            }}
+          >
+            <span className="font-bold">G</span>
+            {googleBusy ? 'Opening Google…' : 'Continue with Google'}
+          </button>
+          <div className="divider my-6">or use email</div>
+          <form
+            noValidate
+            onSubmit={handleSubmit(async (data) => {
+              setError('');
+              setMessage('');
+              try {
+                await signInWithMagicLink(data);
+                setMessage('Check your inbox. Your sign-in link is on its way.');
+              } catch {
+                setError('We couldn’t send your sign-in link. Please try again.');
+              }
+            })}
+          >
+            <label className="field-label" htmlFor="email">
+              Email address
             </label>
-
             <input
-              className={`input input-bordered w-full ${errors.email && 'border-error'}`}
               type="email"
               id="email"
-              placeholder="elon@spacex.com"
+              className="input w-full"
+              placeholder="you@example.com"
+              autoComplete="email"
+              aria-invalid={!!errors.email}
               {...register('email', {
-                required: 'Email is required',
+                required: 'Enter your email address.',
                 pattern: {
-                  value:
-                    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-                  message: 'Invalid email address',
+                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                  message: 'Enter a valid email address.',
                 },
-                // minLength: { value: 8, message: 'Minimum length is 8' },
               })}
             />
-            <div className="text-error px-1 pt-1 text-sm font-semibold">
-              {errors.email?.message as string}
-            </div>
-          </div>
-
-          <div className="card-actions justify-center">
-            <button className="btn btn-primary w-full" type="submit">
-              Send Email Link
+            {errors.email && (
+              <p role="alert" className="field-error">
+                {errors.email.message}
+              </p>
+            )}
+            <button type="submit" disabled={isSubmitting} className="btn mt-4 w-full">
+              {isSubmitting ? 'Sending…' : 'Email me a sign-in link'}
+              <Icon name="arrow" className="h-4 w-4" />
             </button>
-          </div>
-        </form>
-
-        <div className="divider my-0 mx-8 text-zinc-400">OR</div>
-
-        <div
-          className="card-body"
-          onSubmit={() => {
-            signInWithGoogle();
-          }}
-          // onSubmit={() => {
-          //   return signInWithGoogle();
-          // }}
-        >
-          <h2 className="card-title">{'Sign In with Google'}</h2>
-          <p>{'Requires a Google account.'}</p>
-          <div className="card-actions justify-center">
-            <button
-              className="btn btn-primary w-full"
-              onClick={() => {
-                signInWithGoogle();
-              }}
-            >
-              Sign In With Google
-            </button>
-          </div>
+          </form>
+          {message && (
+            <p role="status" className="text-success mt-4 text-sm">
+              {message}
+            </p>
+          )}
+          {error && (
+            <p role="alert" className="field-error">
+              {error}
+            </p>
+          )}
         </div>
       </div>
-    </div>
-  );
-
-  return (
-    <Layout>
-      {heading}
-      {card}
     </Layout>
   );
 }

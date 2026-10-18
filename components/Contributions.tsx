@@ -1,10 +1,10 @@
-import { Host, Event, Guest, Contribution, Contributions } from '../lib/queries.types';
-// import { ContributionOptionsButton } from './ContributionOptionsButton';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { Host, Contribution, Contributions } from '../lib/queries.types';
 import { useAuth } from '../lib/auth';
-import { useProfile } from '../lib/profile';
 import { useEventState } from '../lib/eventState';
 import { useGuestAuth } from '../lib/guestAuth';
-import { useForm } from 'react-hook-form';
+import { getInitials } from '../lib/initials';
 import {
   createRequest,
   createHostContribution,
@@ -16,445 +16,301 @@ import {
   deleteContribution,
 } from '../lib/queries';
 import { ModalGuestLogin } from './modals/ModalGuestLogin';
-import { useState } from 'react';
+import { Dropdown } from './Dropdown';
+import { Icon } from './Icons';
 
-// component assumes that contributions are enabled if its being called to render
+type Props = {
+  contributions_frozen: boolean;
+  contributions_custom_title: string | null;
+  contributions: Contributions;
+  host: Host;
+  onChange: () => Promise<void>;
+};
 export function ContributionsComponent({
   contributions_frozen,
   contributions_custom_title,
   contributions,
   host,
-}: {
-  contributions_frozen: boolean;
-  contributions_custom_title: string | null;
-  contributions: Contributions; // array will be empty if there are no contributions
-  host: Host;
-}) {
-  const { session, user, sessionStale, signOut, signInWithMagicLink, signInWithGoogle } = useAuth();
-  const { profile, loading: profileLoading } = useProfile();
-  const { guest, setGuest, guestList, setGuestList } = useGuestAuth();
-  const { event, setEvent } = useEventState();
-
-  const isHost = user && user.id === event?.host_id;
-  const isGuest = guest && !isHost; // let host account take precedence in event of a shared device
-  const isSpectator = !isHost && !isGuest; // note, this could be an authenticated host account for a different event, or a non-authenticated page viewer.
-
+  onChange,
+}: Props) {
   return (
-    <div className="flex flex-col items-center pb-6 ">
-      <div className="w-full py-2">
-        <div className="mx-2 flex items-center gap-1 pb-1">
-          <div className="text-dark  text-xl font-bold">
-            {contributions_custom_title || 'Contributions'}
-          </div>
-          {isSpectator && <Tooltip message="Log in as a Guest to participate" />}
-        </div>
-        <div>
-          {contributions?.map((contribution, i) => (
-            <ContributionsTableRow
-              {...{ contribution, i, host }}
-              key={contribution.contribution_id}
-            />
-          ))}
-        </div>
-        {<NewContributionForm {...{ contributions_frozen }} />}
+    <section
+      className="border-ink/20 bg-cream rounded-2xl border"
+      aria-labelledby="contributions-title"
+    >
+      <div className="px-5 py-6 sm:px-7">
+        <h2 id="contributions-title" className="text-2xl sm:text-3xl">
+          {contributions_custom_title || 'What’s everyone bringing?'}
+        </h2>
+        <p className="text-muted mt-2 text-sm">
+          {contributions_frozen
+            ? 'Claim a requested item to help bring it all together.'
+            : 'Pick something below or add your own. A little from everyone goes a long way.'}
+        </p>
       </div>
-    </div>
+      {contributions.length === 0 && (
+        <p className="border-ink/10 text-muted border-t px-5 py-7 text-sm sm:px-7">
+          The list is open. Be the first to bring something along.
+        </p>
+      )}
+      <ul>
+        {contributions.map((contribution) => (
+          <ContributionRow
+            key={contribution.contribution_id}
+            contribution={contribution}
+            host={host}
+            onChange={onChange}
+          />
+        ))}
+      </ul>
+      <NewContributionForm contributions_frozen={contributions_frozen} onChange={onChange} />
+    </section>
   );
 }
 
-function Tooltip({ message }: { message: string }) {
-  const icon = (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth={1.5}
-      stroke="currentColor"
-      className="h-6 w-6 text-zinc-400"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
-      />
-    </svg>
-  );
-
-  const popup = (
-    <div
-      className="text-md invisible absolute left-2/4 bottom-full mb-1
-       w-40 -translate-x-2/4 
-      items-center rounded
-      bg-zinc-700 p-2 font-medium text-zinc-100 shadow hover:visible group-hover:visible"
-    >
-      <div className="">{message}</div>
-    </div>
-  );
-  return (
-    <div className="group relative px-1">
-      {icon}
-      {popup}
-    </div>
-  );
-}
-
-function ContributionsTableRow({
-  i,
-  contribution: {
+function ContributionRow({
+  contribution,
+  host,
+  onChange,
+}: {
+  contribution: Contribution;
+  host: Host;
+  onChange: () => Promise<void>;
+}) {
+  const { user } = useAuth();
+  const { event } = useEventState();
+  const { guest } = useGuestAuth();
+  const [guestOpen, setGuestOpen] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  const {
     contribution_id,
-    created_at,
-    event_id,
     description,
     requested,
     contributor_id,
     claimed_comment,
     guests: contributor,
-  },
-  host,
-}: {
-  i: number;
-  contribution: Contribution;
-  host: Host;
-}) {
-  const { session, user, sessionStale, signOut, signInWithMagicLink, signInWithGoogle } = useAuth();
-  const { profile, loading: profileLoading } = useProfile();
-  const { guest, setGuest, guestList, setGuestList } = useGuestAuth();
-  const { event, setEvent } = useEventState();
-
-  // modal states - move to context and add renderings there if possible
-  const [guestLoginModalOpen, setGuestLoginModalOpen] = useState<boolean>(false);
-
-  // user authorization status for actions:
-  const isHost = user && user.id === event?.host_id;
-  const isGuest = guest && !isHost; // let host account take precedence in event of a shared device
-  const isSpectator = !isHost && !isGuest; // note, this could be an authenticated host account for a different event, or a non-authenticated page viewer.
-
-  // contributions will either be:
-  // * Committed by the host   // request false, contributor null
-  const committedByHost = !requested && !contributor_id;
-  // * Committed by a guest   // request false, contributor 1234
-  const committedByGuest = !requested && contributor_id;
-  // * Requested by the host
-  //     * Claimed by no one   // requested true, contributor null
-  const requestUnclaimed = requested && !contributor_id;
-  //     * Claimed by a guest   // request true, contributor 1234
-  const requestClaimedByGuest = requested && contributor_id;
-  //     * Claimed by N guests   // future feature, for now host will need to make multiple requests if wanting to do that
-  //     * Claimed by the host.   // this is not a request, so convert
-
-  const claimButton = (
-    <div
-      className="btn btn-sm gap-1"
-      onClick={() => {
-        if (isGuest) {
-          (async () => {
-            const { data, error } = await claimRequestAsGuest({
-              contribution_id,
-              claimed_comment: null,
-              guest_id: guest.guest_id,
-            });
-          })();
-        }
-        if (isHost) {
-          (async () => {
-            const { data, error } = await convertRequestToHostContribution({
-              contribution_id,
-            });
-          })();
-        }
-        if (isSpectator) {
-          setGuestLoginModalOpen(true);
-        }
-      }}
-    >
-      <p className="">Claim</p>
-      <p className="text-2xl">🙋🏻</p>
-      {/* <p className="block text-2xl">✋🏻</p> */}
-    </div>
-  );
-
-  const optionsButton = (
-    <div className="dropdown dropdown-end flex">
-      {/* button */}
-      <div tabIndex={0} className="btn btn-square btn-ghost btn-sm">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          className="inline-block h-5 w-5 stroke-current"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
-          ></path>
-        </svg>
-      </div>
-      {/* dropdown */}
-      <ul
-        tabIndex={0}
-        className="menu menu-compact dropdown-content rounded-box absolute top-full right-0 mt-3 w-auto min-w-max border-[1px] bg-white p-2 shadow"
-      >
-        {/* Host options */}
-        {isHost && (
-          <li>
-            <button
-              onClick={() => {
-                deleteContribution(contribution_id);
-              }}
-              className=""
-            >
-              Delete
-            </button>
-          </li>
-        )}
-        {isHost && !contributor_id && !requested && (
-          <li>
-            <button
-              onClick={() => {
-                convertHostContributionToRequest(contribution_id);
-              }}
-              className=""
-            >
-              Convert to Request
-            </button>
-          </li>
-        )}
-        {/* Guest options */}
-        {isGuest && !requested && (
-          <li>
-            <button
-              onClick={() => {
-                deleteContribution(contribution_id);
-              }}
-              className=""
-            >
-              Delete
-            </button>
-          </li>
-        )}
-        {isGuest && requested && (
-          <li>
-            <button
-              onClick={() => {
-                unclaimRequest(contribution_id);
-              }}
-              className=""
-            >
-              Unclaim
-            </button>
-          </li>
-        )}
-      </ul>
-    </div>
-  );
-
-  const descriptionDisplay = (
-    <div className="flex grow flex-wrap items-center">
-      <div>{description}</div>
-      {requestUnclaimed && <div className="badge mx-1">Requested</div>}
-      {requestClaimedByGuest &&
-        (claimed_comment ? (
-          <div className="badge badge-ghost mx-1">Claimed as:</div>
-        ) : (
-          <div className="badge badge-ghost mx-1">Claimed</div>
-        ))}
-      <div>{claimed_comment}</div>
-    </div>
-  );
-  const contributorDisplay = (
-    <div className="w-28 flex-none text-ellipsis tracking-tighter">
-      {(committedByGuest || requestClaimedByGuest) && contributor.display_name}
-      {committedByHost && host.display_name}
-      {requested && !contributor_id && claimButton}
-    </div>
-  );
-
-  const actions = (
-    <div className="flex">
-      <div className="w-8">
-        {(isHost || (isGuest && contributor_id === guest.guest_id)) && optionsButton}
-      </div>
-    </div>
-  );
-
+  } = contribution;
+  const isHost = !!user && user.id === event?.host_id;
+  const isGuest = !!guest && !isHost;
+  const openRequest = requested && !contributor_id;
+  const canManage = isHost || (isGuest && contributor_id === guest?.guest_id);
+  const name = contributor_id ? contributor?.display_name || 'Guest' : host.display_name;
+  const mutate = async (action: () => PromiseLike<{ error: unknown }>) => {
+    setBusy(true);
+    setError('');
+    try {
+      const result = await action();
+      if (result.error) throw result.error;
+      await onChange();
+    } catch {
+      setError('Couldn’t save that change. Please try again.');
+    } finally {
+      setBusy(false);
+    }
+  };
   return (
-    <div className="min-h-12 flex flex-nowrap items-center gap-2 border-t-[1px] border-zinc-200 bg-zinc-50 bg-opacity-30 py-1 px-2 sm:mx-2 ">
-      {descriptionDisplay}
-      {contributorDisplay}
-      {isSpectator || actions}
-      {isSpectator && (
-        <>
-          <ModalGuestLogin
-            isOpen={guestLoginModalOpen}
-            closeModal={() => {
-              setGuestLoginModalOpen(false);
+    <li className="contribution-row" aria-busy={busy}>
+      <div className="contribution-name">
+        {description}
+        {claimed_comment && <p className="text-muted mt-1 text-sm">{claimed_comment}</p>}
+      </div>
+      <div className="contribution-person">
+        {openRequest ? (
+          <>
+            <span className="border-ink/25 h-8 w-8 shrink-0 rounded-full border border-dashed" />
+            <span>Requested</span>
+          </>
+        ) : (
+          <>
+            <span
+              className="bg-butter text-ink inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold"
+              aria-hidden="true"
+            >
+              {getInitials(name || 'Host')}
+            </span>
+            <span className="break-words">
+              {name}
+              {!contributor_id && <span className="text-xs"> · Host</span>}
+            </span>
+          </>
+        )}
+      </div>
+      <div className="contribution-action">
+        {openRequest ? (
+          <button
+            type="button"
+            className="btn btn-sm min-w-[86px]"
+            disabled={busy}
+            aria-label={`Claim ${description}`}
+            onClick={() => {
+              if (isHost) void mutate(() => convertRequestToHostContribution({ contribution_id }));
+              else if (guest)
+                void mutate(() =>
+                  claimRequestAsGuest({
+                    contribution_id,
+                    guest_id: guest.guest_id,
+                    claimed_comment: null,
+                  })
+                );
+              else setGuestOpen(true);
             }}
-            onSuccess={() => {
-              // log in the guest
-              setGuestLoginModalOpen(false);
-            }}
-          />
-        </>
+          >
+            {busy ? 'Saving…' : 'Claim'}
+          </button>
+        ) : (
+          <span className="badge badge-ghost">
+            <Icon name="check" className="h-3.5 w-3.5" />
+            {requested ? 'Claimed' : 'Bringing'}
+          </span>
+        )}
+      </div>
+      {canManage && (
+        <div className="contribution-menu">
+          <Dropdown label={`Options for ${description}`}>
+            {isHost && !requested && !contributor_id && (
+              <button
+                disabled={busy}
+                onClick={() => void mutate(() => convertHostContributionToRequest(contribution_id))}
+              >
+                Convert to request
+              </button>
+            )}
+            {isGuest && requested && (
+              <button
+                disabled={busy}
+                onClick={() => void mutate(() => unclaimRequest(contribution_id))}
+              >
+                Unclaim item
+              </button>
+            )}
+            {(isHost || (isGuest && !requested)) && (
+              <button
+                disabled={busy}
+                className="text-error"
+                onClick={() => void mutate(() => deleteContribution(contribution_id))}
+              >
+                Delete item
+              </button>
+            )}
+          </Dropdown>
+        </div>
       )}
-    </div>
+      {error && (
+        <p role="alert" className="text-error col-span-full text-sm">
+          {error}
+        </p>
+      )}
+      <ModalGuestLogin
+        isOpen={guestOpen}
+        closeModal={() => setGuestOpen(false)}
+        onSuccess={() => setGuestOpen(false)}
+      />
+    </li>
   );
 }
 
-function NewContributionForm({ contributions_frozen }: { contributions_frozen: boolean }) {
-  const { session, user, sessionStale, signOut, signInWithMagicLink, signInWithGoogle } = useAuth();
-  const { profile, loading: profileLoading } = useProfile();
-  const { guest, setGuest, guestList, setGuestList } = useGuestAuth();
-  const { event, setEvent } = useEventState();
-
-  // modal states - move to context and add renderings there if possible
-  const [guestLoginModalOpen, setGuestLoginModalOpen] = useState<boolean>(false);
-
-  const { event_id } = event! || {}; // safe to assume event exists if this page is rendering
-  const { guest_id } = guest! || {}; // kinda dangerous, but value is only consumed by functions available when there is a guest user
-
-  const isHost = user && user.id === event?.host_id;
-  const isGuest = guest && !isHost; // let host account take precedence in event of a shared device
-  const isSpectator = !isHost && !isGuest; // note, this could be an authenticated host account for a different event, or a non-authenticated page viewer.
-
-  // form state for New Item
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm();
-
-  // form state for New Request
-  const {
-    register: register2,
-    handleSubmit: handleSubmit2,
-    formState: { errors: errors2 },
-    reset: reset2,
-  } = useForm();
-
-  const NewItemForm = (
-    <>
-      <div className="pt-3">
-        {/* {isHost && (
-          // this label is only necesary when disambiguating from the new request form for event hosts
-          <div className=" mx-1 flex items-center gap-1 pb-1">
-            <div className="text-dark text-md font-bold">New entry in your name</div>
-            <Tooltip message="This implies y" />
-          </div>
-        )} */}
-        <form
-          className=" flex w-full gap-2"
-          noValidate
-          autoComplete="off"
-          onSelect={() => {
-            if (isSpectator) {
-              setGuestLoginModalOpen(true);
-            }
-          }}
-          onSubmit={handleSubmit(({ description }) => {
-            // console.log('New Item submission data:', data);
-            if (isSpectator) {
-              // promt guest login
-              setGuestLoginModalOpen(true);
-              return; // for now
-            }
-            reset();
-            if (isHost) {
-              createHostContribution({
-                event_id,
-                description,
-              });
-            }
-            if (isGuest) {
-              createGuestContribution({
-                event_id,
-                description,
-                guest_id,
-              });
-            }
-          })}
-        >
+function NewContributionForm({
+  contributions_frozen,
+  onChange,
+}: {
+  contributions_frozen: boolean;
+  onChange: () => Promise<void>;
+}) {
+  const { user } = useAuth();
+  const { event } = useEventState();
+  const { guest } = useGuestAuth();
+  const [guestOpen, setGuestOpen] = useState(false);
+  const [error, setError] = useState('');
+  const isHost = !!user && user.id === event?.host_id;
+  const itemForm = useForm<{ description: string }>();
+  const requestForm = useForm<{ description: string }>();
+  const submit = async (description: string, request: boolean) => {
+    if (!event) return;
+    if (!isHost && !guest) {
+      setGuestOpen(true);
+      return;
+    }
+    setError('');
+    try {
+      const result =
+        request && isHost
+          ? await createRequest({ event_id: event.event_id, description })
+          : isHost
+          ? await createHostContribution({ event_id: event.event_id, description })
+          : await createGuestContribution({
+              event_id: event.event_id,
+              description,
+              guest_id: guest!.guest_id,
+            });
+      if (result.error) throw result.error;
+      (request ? requestForm : itemForm).reset();
+      await onChange();
+    } catch {
+      setError('Couldn’t add your item. Please try again.');
+    }
+  };
+  const field = (request: boolean) => {
+    const form = request ? requestForm : itemForm;
+    const id = request ? 'new-request' : 'new-contribution';
+    return (
+      <form
+        noValidate
+        onSubmit={form.handleSubmit(({ description }) => submit(description.trim(), request))}
+      >
+        <label htmlFor={id} className={isHost ? 'field-label' : 'sr-only'}>
+          {request ? 'Ask guests to bring something' : 'What are you bringing?'}
+        </label>
+        {request && (
+          <p className="text-muted mb-3 text-sm">Add an item for someone else to claim.</p>
+        )}
+        <div className="flex flex-col gap-3 sm:flex-row">
           <input
-            type="text"
-            placeholder="Add an item..."
-            className="input input-bordered w-full"
-            {...register('description', {
-              required: { value: true, message: 'Required' },
-              maxLength: { value: 200, message: 'Too long' },
-              // pattern: { value: /[A-Za-z]/i, message: 'Must contain a character' }, // this is done by default when field is required
+            id={id}
+            placeholder={request ? 'e.g. A bag of ice' : 'I’m bringing…'}
+            className="input w-full"
+            {...form.register('description', {
+              required: 'Add an item first.',
+              maxLength: { value: 200, message: 'Use 200 characters or fewer.' },
+              validate: (v) => !!v.trim() || 'Add an item first.',
             })}
           />
-          {/* <div className="btn btn-primary text-3xl">🕊</div> */}
-          <button type="submit" className="btn gap-2 text-lg">
-            Submit
+          <button
+            type="submit"
+            className={request ? 'btn btn-outline' : 'btn'}
+            disabled={form.formState.isSubmitting}
+          >
+            {form.formState.isSubmitting ? 'Adding…' : request ? 'Add request' : 'Add item'}
+            <Icon name="plus" className="h-4 w-4" />
           </button>
-        </form>
-      </div>
-    </>
-  );
-  const NewRequestForm = (
-    <>
-      <div className="pt-8">
-        {/* label */}
-        <div className=" mx-1 flex items-center gap-1 pb-1">
-          <div className="text-dark text-md font-bold tracking-tight">Make a Request</div>
-          <Tooltip message="Requests can be claimed by guests" />
         </div>
-        {/* form */}
-        <form
-          className=" flex w-full gap-2"
-          noValidate
-          autoComplete="off"
-          onSubmit={handleSubmit2(({ description }) => {
-            reset2();
-            // console.log('New Request submission data:', data);
-            if (isHost) {
-              createRequest({
-                event_id,
-                description,
-              });
-            }
-          })}
-        >
-          <input
-            type="text"
-            placeholder="Add a request..."
-            className="input input-bordered w-full"
-            {...register2('description', {
-              required: { value: true, message: 'Required' },
-              maxLength: { value: 200, message: 'Too long' },
-              // pattern: { value: /[A-Za-z]/i, message: 'Must contain a character' }, // this is done by default when field is required
-            })}
-          />
-          {/* <div className="btn btn-primary text-3xl">🕊</div> */}
-          <button type="submit" className="btn gap-2 text-lg">
-            Submit
-          </button>
-        </form>
-      </div>
-    </>
-  );
-
+        {form.formState.errors.description && (
+          <p role="alert" className="field-error">
+            {form.formState.errors.description.message}
+          </p>
+        )}
+      </form>
+    );
+  };
   return (
-    <div className="px-2">
-      {(isHost || !contributions_frozen) && NewItemForm}
-      {isHost && NewRequestForm}
-      {isSpectator && (
-        <>
-          <ModalGuestLogin
-            isOpen={guestLoginModalOpen}
-            closeModal={() => {
-              setGuestLoginModalOpen(false);
-            }}
-            onSuccess={() => {
-              // log in the guest
-              setGuestLoginModalOpen(false);
-            }}
-          />
-        </>
+    <div className="border-ink/10 space-y-6 border-t p-5 sm:p-7">
+      {(isHost || !contributions_frozen) && field(false)}
+      {isHost && field(true)}
+      {!isHost && contributions_frozen && (
+        <p className="text-muted text-sm">
+          The host has closed new contributions. You can still claim an available request.
+        </p>
       )}
+      {error && (
+        <p role="alert" className="field-error">
+          {error}
+        </p>
+      )}
+      <ModalGuestLogin
+        isOpen={guestOpen}
+        closeModal={() => setGuestOpen(false)}
+        onSuccess={() => setGuestOpen(false)}
+      />
     </div>
   );
 }
