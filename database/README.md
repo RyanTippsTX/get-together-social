@@ -26,6 +26,8 @@ The existing blanket Storage `ALL` policy was replaced with owner-scoped access.
 
 The account-deletion endpoint previously verified a JWT but used an anonymous database client for cleanup. RLS correctly blocks that. The accompanying endpoint change uses a server-only service-role client **after** verifying the JWT subject matches the requested host ID. A separate unprivileged client verifies tokens because the legacy SDK mutates its Auth headers during verification. It awaits file deletion, checks every cleanup result, and deletes the Auth user last. Deploy this server change to retain account deletion under RLS. Normal event editing, photos, contributions, and guest login do not require an app deployment.
 
+Vercel must also have a server-only `SUPABASE_SERVICE_KEY` secret. The project currently has only the two public Supabase variables: the preview build succeeds, but the account endpoint cannot initialize without this secret. Adding the key and merging this PR are pending owner approval. Never prefix the service key with `NEXT_PUBLIC_` or put it in source control.
+
 ## Validation
 
 - `npm ci --prefix database/tests`
