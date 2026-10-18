@@ -1,3 +1,7 @@
+import { useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
+import { Icon } from '../Icons';
+
 export function Modal({
   isOpen,
   closeModal,
@@ -5,30 +9,55 @@ export function Modal({
 }: {
   isOpen: boolean;
   closeModal: Function;
-  children?: React.ReactNode | React.ReactNode[];
+  children?: React.ReactNode;
 }) {
-  if (!isOpen) return <></>;
-
-  return (
-    // splash
-    <div
-      className="bg-pink-lemonade fixed top-0 left-0 z-50 grid h-full w-full place-items-center bg-opacity-80"
+  const dialog = useRef<HTMLDialogElement>(null);
+  const onClose = useRef(closeModal);
+  onClose.current = closeModal;
+  useEffect(() => {
+    if (!isOpen || !dialog.current) return;
+    const activeElement = document.activeElement as HTMLElement;
+    const previousOverflow = document.body.style.overflow;
+    dialog.current.showModal();
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      activeElement?.focus();
+    };
+  }, [isOpen]);
+  if (!isOpen || typeof document === 'undefined') return null;
+  return createPortal(
+    <dialog
+      ref={dialog}
+      aria-label="Event and account dialog"
+      className="border-ink/15 bg-cream text-ink backdrop:bg-ink/40 backdrop:backdrop-blur-sm m-auto max-h-[90dvh] w-[calc(100%_-_2rem)] max-w-lg overflow-y-auto rounded-2xl border p-0 shadow-xl"
+      onCancel={(e) => {
+        e.preventDefault();
+        onClose.current();
+      }}
       onClick={(e) => {
-        e.stopPropagation();
-        // console.log('clicked splash');
-        closeModal();
+        if (e.target === e.currentTarget) {
+          const r = e.currentTarget.getBoundingClientRect();
+          if (
+            e.clientX < r.left ||
+            e.clientX > r.right ||
+            e.clientY < r.top ||
+            e.clientY > r.bottom
+          )
+            onClose.current();
+        }
       }}
     >
-      {/* card */}
-      <div
-        className="card bg-base-100 w-96 shadow-lg hover:cursor-default"
-        onClick={(e) => {
-          e.stopPropagation();
-          // console.log('clicked card');
-        }}
+      <button
+        type="button"
+        aria-label="Close dialog"
+        className="btn btn-ghost btn-square absolute right-2 top-2 z-10"
+        onClick={() => closeModal()}
       >
-        {children}
-      </div>
-    </div>
+        <Icon name="close" />
+      </button>
+      <div className="pt-6">{children}</div>
+    </dialog>,
+    document.body
   );
 }

@@ -1,11 +1,9 @@
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { Modal } from './Modal';
-import { createGuest } from '../../lib/queries';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { createGuest, getGuestList } from '../../lib/queries';
 import { useGuestAuth } from '../../lib/guestAuth';
 import { useEventState } from '../../lib/eventState';
-import { useAppLoading } from '../../lib/appLoading';
-import { Host, Event, Guest, Contribution, Contributions } from '../../lib/queries.types';
-import { useEffect } from 'react';
 
 export function ModalGuestLogin({
   isOpen,
@@ -16,149 +14,101 @@ export function ModalGuestLogin({
   closeModal: Function;
   onSuccess: Function;
 }) {
-  const { guest, setGuest, guestList, setGuestList } = useGuestAuth();
+  const { setGuest, guestList, setGuestList } = useGuestAuth();
   const { event } = useEventState();
-  const { appLoading, setAppLoading } = useAppLoading();
-
+  const [error, setError] = useState('');
   const {
     register,
     handleSubmit,
-    watch,
     reset,
-    formState: { errors },
-  } = useForm<{ display_name: string }>({
-    defaultValues: {
-      // display_name: guest,
-    },
-  });
-
-  // clear previous form state anytime the modal is opened
+    formState: { errors, isSubmitting },
+  } = useForm<{ display_name: string }>();
   useEffect(() => {
     if (isOpen) {
       reset();
+      setError('');
     }
   }, [isOpen, reset]);
-
-  const onSubmit: SubmitHandler<{ display_name: string }> = ({ display_name }) => {
-    if (!event) return;
-    const { event_id } = event;
-    // console.log('Form submission data:', data);
-    closeModal();
-    (async () => {
-      const returningGuestUser = guestList?.find((g) => g.display_name === display_name);
-      if (returningGuestUser) {
-        // returning user
-        const { guest_id } = returningGuestUser;
-        setGuest({ guest_id });
-        return;
-      } else {
-        // new user
-        setAppLoading(true);
-        const { data, error } = await createGuest({
-          event_id,
-          display_name,
-        });
-        setAppLoading(false);
-        if (error) {
-          console.error(error);
-          setGuest(null);
-          return;
-        }
-        setGuest({ guest_id: data.guest_id });
-      }
-    })();
-  };
-
   return (
-    <Modal {...{ isOpen }} {...{ closeModal }}>
-      {/* <p>edit your display name !!</p> */}
-      {/* <h3 className="text-lg font-bold">Edit your display name:</h3>
-      <p className="py-4">
-        Youve been selected for a chance to get one year of subscription to use Wikipedia for free!
-      </p> */}
-      {/* // Main Form Body */}
-
-      <form autoComplete="off" noValidate onSubmit={handleSubmit(onSubmit)} className="">
-        <div className="card-body ">
-          <h2 className="card-title">Guest Login</h2>
-          <p>
-            Log in with your name to participate in the{' '}
-            {event?.contributions_custom_title || 'Guest Contributions'}. No password is required.
-          </p>
-          <p>Names are suggested for returning users. New users must type in their name.</p>
-
-          {/* input title */}
-
-          {/* <label htmlFor="display_name" className="block text-sm font-medium text-gray-700">
-            Display Name
-          </label> */}
+    <Modal isOpen={isOpen} closeModal={closeModal}>
+      <form
+        className="card-body"
+        noValidate
+        onSubmit={handleSubmit(async ({ display_name }) => {
+          if (!event) return;
+          setError('');
+          const name = display_name.trim();
+          const returningGuest = guestList?.find((g) => g.display_name === name);
+          if (returningGuest) {
+            setGuest({ guest_id: returningGuest.guest_id });
+            onSuccess();
+            closeModal();
+            return;
+          }
+          const { data, error } = await createGuest({
+            event_id: event.event_id,
+            display_name: name,
+          });
+          if (error || !data) {
+            setError('We couldn’t join the event. Please try again.');
+            return;
+          }
+          const { data: guests } = await getGuestList(event.event_id);
+          setGuestList(guests || []);
+          setGuest({ guest_id: data.guest_id });
+          onSuccess();
+          closeModal();
+        })}
+      >
+        <div>
+          <p className="eyebrow">You’re in good company</p>
+          <h2 className="card-title">Make yourself at home.</h2>
+        </div>
+        <p className="text-muted text-sm leading-relaxed">
+          Enter your name to add or claim a contribution. No account or password needed.
+        </p>
+        <div>
+          <label htmlFor="guest-name" className="field-label">
+            Your name
+          </label>
           <input
-            list="guests"
-            // type="text"
+            id="guest-name"
+            className="input w-full"
+            placeholder="e.g. Alex Morgan"
+            list="returning-guests"
+            autoComplete="name"
             {...register('display_name', {
-              required: { value: true, message: 'Required' },
-              maxLength: { value: 60, message: 'Too long' },
-              // pattern: { value: /[A-Za-z]/i, message: 'Must contain a character' }, // this is done by default when field is required
+              required: 'Enter your name.',
+              maxLength: { value: 60, message: 'Use 60 characters or fewer.' },
+              validate: (value) => !!value.trim() || 'Enter your name.',
             })}
-            id="display_name"
-            placeholder="Your Name"
-            // autoComplete="nope"
-            className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
           />
-          <datalist id="guests">
-            {guestList &&
-              guestList.map(({ display_name }) => {
-                return <option key={display_name} value={display_name}></option>;
-              })}
+          <datalist id="returning-guests">
+            {guestList?.map((g) => (
+              <option key={g.guest_id} value={g.display_name} />
+            ))}
           </datalist>
-
-          <FormError message={errors.display_name?.message as string} />
-          <p className="mt-2 text-sm text-gray-500">
-            We recommend using your full name, or any nickname that uniquely identifies you from
-            other guests. 🥸
+          <p className="field-hint">Already joined? Choose the same name you used before.</p>
+          {errors.display_name && (
+            <p role="alert" className="field-error">
+              {errors.display_name.message}
+            </p>
+          )}
+        </div>
+        {error && (
+          <p role="alert" className="field-error">
+            {error}
           </p>
-
-          {/* end of inputs */}
-
-          {/* action buttons */}
-          <div className="modal-action">
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                // console.log('clicked button');
-                closeModal();
-              }}
-              className="btn btn-ghost"
-            >
-              Cancel
-            </button>
-
-            <button
-              type="submit"
-              // className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-              className="btn"
-            >
-              Log In
-            </button>
-          </div>
-          {/* <h2 className="card-title">Hosts</h2>
-          <p>
-            Your Login is <a>here</a>
-          </p> */}
+        )}
+        <div className="modal-action">
+          <button type="button" className="btn btn-ghost" onClick={() => closeModal()}>
+            Cancel
+          </button>
+          <button type="submit" disabled={isSubmitting || !event} className="btn">
+            {isSubmitting ? 'Joining…' : 'Join as a guest'}
+          </button>
         </div>
       </form>
     </Modal>
   );
-}
-
-function FormError({ message }: { message: string | undefined | null }) {
-  if (message) {
-    return (
-      <div className="text-error px-1 pt-1 text-sm font-semibold">
-        {/* {errors.email?.message as string} */}
-        {message}
-      </div>
-    );
-  }
-  return <></>;
 }

@@ -1,10 +1,10 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+module.exports = {
   reactStrictMode: true,
-  swcMinify: true,
   images: {
-    domains: ['avatars.githubusercontent.com', 'placeimg.com', 'titcmdqlpvlqjhcculma.supabase.co'],
+    remotePatterns: [
+      { protocol: 'https', hostname: 'avatars.githubusercontent.com' },
+      { protocol: 'https', hostname: 'titcmdqlpvlqjhcculma.supabase.co' },
+    ],
   },
 };
-
-module.exports = nextConfig;

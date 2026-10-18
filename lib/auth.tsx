@@ -1,104 +1,68 @@
-import { createContext, useContext, useEffect, useState, FormEvent } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import supabase from './supabase';
 import { Session, User } from '@supabase/supabase-js';
+import supabase from './supabase';
 
 interface AuthContextInterface {
   session: Session | null;
   user: User | null;
   sessionStale: boolean;
-  signOut: Function;
-  signInWithGoogle: Function;
-  signInWithMagicLink: Function;
+  signOut: () => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
+  signInWithMagicLink: (input: { email: string }) => Promise<void>;
 }
 export const AuthContext = createContext<AuthContextInterface | undefined>(undefined);
-
 export function AuthProvider({ ...props }) {
   const [session, setSession] = useState<Session | null>(null);
   const [sessionStale, setSessionStale] = useState(true);
-
+  const router = useRouter();
   useEffect(() => {
-    // setSessionLoading(true);
-    (async () => {
-      // get initial session
-      const { data, error } = await supabase.auth.getSession();
-
-      // supabase updates session on future auth state changes
-      supabase.auth.onAuthStateChange((event: string, session: Session | null) => {
+    let active = true;
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (active) {
         setSession(session);
         setSessionStale(false);
-        // console.log('supabase updated Auth state');
-      });
-
-      // console.log('initial session loaded: ', data.session);
-      setSession(data.session);
-      setSessionStale(false);
-
-      // housekeeping
-      // return () => {
-      //   // no action needed, Supabase uses channels instead of subscriptions
-      //   // no longer need to unsubscribe from Auth Listener
-      // };
-    })();
-  }, []);
-
-  const router = useRouter();
-
-  // Functions for Auth mutation & page redirect
-  const signOut = async () => {
-    // setSessionLoading(true);
-    const { error } = await supabase.auth.signOut();
-    // setSessionLoading(false);
-    if (error) {
-      console.error(error);
-      router.push('/my-events');
-    } else {
-      router.push('/');
-    }
-  };
-
-  const signInWithGoogle = () => {
-    setSessionStale(true);
-    (async () => {
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: 'https://gettogether.social/login',
-        },
-      });
-      setSessionStale(false);
-      if (error) {
-        console.error(error);
-        router.push('/');
-      } else {
-        // console.log('response:', data);
-        router.push('/my-events');
       }
-    })();
+    });
+    void supabase.auth.getSession().then(({ data }) => {
+      if (active) {
+        setSession(data.session);
+        setSessionStale(false);
+      }
+    });
+    return () => {
+      active = false;
+      subscription.unsubscribe();
+    };
+  }, []);
+  const signOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      alert('Couldn’t sign out. Please try again.');
+      return;
+    }
+    await router.push('/');
+  };
+  // The origin must also be allowed in Supabase Auth's redirect URL configuration.
+  const signInWithGoogle = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: `${window.location.origin}/login` },
+    });
+    if (error) throw error;
   };
   const signInWithMagicLink = async ({ email }: { email: string }) => {
-    const { data, error } = await supabase.auth.signInWithOtp({
+    const { error } = await supabase.auth.signInWithOtp({
       email,
-      options: {
-        emailRedirectTo: process.env.NEXT_PUBLIC_BACKEND_URL + '/my-events',
-        shouldCreateUser: true,
-      },
+      options: { emailRedirectTo: `${window.location.origin}/login`, shouldCreateUser: true },
     });
-    if (error) {
-      console.error('signin result error:', error);
-      alert('An error occured, please try again');
-      router.push('/');
-    } else {
-      // No redirect, stay on login page
-      // Toast or Modal: "Email sent to ___@gmail.com !"
-      alert(`Email has been sent to ${email}`);
-    }
+    if (error) throw error;
   };
-
   return (
     <AuthContext.Provider
       value={{
-        // provides auth state & auth mutation functions
         session,
         user: session?.user || null,
         sessionStale,
@@ -110,12 +74,8 @@ export function AuthProvider({ ...props }) {
     />
   );
 }
-
-// hook for using app-wide Auth state & Auth mutation functions
 export function useAuth() {
   const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
+  if (!context) throw new Error('useAuth must be used within an AuthProvider');
   return context;
 }
