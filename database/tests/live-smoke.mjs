@@ -15,8 +15,13 @@ assert(ledgerPath, 'Provide a private fixture ledger path for recovery');
 const endpoint = process.argv[5];
 if (endpoint)
   assert(
-    new URL(endpoint).hostname === 'localhost',
-    'Endpoint verification is restricted to localhost'
+    new URL(endpoint).origin === endpoint &&
+      (new URL(endpoint).hostname === 'localhost' ||
+        [
+          'https://gettogether.social',
+          'https://get-together-social-git-fix-supabase-rls-ryantipps-projects.vercel.app',
+        ].includes(endpoint)),
+    'Endpoint verification is restricted to localhost and the approved app deployments'
   );
 const endpointDeleted = new Set();
 const image = await readFile(process.argv[3]);
