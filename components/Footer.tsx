@@ -24,7 +24,12 @@ export function Footer() {
               ['My events', '/my-events'],
               ['New event', '/new'],
             ],
-            ['The details', ['Terms', '/legal'], ['Privacy', '/legal'], ['Cookies', '/legal']],
+            [
+              'The details',
+              ['Terms', '/legal#terms'],
+              ['Privacy', '/legal#privacy'],
+              ['Cookies', '/legal#cookies'],
+            ],
           ].map(([heading, ...links]) => (
             <nav key={heading as string} aria-label={heading as string}>
               <h2 className="text-muted mb-3 font-sans text-xs font-bold uppercase tracking-wider">
