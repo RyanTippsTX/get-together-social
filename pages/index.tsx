@@ -68,18 +68,53 @@ export default function Home() {
           <h2 id="sound-familiar" className="text-3xl sm:text-4xl">
             Sound familiar?
           </h2>
-          <p className="text-muted mt-3 text-sm">Imagined messages from the group chat.</p>
+          <p className="text-muted mt-3 text-sm">Fictional people. Familiar frustrations.</p>
         </div>
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid items-start gap-7 md:grid-cols-2 md:gap-x-10 md:gap-y-8">
           {[
-            'I just want to bring cookies. Why am I creating an account?',
-            'Another app? I’ll just text the host.',
-            'We have three desserts and no plates.',
-            'Can we please just use a spreadsheet?',
-          ].map((quote) => (
-            <blockquote key={quote} className="card rounded-bl-none p-6 text-lg leading-relaxed">
-              “{quote}”
-            </blockquote>
+            {
+              name: 'Maya',
+              occasion: 'The cookie swap',
+              color: 'bg-[#eaded5] text-[#684737]',
+              message: 'I just want to bring cookies. Why am I creating an account?',
+            },
+            {
+              name: 'Ben',
+              occasion: 'Mike’s birthday',
+              color: 'bg-[#dce6ec] text-[#375363]',
+              message: 'Another app? I’ll just text the host.',
+            },
+            {
+              name: 'Jess',
+              occasion: 'The Friendsgiving crew',
+              color: 'bg-[#e9dfed] text-[#62436b]',
+              message:
+                'Four people brought mashed potatoes. Nobody wanted to create an account just to say what they were bringing.',
+            },
+            {
+              name: 'Sam',
+              occasion: 'Sunday’s cookout',
+              color: 'bg-[#e1e8d6] text-[#485b37]',
+              message: 'Can we please just use a spreadsheet?',
+            },
+          ].map(({ name, occasion, color, message }) => (
+            <div key={name} className="flex min-w-0 items-start gap-3">
+              <div
+                aria-hidden="true"
+                className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-bold ${color}`}
+              >
+                {name[0]}
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="mb-2 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                  <span className="text-sm font-bold">{name}</span>
+                  <span className="text-muted text-xs">{occasion}</span>
+                </p>
+                <blockquote className="border-ink/10 bg-cream rounded-2xl rounded-tl-sm border px-5 py-4 text-base leading-7">
+                  {message}
+                </blockquote>
+              </div>
+            </div>
           ))}
         </div>
         <div className="mt-10 flex flex-wrap items-center justify-between gap-5">
@@ -89,16 +124,38 @@ export default function Home() {
           </Link>
         </div>
       </section>
-      <details className="border-ink/15 mb-12 border-t pt-6 md:mb-16">
-        <summary className="text-muted w-fit text-sm font-semibold">
-          How does name-only guest access work?
-        </summary>
-        <p className="text-muted mt-4 max-w-2xl text-sm leading-7">
-          Guests use the honor system: names aren’t verified, so someone else can select the same
-          name. Returning guests can choose their name again to update what they’re bringing. Event
-          pages and contributions are public. Share only details you’re comfortable making public.
-        </p>
-      </details>
+      <section
+        className="border-ink/15 mb-12 grid gap-8 border-t pt-10 md:mb-16 md:grid-cols-[1fr_2fr] md:gap-12 md:pt-14"
+        aria-labelledby="faq-title"
+      >
+        <div>
+          <p className="eyebrow">A few practical details</p>
+          <h2 id="faq-title" className="text-3xl sm:text-4xl">
+            FAQ
+          </h2>
+        </div>
+        <div className="divide-ink/15 divide-y">
+          {[
+            [
+              'Does anyone need an account?',
+              'Only the host signs in to create and manage events. Guests just enter their name to add or claim something to bring.',
+            ],
+            [
+              'How does name-only guest access work?',
+              'It’s the honor system. Names aren’t verified, so someone else can select the same name. Event pages and contributions are public—share only details you’re comfortable making public.',
+            ],
+            [
+              'Can guests change what they’re bringing?',
+              'Yes. Returning guests choose the same name they used before to update their contributions.',
+            ],
+          ].map(([question, answer]) => (
+            <div key={question} className="py-6 first:pt-0 last:pb-0">
+              <h3 className="text-lg">{question}</h3>
+              <p className="text-muted mt-2 text-sm leading-7">{answer}</p>
+            </div>
+          ))}
+        </div>
+      </section>
     </Layout>
   );
 }
