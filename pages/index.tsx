@@ -8,24 +8,20 @@ export default function Home() {
     <Layout
       homePage
       metaTags={{
-        pageTitle: 'Good company. Less hassle. | GetTogether.social',
+        pageTitle: 'A party app without guest signup | GetTogether.social',
         pageDescription:
-          'Share event details and coordinate who’s bringing what. Guests just enter their name—no account or app download required.',
+          'A party app where guests join with just their name. Share the event link. Guests say what they’re bringing. No downloads. No accounts.',
         pageUrl: 'https://gettogether.social',
       }}
     >
       <section className="grid items-center gap-10 py-12 md:grid-cols-2 md:gap-12 md:py-20">
         <div>
-          <p className="eyebrow">Event planning. Without the guest signup.</p>
           <Flourish />
           <h1 className="font-display text-[2.5rem] font-black leading-[1.04] tracking-[-0.05em] sm:text-6xl md:text-[2.75rem] lg:text-6xl">
-            Good company.
-            <br />
-            Less hassle.
+            A party app where guests join with just their name.
           </h1>
           <p className="text-muted mt-6 max-w-md text-lg leading-relaxed">
-            Share the details and coordinate who’s bringing what. Guests just enter their name—no
-            account or app download required.
+            Share the event link. Guests say what they’re bringing. No downloads. No accounts.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link href="/login" className="btn">
@@ -67,104 +63,42 @@ export default function Home() {
           </div>
         </div>
       </section>
-      <section className="border-ink/15 border-t py-10 md:py-14">
-        <div className="grid gap-8 md:grid-cols-2 md:gap-12">
-          <div>
-            <p className="eyebrow">For the “just send me a link” crowd</p>
-            <h2 className="max-w-md text-3xl leading-tight sm:text-4xl">
-              Bringing a dish shouldn’t require an onboarding workflow.
-            </h2>
-            <p className="text-muted mt-5 max-w-md leading-7">
-              From game-day snacks to backyard barbecues, make it easy for everyone to pitch in. All
-              the simplicity of a shared doc, on a page made for your gathering.
-            </p>
-          </div>
-          <ul className="space-y-6">
-            {[
-              [
-                'The details, all together.',
-                'Your photo, time, place, and plan on one easy-to-read event page.',
-              ],
-              [
-                'A clear list of who’s bringing what.',
-                'Ask for what you need. Guests claim a spot or add a dish of their own.',
-              ],
-              [
-                'Everyone sees the same plan.',
-                'Contributions update live, so guests can see what’s covered and what’s still needed.',
-              ],
-            ].map(([title, copy]) => (
-              <li key={title} className="flex gap-4">
-                <span className="badge-ghost mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full">
-                  <Icon name="check" />
-                </span>
-                <div>
-                  <h3 className="text-lg">{title}</h3>
-                  <p className="text-muted mt-1 text-sm leading-7">{copy}</p>
-                </div>
-              </li>
-            ))}
-          </ul>
+      <section className="border-ink/15 border-t py-10 md:py-14" aria-labelledby="sound-familiar">
+        <div className="mb-8">
+          <h2 id="sound-familiar" className="text-3xl sm:text-4xl">
+            Sound familiar?
+          </h2>
+          <p className="text-muted mt-3 text-sm">Imagined messages from the group chat.</p>
         </div>
-      </section>
-      <section className="border-ink/15 border-t py-10 md:py-14">
-        <div className="mb-8 flex flex-wrap items-end justify-between gap-3">
-          <h2 className="text-3xl">From “you’re invited” to “I’ll bring brownies.”</h2>
-        </div>
-        <div className="grid gap-8 md:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2">
           {[
-            [
-              '01',
-              'You make the page.',
-              'Sign in as the host, add the details, and list what you need. Give it a cover photo to make it yours.',
-            ],
-            [
-              '02',
-              'You send the link.',
-              'Drop it in the group chat, a text, or an email. Guests can open the page right in their browser.',
-            ],
-            [
-              '03',
-              'They bring something.',
-              'Guests enter their name and claim an item or add their own. That’s it. No registration between them and the brownies.',
-            ],
-          ].map(([number, title, copy]) => (
-            <div key={number}>
-              <span className="text-sm font-bold text-[#886b00]">{number} /</span>
-              <h3 className="mt-3 text-xl">{title}</h3>
-              <p className="text-muted mt-2 max-w-sm text-sm leading-7">{copy}</p>
-            </div>
+            'I just want to bring cookies. Why am I creating an account?',
+            'Another app? I’ll just text the host.',
+            'We have three desserts and no plates.',
+            'Can we please just use a spreadsheet?',
+          ].map((quote) => (
+            <blockquote key={quote} className="card rounded-bl-none p-6 text-lg leading-relaxed">
+              “{quote}”
+            </blockquote>
           ))}
         </div>
-      </section>
-      <section className="card mb-12 p-6 sm:p-8 md:mb-16">
-        <div className="grid gap-8 md:grid-cols-[1fr_1.3fr] md:gap-12">
-          <div>
-            <p className="eyebrow">Simple by design</p>
-            <h2 className="text-3xl">Built for people you know.</h2>
-            <Link href="/20270214/super-bowl-sunday" className="btn btn-outline mt-6">
-              Try it as a guest <Icon name="arrow" />
-            </Link>
-          </div>
-          <div className="space-y-6">
-            <div>
-              <h3 className="text-lg">Do guests really just need a name?</h3>
-              <p className="text-muted mt-2 text-sm leading-7">
-                Yes. No email, password, or account to create. If they come back later, they can
-                select their name from the guest list to update what they’re bringing.
-              </p>
-            </div>
-            <div>
-              <h3 className="text-lg">How does guest access work?</h3>
-              <p className="text-muted mt-2 text-sm leading-7">
-                It’s the honor system: guest names aren’t verified, so someone else can select the
-                same name. Event pages and contributions are public. Share only details you’re
-                comfortable making public.
-              </p>
-            </div>
-          </div>
+        <div className="mt-10 flex flex-wrap items-center justify-between gap-5">
+          <h3 className="text-2xl sm:text-3xl">A link. A name. “I’ll bring brownies.”</h3>
+          <Link href="/login" className="btn">
+            Create event <Icon name="arrow" />
+          </Link>
         </div>
       </section>
+      <details className="border-ink/15 mb-12 border-t pt-6 md:mb-16">
+        <summary className="text-muted w-fit text-sm font-semibold">
+          How does name-only guest access work?
+        </summary>
+        <p className="text-muted mt-4 max-w-2xl text-sm leading-7">
+          Guests use the honor system: names aren’t verified, so someone else can select the same
+          name. Returning guests can choose their name again to update what they’re bringing. Event
+          pages and contributions are public. Share only details you’re comfortable making public.
+        </p>
+      </details>
     </Layout>
   );
 }
