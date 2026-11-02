@@ -116,12 +116,6 @@ export default function Home() {
             </div>
           ))}
         </div>
-        <div className="mt-10 flex flex-wrap items-center justify-between gap-5">
-          <h3 className="text-2xl sm:text-3xl">A link. A name. “I’ll bring brownies.”</h3>
-          <Link href="/login" className="btn">
-            Create event <Icon name="arrow" />
-          </Link>
-        </div>
       </section>
       <section
         className="border-ink/15 mb-12 grid gap-8 border-t pt-10 md:mb-16 md:grid-cols-[1fr_2fr] md:gap-12 md:pt-14"
