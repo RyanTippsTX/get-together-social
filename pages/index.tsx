@@ -8,24 +8,24 @@ export default function Home() {
     <Layout
       homePage
       metaTags={{
-        pageTitle: 'Potluck planning without guest signup | GetTogether.social',
+        pageTitle: 'Good company. Less hassle. | GetTogether.social',
         pageDescription:
-          'A dedicated potluck page with the simplicity of a shared doc. Guests open your link, enter their name, and choose what to bring. No guest accounts or app downloads.',
+          'Share event details and coordinate who’s bringing what. Guests just enter their name—no account or app download required.',
         pageUrl: 'https://gettogether.social',
       }}
     >
       <section className="grid items-center gap-10 py-12 md:grid-cols-2 md:gap-12 md:py-20">
         <div>
-          <p className="eyebrow">Potluck planning. Without the friction.</p>
+          <p className="eyebrow">Event planning. Without the guest signup.</p>
           <Flourish />
           <h1 className="font-display text-[2.5rem] font-black leading-[1.04] tracking-[-0.05em] sm:text-6xl md:text-[2.75rem] lg:text-6xl">
-            A proper potluck.
+            Good company.
             <br />
-            No guest signup.
+            Less hassle.
           </h1>
           <p className="text-muted mt-6 max-w-md text-lg leading-relaxed">
-            Give your gathering its own page. Your guests open the link, enter their name, and
-            choose what to bring. No account, email address, or app download required.
+            Share the details and coordinate who’s bringing what. Guests just enter their name—no
+            account or app download required.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link href="/login" className="btn">
@@ -52,7 +52,7 @@ export default function Home() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-muted text-xs">A name. A dish. You’re in.</p>
-                <p className="font-display mt-1 text-xl font-extrabold">Sunday potluck</p>
+                <p className="font-display mt-1 text-xl font-extrabold">Backyard barbecue</p>
               </div>
               <span className="bg-butter rounded-full p-3">
                 <Icon name="calendar" />
@@ -72,11 +72,11 @@ export default function Home() {
           <div>
             <p className="eyebrow">For the “just send me a link” crowd</p>
             <h2 className="max-w-md text-3xl leading-tight sm:text-4xl">
-              The simplicity of a shared doc. A page made for your potluck.
+              Bringing a dish shouldn’t require an onboarding workflow.
             </h2>
             <p className="text-muted mt-5 max-w-md leading-7">
-              A shared spreadsheet gets the job done. This gives your gathering a home of its own,
-              while keeping it just as easy for everyone to pitch in.
+              From game-day snacks to backyard barbecues, make it easy for everyone to pitch in. All
+              the simplicity of a shared doc, on a page made for your gathering.
             </p>
           </div>
           <ul className="space-y-6">
