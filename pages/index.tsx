@@ -141,7 +141,7 @@ export default function Home() {
             ],
             [
               'How does name-only guest access work?',
-              'It’s the honor system. Names aren’t verified, so someone else can select the same name. Event pages and contributions are public—share only details you’re comfortable making public.',
+              'It’s the honor system. Names aren’t verified, so someone else can select the same name. Event pages and contributions are semi-public—anyone with the event link has access.',
             ],
             [
               'Can guests change what they’re bringing?',
