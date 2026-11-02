@@ -68,7 +68,6 @@ export default function Home() {
           <h2 id="sound-familiar" className="text-3xl sm:text-4xl">
             Sound familiar?
           </h2>
-          <p className="text-muted mt-3 text-sm">Fictional people. Familiar frustrations.</p>
         </div>
         <div className="grid items-start gap-7 md:grid-cols-2 md:gap-x-10 md:gap-y-8">
           {[
