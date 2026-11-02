@@ -29,7 +29,7 @@ export default function Home() {
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link href="/login" className="btn">
-              Create a potluck <Icon name="arrow" />
+              Create event <Icon name="arrow" />
             </Link>
             <Link href="/20270214/super-bowl-sunday" className="btn btn-outline">
               Try it as a guest
