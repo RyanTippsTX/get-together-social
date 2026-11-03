@@ -23,6 +23,7 @@ export default function Layout({
     <>
       <Head>
         <title>{metaTags?.pageTitle || siteTitle}</title>
+        {eventPage && <meta name="robots" content="noindex" key="robots" />}
         <meta
           name="description"
           content={
