@@ -116,11 +116,11 @@ export default function Home() {
             </div>
           ))}
         </div>
-        <div className="mt-10 text-center sm:mt-12">
-          <p className="font-display text-2xl font-extrabold tracking-tight sm:text-3xl">
+        <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3">
+          <p className="font-display text-xl font-bold tracking-tight">
             There’s a simpler way.
           </p>
-          <Link href="/20270214/super-bowl-sunday" className="btn mt-5">
+          <Link href="/20270214/super-bowl-sunday" className="btn">
             Try it now <Icon name="arrow" />
           </Link>
         </div>
