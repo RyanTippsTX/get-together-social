@@ -116,6 +116,14 @@ export default function Home() {
             </div>
           ))}
         </div>
+        <div className="mt-10 text-center sm:mt-12">
+          <p className="font-display text-2xl font-extrabold tracking-tight sm:text-3xl">
+            There’s a simpler way.
+          </p>
+          <Link href="/20270214/super-bowl-sunday" className="btn mt-5">
+            Try it now <Icon name="arrow" />
+          </Link>
+        </div>
       </section>
       <section
         className="border-ink/15 mb-12 grid gap-8 border-t pt-10 md:mb-16 md:grid-cols-[1fr_2fr] md:gap-12 md:pt-14"
