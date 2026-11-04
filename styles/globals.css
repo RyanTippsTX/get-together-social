@@ -205,6 +205,28 @@
   }
 }
 
+/* Messages fade in as they scroll into view. Progressive enhancement: browsers without
+   scroll-driven animations, and users who prefer reduced motion, see them fully rendered. */
+@keyframes chat-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .chat-reveal {
+      animation: chat-reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 45%;
+    }
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

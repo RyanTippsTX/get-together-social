@@ -63,13 +63,16 @@ export default function Home() {
           </div>
         </div>
       </section>
-      <section className="border-ink/15 border-t py-10 md:py-14" aria-labelledby="sound-familiar">
-        <div className="mb-8">
+      <section
+        className="border-ink/15 grid gap-8 border-t py-10 md:grid-cols-[1fr_2fr] md:gap-12 md:py-14"
+        aria-labelledby="sound-familiar"
+      >
+        <div>
           <h2 id="sound-familiar" className="text-3xl sm:text-4xl">
             Sound familiar?
           </h2>
         </div>
-        <div className="grid items-start gap-7 md:grid-cols-2 md:gap-x-10 md:gap-y-8">
+        <ol role="list" className="flex min-w-0 flex-col gap-6 sm:gap-7">
           {[
             {
               name: 'Maya',
@@ -96,26 +99,47 @@ export default function Home() {
               color: 'bg-[#e1e8d6] text-[#485b37]',
               message: 'Can we please just use a spreadsheet?',
             },
-          ].map(({ name, occasion, color, message }) => (
-            <div key={name} className="flex min-w-0 items-start gap-3">
-              <div
-                aria-hidden="true"
-                className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-bold ${color}`}
+          ].map(({ name, occasion, color, message }, index) => {
+            const fromRight = index % 2 === 1;
+            return (
+              <li
+                key={name}
+                className={`chat-reveal flex items-end gap-3 ${
+                  fromRight ? 'flex-row-reverse' : ''
+                }`}
               >
-                {name[0]}
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="mb-2 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-                  <span className="text-sm font-bold">{name}</span>
-                  <span className="text-muted text-xs">{occasion}</span>
-                </p>
-                <blockquote className="border-ink/10 bg-cream rounded-2xl rounded-tl-sm border px-5 py-4 text-base leading-7">
-                  {message}
-                </blockquote>
-              </div>
-            </div>
-          ))}
-        </div>
+                <div
+                  aria-hidden="true"
+                  className={`font-display ring-cream flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-extrabold shadow-sm ring-2 ${color}`}
+                >
+                  {name[0]}
+                </div>
+                <div
+                  className={`flex min-w-0 max-w-[85%] flex-col md:max-w-[78%] ${
+                    fromRight ? 'items-end' : 'items-start'
+                  }`}
+                >
+                  <p
+                    className={`mb-1.5 flex min-w-0 max-w-full items-center gap-x-2 px-1 text-xs ${
+                      fromRight ? 'justify-end' : ''
+                    }`}
+                  >
+                    <span className="shrink-0 font-bold">{name}</span>
+                    <span aria-hidden="true" className="bg-ink/25 h-1 w-1 shrink-0 rounded-full" />
+                    <span className="text-muted min-w-0">{occasion}</span>
+                  </p>
+                  <blockquote
+                    className={`border-ink/10 bg-cream text-ink rounded-[20px] border px-4 py-3 text-[15px] leading-6 shadow-[0_10px_28px_-16px_rgb(70_55_20/0.45)] sm:px-5 sm:py-3.5 sm:text-base sm:leading-7 ${
+                      fromRight ? 'rounded-br-md' : 'rounded-bl-md'
+                    }`}
+                  >
+                    {message}
+                  </blockquote>
+                </div>
+              </li>
+            );
+          })}
+        </ol>
       </section>
       <section
         className="border-ink/15 mb-12 grid gap-8 border-t pt-10 md:mb-16 md:grid-cols-[1fr_2fr] md:gap-12 md:pt-14"
